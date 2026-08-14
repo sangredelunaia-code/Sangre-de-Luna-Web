@@ -1,2 +1,2 @@
-// Sangre de Luna — lógica migrada a Supabase.
-// Se conserva este archivo vacío para compatibilidad con el cargador anterior de Vercel.
+// Sangre de Luna — archivo de compatibilidad.
+// La lógica principal vive en index.html y Supabase. No añadir scripts aquí.
