@@ -59,10 +59,10 @@
 .cronista-widget{position:fixed;right:22px;bottom:22px;z-index:900;display:grid;justify-items:end;gap:12px}.cronista-launch{position:relative;width:70px;height:70px;border:1px solid #a9dfff8c;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 35%,#173652,#050b11 68%);box-shadow:0 14px 46px #000b,0 0 30px #5bbaff35;cursor:pointer;transition:.25s}.cronista-launch:hover{transform:translateY(-3px) scale(1.03);border-color:#d9f1ff}.cronista-launch img{width:94px;height:94px;max-width:none;position:absolute;left:50%;top:41%;transform:translate(-50%,-36%);object-fit:contain;filter:drop-shadow(0 0 10px #8ed3ff66)}.cronista-launch:after{content:'';position:absolute;inset:5px;border:1px solid #fff3;border-radius:50%;pointer-events:none}.cronista-launch.is-alerting{animation:cronistaPulse 2.2s ease-in-out 3}@keyframes cronistaPulse{50%{box-shadow:0 14px 46px #000b,0 0 0 11px #72c9ff12,0 0 38px #72c9ff70}}
 .cronista-nudge{position:absolute;right:82px;bottom:10px;width:245px;padding:11px 13px;border:1px solid #4d7795;border-radius:14px;background:#07121df2;color:#dbeeff;box-shadow:0 14px 42px #000a;font-size:.8rem;line-height:1.35;opacity:0;transform:translateX(10px);pointer-events:none;transition:.28s}.cronista-nudge.show{opacity:1;transform:none}.cronista-nudge b{display:block;color:#8fd4ff;font:700 .86rem Georgia;margin-bottom:3px}
 .cronista-panel{width:min(405px,calc(100vw - 28px));height:min(650px,78svh);display:none;grid-template-rows:auto 1fr auto;background:linear-gradient(180deg,#07131ef7,#040a10fa);border:1px solid #446b89;border-radius:24px;overflow:hidden;box-shadow:0 28px 90px #000d,0 0 42px #3ea9ff1c;backdrop-filter:blur(18px)}.cronista-panel.open{display:grid;animation:cronistaOpen .25s ease-out}.cronista-widget:has(.cronista-panel.open) .cronista-launch{display:none}@keyframes cronistaOpen{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
-.cronista-head{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:14px;border-bottom:1px solid #284156;background:linear-gradient(135deg,#0c2132,#07121c)}.cronista-avatar{width:48px;height:48px;border:1px solid #87cfff70;border-radius:50%;overflow:hidden;background:#06101a;position:relative}.cronista-avatar img{width:68px;max-width:none;position:absolute;left:50%;top:39%;transform:translate(-50%,-34%)}.cronista-title{min-width:0}.cronista-title b{display:block;font:700 1.05rem Georgia;color:#fff}.cronista-title span{display:flex;align-items:center;gap:6px;color:#96aec1;font-size:.72rem}.cronista-title i{width:7px;height:7px;border-radius:50%;background:#79ddb3;box-shadow:0 0 9px #79ddb3}.cronista-tools{display:flex;gap:5px}.cronista-tool{min-width:34px;height:34px;padding:0 9px;border:1px solid #34536b;border-radius:10px;background:#08141f;color:#d7eaff;cursor:pointer;font-size:.72rem;font-weight:800}.cronista-tool:hover{border-color:#80cfff}.cronista-spoilers.on{background:#582b32;border-color:#b75d68;color:#ffe5e8}
+.cronista-head{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:14px;border-bottom:1px solid #284156;background:linear-gradient(135deg,#0c2132,#07121c)}.cronista-avatar{width:48px;height:48px;border:1px solid #87cfff70;border-radius:50%;overflow:hidden;background:#06101a;position:relative}.cronista-avatar img{width:68px;max-width:none;position:absolute;left:50%;top:39%;transform:translate(-50%,-34%)}.cronista-title{min-width:0}.cronista-title b{display:block;font:700 1.05rem Georgia;color:#fff}.cronista-title span{display:flex;align-items:center;gap:6px;color:#96aec1;font-size:.72rem}.cronista-title i{width:7px;height:7px;border-radius:50%;background:#79ddb3;box-shadow:0 0 9px #79ddb3}.cronista-tools{display:flex;gap:5px}.cronista-tool{min-width:34px;height:34px;padding:0 9px;border:1px solid #34536b;border-radius:10px;background:#08141f;color:#d7eaff;cursor:pointer;font-size:.72rem;font-weight:800}.cronista-tool:hover{border-color:#80cfff}.cronista-voice.on{background:#12324a;border-color:#76c9ff;color:#e9f7ff;box-shadow:inset 0 0 16px #64bfff1a}.cronista-spoilers.on{background:#582b32;border-color:#b75d68;color:#ffe5e8}
 .cronista-body{overflow:auto;padding:14px;scroll-behavior:smooth}.cronista-messages{display:grid;gap:10px}.cronista-message{max-width:88%;padding:10px 12px;border-radius:15px;white-space:pre-wrap;font-size:.88rem;line-height:1.47}.cronista-message.assistant{justify-self:start;background:#0d2030;border:1px solid #294963;color:#dcecff;border-bottom-left-radius:5px}.cronista-message.user{justify-self:end;background:linear-gradient(135deg,#bfe8ff,#76c5f7);color:#04101a;border-bottom-right-radius:5px;font-weight:700}.cronista-message.typing{display:flex;gap:5px;align-items:center;width:54px}.cronista-message.typing i{width:6px;height:6px;border-radius:50%;background:#8fcfff;animation:cronistaDot 1.1s infinite}.cronista-message.typing i:nth-child(2){animation-delay:.16s}.cronista-message.typing i:nth-child(3){animation-delay:.32s}@keyframes cronistaDot{50%{opacity:.3;transform:translateY(-3px)}}.cronista-nav-action{justify-self:start;margin-top:-3px;padding:7px 11px;border:1px solid #47708e;border-radius:999px;background:#0a1a27;color:#9dd9ff;font-size:.7rem;font-weight:900;cursor:pointer}.cronista-nav-action:hover{background:#102a3f;color:#fff}
 .cronista-quick{display:flex;gap:7px;overflow:auto;padding:3px 0 12px;scrollbar-width:none}.cronista-quick::-webkit-scrollbar{display:none}.cronista-quick button{flex:0 0 auto;padding:7px 10px;border:1px solid #2f5069;border-radius:999px;background:#091722;color:#bcd7eb;font-size:.7rem;font-weight:800;cursor:pointer}.cronista-quick button:hover{border-color:#82cfff;color:#fff}.cronista-form{padding:11px 12px 12px;border-top:1px solid #243e53;background:#050d14}.cronista-inputrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.cronista-input{width:100%;min-height:43px;max-height:100px;resize:none;padding:11px 12px;border:1px solid #31516a;border-radius:14px;background:#091722;color:#edf7ff;outline:none}.cronista-input:focus{border-color:#83cfff;box-shadow:0 0 0 3px #78c8ff14}.cronista-send{width:44px;height:44px;border:0;border-radius:13px;background:linear-gradient(135deg,#d8f1ff,#72c5fa);color:#04111d;font-size:1.1rem;font-weight:900;cursor:pointer}.cronista-send:disabled{opacity:.45;cursor:wait}.cronista-note{display:block;margin-top:7px;color:#6f879a;font-size:.65rem;text-align:center}
-body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){.cronista-widget{right:12px;bottom:14px}.cronista-panel{position:fixed;right:0;bottom:0;width:100vw;height:min(720px,84svh);border-radius:22px 22px 0 0}.cronista-launch{width:62px;height:62px}.cronista-nudge{right:72px;width:min(230px,calc(100vw - 100px))}.cronista-head{gap:8px;padding:11px}.cronista-title b{font-size:.9rem}.cronista-title span{font-size:.64rem}.cronista-tools{gap:4px}.cronista-tool{padding:0 6px}.cronista-spoilers{max-width:75px;font-size:.62rem;line-height:1.05}body:has(.playerbar.show) .cronista-widget{bottom:125px}}@media(prefers-reduced-motion:reduce){.cronista-launch,.cronista-panel,.cronista-nudge,.cronista-message.typing i{animation:none!important;transition:none!important}}
+body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){.cronista-widget{right:12px;bottom:14px}.cronista-panel{position:fixed;right:0;bottom:0;width:100vw;height:min(720px,84svh);border-radius:22px 22px 0 0}.cronista-launch{width:62px;height:62px}.cronista-nudge{right:72px;width:min(230px,calc(100vw - 100px))}.cronista-head{gap:8px;padding:11px}.cronista-title b{font-size:.9rem}.cronista-title span{font-size:.64rem}.cronista-tools{gap:4px}.cronista-tool{padding:0 6px}.cronista-spoilers{max-width:75px;font-size:.62rem;line-height:1.05}body:has(.playerbar.show) .cronista-widget{bottom:125px}}@media(max-width:400px){.cronista-head{grid-template-columns:40px minmax(72px,1fr) auto;gap:6px;padding:9px}.cronista-avatar{width:40px;height:40px}.cronista-title b{font-size:.78rem;line-height:1.1}.cronista-title span{display:none}.cronista-tools{gap:3px}.cronista-tool{height:32px;min-width:32px}.cronista-voice{width:32px;padding:0;font-size:0}.cronista-voice:after{content:'🔇';font-size:.72rem}.cronista-voice.on:after{content:'🔊'}.cronista-spoilers{max-width:62px;font-size:.55rem}}@media(prefers-reduced-motion:reduce){.cronista-launch,.cronista-panel,.cronista-nudge,.cronista-message.typing i{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -90,7 +90,7 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
     <header class="cronista-head">
       <div class="cronista-avatar"><img src="/assets/logo-oficial.png" alt=""></div>
       <div class="cronista-title"><b>Cronista de la Ciudadela</b><span><i></i> Guardián del archivo oficial</span></div>
-      <div class="cronista-tools"><button id="cronistaSpoilers" class="cronista-tool cronista-spoilers" type="button" title="Cambiar modo de spoilers">Sin spoilers</button><button id="cronistaClose" class="cronista-tool" type="button" aria-label="Minimizar">—</button></div>
+      <div class="cronista-tools"><button id="cronistaVoice" class="cronista-tool cronista-voice" type="button" title="Activar o silenciar la voz épica">Voz 🔊</button><button id="cronistaSpoilers" class="cronista-tool cronista-spoilers" type="button" title="Cambiar modo de spoilers">Sin spoilers</button><button id="cronistaClose" class="cronista-tool" type="button" aria-label="Minimizar">—</button></div>
     </header>
     <div id="cronistaBody" class="cronista-body">
       <div class="cronista-quick" aria-label="Accesos rápidos">
@@ -103,7 +103,7 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
     </div>
     <form id="cronistaForm" class="cronista-form">
       <div class="cronista-inputrow"><textarea id="cronistaInput" class="cronista-input" maxlength="600" rows="1" placeholder="Escribe tu pregunta…" aria-label="Pregunta para el Cronista"></textarea><button id="cronistaSend" class="cronista-send" type="submit" aria-label="Enviar">➤</button></div>
-      <small class="cronista-note">Responde desde el contenido oficial publicado · 12 consultas por sesión</small>
+      <small class="cronista-note">Versión gratuita · Voz épica · Archivo oficial publicado</small>
     </form>
   </section>
   <button id="cronistaLaunch" class="cronista-launch" type="button" aria-label="Abrir al Cronista de la Ciudadela" aria-expanded="false"><img src="/assets/logo-oficial.png" alt=""></button>
@@ -150,34 +150,130 @@ const cronistaGreeting='Bienvenido a la Ciudadela. Soy el Cronista de la Manada.
 const cronistaConversation=[{role:'assistant',content:cronistaGreeting}];
 let cronistaSpoilers=false;
 let cronistaBusy=false;
+let cronistaVoiceEnabled=localStorage.getItem('sdl-cronista-voice')!=='0';
+let cronistaGreetingSpoken=false;
+let cronistaSpeechId=0;
+const cronistaNormalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9ñ ]/g,' ').replace(/\s+/g,' ').trim();
+const cronistaClip=(value,max=420)=>{const text=String(value||'').replace(/\s+/g,' ').trim();return text.length>max?text.slice(0,max).replace(/\s+\S*$/,'')+'…':text};
+function updateCronistaVoiceButton(){
+ const button=$('#cronistaVoice'),available='speechSynthesis'in window&&'SpeechSynthesisUtterance'in window;
+ button.disabled=!available;button.classList.toggle('on',available&&cronistaVoiceEnabled);
+ button.textContent=!available?'Sin voz':cronistaVoiceEnabled?'Voz 🔊':'Voz 🔇';
+ button.title=!available?'Este navegador no ofrece lectura de voz':cronistaVoiceEnabled?'Silenciar la voz épica':'Activar la voz épica';
+}
+function cronistaVoice(){
+ const voices=speechSynthesis.getVoices(),spanish=voices.filter(voice=>/^es([-_]|$)/i.test(voice.lang));
+ const preferred=[/pablo/i,/alvaro/i,/diego/i,/jorge/i,/enrique/i,/male/i,/español.*(méxico|mexico|latino)/i];
+ for(const pattern of preferred){const match=spanish.find(voice=>pattern.test(voice.name));if(match)return match}
+ return spanish.find(voice=>/es-(mx|us|419)/i.test(voice.lang))||spanish[0]||null;
+}
+function stopCronistaVoice(){
+ if(!('speechSynthesis'in window))return;
+ cronistaSpeechId++;speechSynthesis.cancel();resumeAmbientAfterMedia();
+}
+function speakCronista(text){
+ if(!cronistaVoiceEnabled||!('speechSynthesis'in window)||!text)return;
+ const speechId=++cronistaSpeechId;speechSynthesis.cancel();pauseAmbientForMedia();
+ const utterance=new SpeechSynthesisUtterance(String(text).replace(/[•·→↗]/g,' '));
+ const voice=cronistaVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}else utterance.lang='es-MX';
+ utterance.rate=.84;utterance.pitch=.76;utterance.volume=1;
+ const finish=()=>{if(speechId===cronistaSpeechId)resumeAmbientAfterMedia()};
+ utterance.onend=finish;utterance.onerror=finish;speechSynthesis.speak(utterance);
+}
+function cronistaLocalReply(rawMessage){
+ const q=cronistaNormalize(rawMessage),padded=' '+q+' ';
+ const navigation=(href,label)=>({href,label});
+ const namedCharacter=cache.characters.find(item=>{const name=cronistaNormalize(item.name);return name&&padded.includes(' '+name+' ')});
+ const namedStory=cache.stories.find(item=>{const title=cronistaNormalize(item.title);return title.length>4&&q.includes(title)});
+ const namedEpisode=cache.episodes.find(item=>{const title=cronistaNormalize(item.title);return title.length>4&&q.includes(title)});
+ const seasonMatch=q.match(/temporada\s*(\d+)/),season=seasonMatch?Number(seasonMatch[1]):null;
+ if(/^(hola|buenas|saludos|buenos dias|buenas tardes|buenas noches)\b/.test(q)){
+  return{reply:'Saludos, viajero. Las puertas de la Ciudadela están abiertas. Puedo orientarte por los personajes, las historias, los episodios, la música y el Fan Club de Sangre de Luna.'};
+ }
+ if(/fan club|fanclub|unirme|registrarme|registro|manada/.test(q)){
+  return{reply:'La Manada recibe a quienes desean acompañar el legado de Sangre de Luna. En el Fan Club puedes registrarte, elegir tu facción y obtener tu credencial digital oficial.',navigation:navigation('/fanclub.html','UNIRME A LA MANADA')};
+ }
+ if(namedCharacter){
+  const identity=[namedCharacter.role,namedCharacter.group_label].filter(Boolean).join(' · ');
+  const detail=cronistaSpoilers?cronistaClip(namedCharacter.bio,480):'Su ficha oficial está disponible sin revelar acontecimientos importantes.';
+  return{reply:namedCharacter.name+(identity?' — '+identity+'.':'.')+' '+detail,navigation:navigation('#personajes','VER PERSONAJES')};
+ }
+ if(/personaje|protagonista|quienes son|quien es/.test(q)){
+  if(!cache.characters.length)return{reply:'El archivo de personajes aún está cargando. Intenta nuevamente en unos instantes.'};
+  const names=cache.characters.slice(0,12).map(item=>item.name).join(', ');
+  return{reply:'El archivo oficial reúne '+cache.characters.length+' personajes publicados. Entre ellos están '+names+'. Puedes abrir cada ficha para conocer su rol y biografía.',navigation:navigation('#personajes','VER PERSONAJES')};
+ }
+ if(namedEpisode&&/episodio|video|youtube|ver cap/.test(q)){
+  return{reply:'“'+namedEpisode.title+'” corresponde a la temporada '+namedEpisode.season+', '+namedEpisode.chapter_label+'. '+(namedEpisode.youtube_id?'El episodio está disponible para reproducirse en la Ciudadela.':'El video todavía está señalado como próximo.'),navigation:navigation('#episodios','VER EPISODIO')};
+ }
+ if(/recomienda|recomendacion|por donde empiezo|que puedo ver/.test(q)){
+  const episode=cache.episodes.find(item=>item.youtube_id),story=cache.stories[0];
+  if(episode)return{reply:'Para cruzar el primer umbral, te recomiendo comenzar con “'+episode.title+'”, de la temporada '+episode.season+'. Después puedes explorar las historias y conocer a los personajes de la Manada.',navigation:navigation('#episodios','COMENZAR EPISODIO')};
+  if(story)return{reply:'Puedes comenzar con “'+story.title+'”, de la temporada '+story.season+'. Es una buena entrada al archivo narrativo de la Ciudadela.',navigation:navigation('#historias','COMENZAR HISTORIA')};
+ }
+ if(namedStory){
+  const preview=cronistaSpoilers?cronistaClip(namedStory.body||namedStory.summary,480):cronistaClip(namedStory.summary,300);
+  return{reply:'Temporada '+namedStory.season+' · '+namedStory.chapter_label+' — “'+namedStory.title+'”. '+(preview||'Su historia completa estará disponible próximamente.'),navigation:navigation('#historias','LEER HISTORIAS')};
+ }
+ if(/historia|capitulo|temporada|leer|relato/.test(q)){
+  const stories=season?cache.stories.filter(item=>Number(item.season)===season):cache.stories;
+  if(!stories.length)return{reply:season?'Todavía no existen historias publicadas de la temporada '+season+'.':'El archivo narrativo aún está cargando o no tiene historias publicadas.'};
+  const list=stories.slice(-5).map(item=>item.chapter_label+' — '+item.title).join('; ');
+  return{reply:(season?'En la temporada '+season:'En el archivo narrativo')+' encontrarás '+stories.length+' historias publicadas. Algunas de las más recientes son: '+list+'.',navigation:navigation('#historias','VER HISTORIAS')};
+ }
+ if(namedEpisode){
+  return{reply:'“'+namedEpisode.title+'” corresponde a la temporada '+namedEpisode.season+', '+namedEpisode.chapter_label+'. '+(namedEpisode.youtube_id?'El episodio está disponible para reproducirse en la Ciudadela.':'El video todavía está señalado como próximo.'),navigation:navigation('#episodios','VER EPISODIO')};
+ }
+ if(/episodio|video|youtube|ver cap/.test(q)){
+  const episodes=season?cache.episodes.filter(item=>Number(item.season)===season):cache.episodes;
+  if(!episodes.length)return{reply:season?'No hay episodios publicados de la temporada '+season+'.':'El archivo de episodios aún está cargando o no tiene videos publicados.'};
+  const available=episodes.filter(item=>item.youtube_id),list=episodes.slice(-5).map(item=>item.chapter_label+' — '+item.title).join('; ');
+  return{reply:(season?'La temporada '+season:'La Ciudadela')+' registra '+episodes.length+' episodios, '+available.length+' disponibles en video. Los más recientes del archivo son: '+list+'.',navigation:navigation('#episodios','VER EPISODIOS')};
+ }
+ if(/musica|cancion|tema|banda sonora|audio/.test(q)){
+  if(!cache.tracks.length)return{reply:'La biblioteca musical está preparada, pero todavía no muestra canciones publicadas.'};
+  const titles=cache.tracks.slice(0,8).map(item=>item.title+(item.version?' — '+item.version:'')).join('; ');
+  return{reply:'Estas voces acompañan la memoria de la Manada: '+titles+'. Puedes escucharlas desde la biblioteca musical del sitio.',navigation:navigation('#musica','ESCUCHAR MÚSICA')};
+ }
+ if(/spoiler|secreto|revelacion|final|muere|muerte/.test(q)&&!cronistaSpoilers){
+  return{reply:'Ese sendero puede revelar acontecimientos importantes. Activa “Spoilers” en la parte superior y vuelve a preguntar; el Cronista solo hablará de lo que ya esté publicado oficialmente.'};
+ }
+ if(/que es sangre de luna|sobre sangre de luna|de que trata/.test(q)){
+  return{reply:'Sangre de Luna es un universo épico y cinematográfico de alianzas, lealtades y antiguas amenazas. En la Ciudadela convergen lobos, humanos y vampiros mientras el pasado vuelve a reclamar su lugar.'};
+ }
+ if(/ayuda|puedes hacer|que sabes|opciones|secciones|sitio|pagina|web/.test(q)){
+  return{reply:'Puedo guiarte por Personajes, Historias, Episodios, Música y el Fan Club. Mis respuestas proceden únicamente del contenido oficial publicado en este sitio.'};
+ }
+ return{reply:'Ese dato todavía no aparece de forma reconocible en el archivo publicado. Prueba preguntando por un personaje concreto, una temporada, un episodio, una canción o cómo unirte a la Manada.'};
+}
 function appendCronistaMessage(role,content,navigation=null){
  const box=document.createElement('div');box.className=`cronista-message ${role}`;box.textContent=content;$('#cronistaMessages').appendChild(box);
  if(navigation?.href&&navigation?.label){const action=document.createElement('button');action.type='button';action.className='cronista-nav-action';action.textContent=navigation.label;action.onclick=()=>goFromCronista(navigation.href);$('#cronistaMessages').appendChild(action)}
  $('#cronistaBody').scrollTop=$('#cronistaBody').scrollHeight;
 }
 function renderCronistaGreeting(){if(!$('#cronistaMessages').children.length)appendCronistaMessage('assistant',cronistaGreeting)}
-function openCronista(){renderCronistaGreeting();$('#cronistaPanel').classList.add('open');$('#cronistaPanel').setAttribute('aria-hidden','false');$('#cronistaLaunch').setAttribute('aria-expanded','true');$('#cronistaNudge').classList.remove('show');setTimeout(()=>$('#cronistaInput').focus(),80)}
-function closeCronista(){$('#cronistaPanel').classList.remove('open');$('#cronistaPanel').setAttribute('aria-hidden','true');$('#cronistaLaunch').setAttribute('aria-expanded','false')}
+function openCronista(){renderCronistaGreeting();$('#cronistaPanel').classList.add('open');$('#cronistaPanel').setAttribute('aria-hidden','false');$('#cronistaLaunch').setAttribute('aria-expanded','true');$('#cronistaNudge').classList.remove('show');if(!cronistaGreetingSpoken){cronistaGreetingSpoken=true;speakCronista(cronistaGreeting)}setTimeout(()=>$('#cronistaInput').focus(),80)}
+function closeCronista(){stopCronistaVoice();$('#cronistaPanel').classList.remove('open');$('#cronistaPanel').setAttribute('aria-hidden','true');$('#cronistaLaunch').setAttribute('aria-expanded','false')}
 function goFromCronista(href){if(href.startsWith('#')){document.querySelector(href)?.scrollIntoView({behavior:'smooth'});closeCronista()}else location.href=href}
 function showCronistaNudge(){if(sessionStorage.getItem('sdl-cronista-welcomed'))return;sessionStorage.setItem('sdl-cronista-welcomed','1');$('#cronistaLaunch').classList.add('is-alerting');$('#cronistaNudge').classList.add('show');setTimeout(()=>$('#cronistaNudge').classList.remove('show'),6500)}
 function setCronistaBusy(value){cronistaBusy=value;$('#cronistaSend').disabled=value;$('#cronistaInput').disabled=value}
 function addCronistaTyping(){const el=document.createElement('div');el.id='cronistaTyping';el.className='cronista-message assistant typing';el.innerHTML='<i></i><i></i><i></i>';$('#cronistaMessages').appendChild(el);$('#cronistaBody').scrollTop=$('#cronistaBody').scrollHeight}
 function removeCronistaTyping(){$('#cronistaTyping')?.remove()}
 async function sendCronista(message){
- const count=Number(sessionStorage.getItem('sdl-cronista-count')||0);if(count>=12){appendCronistaMessage('assistant','La consulta de esta visita ha llegado a su límite. El archivo volverá a estar disponible en una próxima visita.');return}
  cronistaConversation.push({role:'user',content:message});appendCronistaMessage('user',message);setCronistaBusy(true);addCronistaTyping();
  try{
-  const history=cronistaConversation.slice(1,-1).slice(-8);
-  const response=await fetch('/api/cronista',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,history,spoilers:cronistaSpoilers})});
-  const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.error||'El Cronista no puede responder en este momento.');
-  const reply=String(data.reply||'').trim();if(!reply)throw new Error('El Cronista no recibió una respuesta.');
-  sessionStorage.setItem('sdl-cronista-count',String(count+1));cronistaConversation.push({role:'assistant',content:reply});removeCronistaTyping();appendCronistaMessage('assistant',reply,data.navigation||null);
+  await new Promise(resolve=>setTimeout(resolve,420));
+  const data=cronistaLocalReply(message),reply=String(data.reply||'').trim();if(!reply)throw new Error('El Cronista no encontró una respuesta en el archivo.');
+  cronistaConversation.push({role:'assistant',content:reply});removeCronistaTyping();appendCronistaMessage('assistant',reply,data.navigation||null);speakCronista(reply);
  }catch(error){removeCronistaTyping();appendCronistaMessage('assistant',error.message||'El archivo no está disponible. Intenta nuevamente.')}
  finally{setCronistaBusy(false)}
 }
+updateCronistaVoiceButton();
+if('speechSynthesis'in window)speechSynthesis.addEventListener?.('voiceschanged',updateCronistaVoiceButton);
 $('#cronistaLaunch').onclick=()=>$('#cronistaPanel').classList.contains('open')?closeCronista():openCronista();
 $('#cronistaClose').onclick=closeCronista;
-$('#cronistaSpoilers').onclick=()=>{cronistaSpoilers=!cronistaSpoilers;$('#cronistaSpoilers').classList.toggle('on',cronistaSpoilers);$('#cronistaSpoilers').textContent=cronistaSpoilers?'Spoilers activos':'Sin spoilers';appendCronistaMessage('assistant',cronistaSpoilers?'Modo con spoilers activado. Puedo hablar de todo lo que ya está publicado.':'Modo sin spoilers activado. Protegeré los giros importantes de la historia.')};
+$('#cronistaVoice').onclick=()=>{if(!('speechSynthesis'in window))return;cronistaVoiceEnabled=!cronistaVoiceEnabled;localStorage.setItem('sdl-cronista-voice',cronistaVoiceEnabled?'1':'0');if(!cronistaVoiceEnabled)stopCronistaVoice();updateCronistaVoiceButton();if(cronistaVoiceEnabled)speakCronista('La voz del Cronista ha despertado.')};
+$('#cronistaSpoilers').onclick=()=>{cronistaSpoilers=!cronistaSpoilers;$('#cronistaSpoilers').classList.toggle('on',cronistaSpoilers);$('#cronistaSpoilers').textContent=cronistaSpoilers?'Spoilers activos':'Sin spoilers';const notice=cronistaSpoilers?'Modo con spoilers activado. Puedo hablar de todo lo que ya está publicado.':'Modo sin spoilers activado. Protegeré los giros importantes de la historia.';appendCronistaMessage('assistant',notice);speakCronista(notice)};
 $$('[data-cronista-go]').forEach(button=>button.onclick=()=>goFromCronista(button.dataset.cronistaGo));
 $('#cronistaForm').onsubmit=e=>{e.preventDefault();if(cronistaBusy)return;const value=$('#cronistaInput').value.trim();if(!value)return;$('#cronistaInput').value='';$('#cronistaInput').style.height='';sendCronista(value)};
 $('#cronistaInput').oninput=e=>{e.target.style.height='';e.target.style.height=Math.min(e.target.scrollHeight,100)+'px'};

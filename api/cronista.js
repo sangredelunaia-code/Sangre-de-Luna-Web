@@ -124,6 +124,9 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método no permitido.' });
   if (!isSameOrigin(req)) return res.status(403).json({ error: 'Origen no autorizado.' });
+  if (process.env.CRONISTA_FREE_MODE !== 'false') {
+    return res.status(503).json({ error: 'El Cronista está funcionando en modo gratuito desde el archivo del sitio.' });
+  }
   if (!withinRateLimit(req)) {
     return res.status(429).json({ error: 'El Cronista necesita unos minutos antes de continuar.' });
   }
