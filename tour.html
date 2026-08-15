@@ -10,22 +10,24 @@
   <style>
     :root{--ink:#f5f1e8;--muted:#b9c3ce;--silver:#a9d9f5;--line:#a8d8f342;--blue:#6ec5f7;--night:#05080d;--panel:#08111cdb;--gold:#d6ad68;--ease:cubic-bezier(.22,.8,.2,1)}
     *{box-sizing:border-box}html,body{height:100%;margin:0;background:#05080d;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}button,a{font:inherit}button{color:inherit}a{color:inherit}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    .tour{position:relative;width:100%;height:100%;min-height:100svh;isolation:isolate;background:#03060a}.scene{position:absolute;inset:-2.5%;z-index:-3;background-position:center;background-size:cover;transform:scale(1.07);transition:opacity .9s var(--ease),transform 1.6s var(--ease);opacity:0;will-change:transform,opacity}.scene.active{opacity:1;transform:scale(1.03) translate3d(var(--shift-x,0),var(--shift-y,0),0)}.veil{position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(180deg,#02060c99 0%,transparent 30%,transparent 52%,#02050bd9 100%),radial-gradient(circle at 50% 45%,transparent 32%,#02050a91 100%)}.grain{position:absolute;inset:0;z-index:-1;opacity:.1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}
+    .tour{position:relative;width:100%;height:100%;min-height:100svh;isolation:isolate;background:#03060a}.scene,.webgl{position:absolute;inset:0;z-index:0}.scene{background-position:center;background-size:cover;transition:opacity .6s var(--ease);opacity:0}.scene.active{opacity:1}.webgl{cursor:grab;opacity:0;transition:opacity .65s var(--ease);touch-action:none}.webgl.ready{opacity:1}.webgl:active{cursor:grabbing}.webgl canvas{display:block;width:100%;height:100%}.veil{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#02060c99 0%,transparent 30%,transparent 52%,#02050bd9 100%),radial-gradient(circle at 50% 45%,transparent 32%,#02050a70 100%)}.grain{position:absolute;inset:0;z-index:2;opacity:.1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}.scene-loading{position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 14px;border:1px solid #a8ddf74f;border-radius:999px;background:#06111dcc;color:#dff4ff;font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;backdrop-filter:blur(10px)}.scene-loading[hidden]{display:none}
     .topbar{position:absolute;z-index:8;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:max(18px,env(safe-area-inset-top)) clamp(18px,3.2vw,52px) 16px;background:linear-gradient(#03070dbd,transparent)}.brand{justify-self:center;display:flex;align-items:center;gap:11px;text-align:center}.brand img{width:38px;height:38px;object-fit:contain;filter:drop-shadow(0 0 14px #8bd4ff55)}.brand span{display:block;font:700 clamp(.72rem,1.2vw,.9rem) Georgia,serif;letter-spacing:.22em}.brand small{display:block;margin-top:3px;color:#a2b0bf;font-size:.58rem;letter-spacing:.25em}.return,.control{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;border:1px solid var(--line);border-radius:999px;background:#06101aaa;color:#e7f4ff;text-decoration:none;cursor:pointer;backdrop-filter:blur(12px);transition:.25s var(--ease)}.return{justify-self:start;padding:0 16px}.return:hover,.control:hover,.control.on{border-color:#9bddff;background:#10283bd9;box-shadow:0 0 25px #53b9ef24}.controls{justify-self:end;display:flex;gap:8px}.control{width:42px;padding:0}.control svg,.return svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7}.control-label{display:none}
     .progress{position:absolute;z-index:7;left:clamp(20px,4vw,64px);top:50%;transform:translateY(-50%);display:grid;gap:14px}.progress button{position:relative;width:11px;height:11px;padding:0;border:1px solid #cfeaff99;border-radius:50%;background:#08131e88;cursor:pointer}.progress button:after{content:"";position:absolute;inset:-7px;border:1px solid transparent;border-radius:50%;transition:.25s}.progress button.active{background:#ccecff;box-shadow:0 0 18px #8dd7ff}.progress button.active:after{border-color:#9edbff68}.progress:before{content:"";position:absolute;z-index:-1;top:5px;bottom:5px;left:5px;width:1px;background:#bfe9ff3b}
-    .hotspots{position:absolute;inset:0;z-index:4;pointer-events:none}.hotspot{position:absolute;left:var(--x);top:var(--y);width:36px;height:36px;padding:0;transform:translate(-50%,-50%);border:0;background:transparent;pointer-events:auto;cursor:pointer}.hotspot:before,.hotspot:after{content:"";position:absolute;border-radius:50%;inset:9px;background:#e7f6ff;box-shadow:0 0 9px #fff,0 0 24px #75cfff}.hotspot:after{inset:0;background:transparent;border:1px solid #d8f2ff;animation:pulse 2.2s infinite}.hotspot span{position:absolute;left:50%;top:42px;transform:translateX(-50%);width:max-content;max-width:180px;padding:7px 10px;border:1px solid #b7ddf335;border-radius:7px;background:#020812c9;color:#e9f6ff;font-size:.68rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;opacity:0;transition:.22s;pointer-events:none}.hotspot:hover span,.hotspot:focus-visible span{opacity:1}.hotspot:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:50%}@keyframes pulse{0%{transform:scale(.35);opacity:1}75%,100%{transform:scale(1.35);opacity:0}}
+    .hotspots{position:absolute;inset:0;z-index:5;pointer-events:none}.hotspot{position:absolute;width:36px;height:36px;padding:0;transform:translate(-50%,-50%);border:0;background:transparent;pointer-events:auto;cursor:pointer}.hotspot:before,.hotspot:after{content:"";position:absolute;border-radius:50%;inset:9px;background:#e7f6ff;box-shadow:0 0 9px #fff,0 0 24px #75cfff}.hotspot:after{inset:0;background:transparent;border:1px solid #d8f2ff;animation:pulse 2.2s infinite}.hotspot span{position:absolute;left:50%;top:42px;transform:translateX(-50%);width:max-content;max-width:190px;padding:7px 10px;border:1px solid #b7ddf335;border-radius:7px;background:#020812e8;color:#e9f6ff;font-size:.68rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;opacity:0;transition:.22s;pointer-events:none}.hotspot:hover span,.hotspot:focus-visible span{opacity:1}.hotspot:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:50%}@keyframes pulse{0%{transform:scale(.35);opacity:1}75%,100%{transform:scale(1.35);opacity:0}}
     .scene-card{position:absolute;z-index:6;left:clamp(20px,6vw,96px);right:clamp(20px,6vw,96px);bottom:max(28px,env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,680px) auto;align-items:end;justify-content:space-between;gap:28px;pointer-events:none}.copy{pointer-events:auto;text-shadow:0 2px 18px #000}.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 10px;color:var(--silver);font-size:.68rem;font-weight:800;letter-spacing:.24em}.eyebrow:before{content:"";width:34px;height:1px;background:var(--silver)}h1{max-width:800px;margin:0;font:400 clamp(2.25rem,5.6vw,5.8rem)/.88 Georgia,"Times New Roman",serif;letter-spacing:-.035em;text-transform:uppercase}h1 em{color:#c8e9fb;font-style:normal}.description{max-width:620px;margin:17px 0 0;color:#d0d9e2;font-size:clamp(.88rem,1.4vw,1.04rem);line-height:1.65}.steps{pointer-events:auto;display:flex;align-items:center;gap:10px}.nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 20px;border:1px solid #b9dff044;border-radius:999px;background:#07111cba;color:#ecf7ff;cursor:pointer;backdrop-filter:blur(12px);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;transition:.25s}.nav-btn.primary{border-color:#b9e6ff;background:#d9f1ff;color:#07101a}.nav-btn:hover{transform:translateY(-2px);box-shadow:0 9px 28px #0008}.nav-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}.counter{min-width:58px;text-align:center;color:#b8c6d2;font:italic 1rem Georgia,serif}.counter b{color:white;font-size:1.35rem;font-style:normal}
     .tip{position:absolute;z-index:6;right:clamp(20px,3vw,48px);top:98px;color:#b6c4d0;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.8}.watermark{position:absolute;z-index:5;right:clamp(20px,3vw,48px);bottom:15px;color:#d9eafa70;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase}
-    .overlay{position:fixed;z-index:20;inset:0;display:grid;place-items:center;padding:24px;background:#02050bd9;backdrop-filter:blur(18px);transition:opacity .55s var(--ease),visibility .55s}.overlay[hidden]{display:none}.intro{background:linear-gradient(#02060ba8,#02060be8),url('/assets/city-front.webp') center/cover}.intro-panel{width:min(650px,100%);text-align:center}.intro-logo{width:min(180px,40vw);filter:drop-shadow(0 0 30px #8dcfff45)}.intro-tag{margin:24px 0 10px;color:var(--silver);font-size:.68rem;font-weight:800;letter-spacing:.3em}.intro h2,.finale h2{margin:0;font:400 clamp(2.5rem,7vw,5.7rem)/.92 Georgia,serif;text-transform:uppercase}.intro p,.finale p{max-width:560px;margin:22px auto;color:#c3ced8;line-height:1.7}.start{min-width:230px;min-height:56px;border:1px solid #d8efff;border-radius:999px;background:#e4f4ff;color:#07101a;font-size:.75rem;font-weight:900;letter-spacing:.17em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 42px #68c8ff25;transition:.25s}.start:hover{transform:translateY(-2px);box-shadow:0 10px 46px #68c8ff3d}.intro-note{display:block;margin-top:14px;color:#91a3b3;font-size:.64rem}.map-panel,.detail-panel{position:relative;width:min(760px,100%);padding:clamp(24px,5vw,52px);border:1px solid #a8d9f23d;border-radius:24px;background:linear-gradient(145deg,#0b1926f2,#050a12f2);box-shadow:0 28px 100px #000}.close{position:absolute;right:16px;top:16px;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:#07111d;color:#e8f7ff;cursor:pointer}.panel-kicker{color:var(--silver);font-size:.65rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase}.map-panel h2,.detail-panel h2{margin:8px 0 12px;font:400 clamp(2rem,4vw,3.2rem) Georgia,serif}.map-panel>p,.detail-panel>p{color:#bfcbd5;line-height:1.7}.map-route{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}.map-route:before{content:"";position:absolute;top:24px;left:16%;right:16%;height:1px;background:#91d7fa55}.map-node{position:relative;z-index:1;display:grid;place-items:center;gap:11px;padding:0;border:0;background:none;color:#aebdca;cursor:pointer}.map-node i{display:grid;place-items:center;width:48px;height:48px;border:1px solid #a5dbf17a;border-radius:50%;background:#07131e;font:normal 700 .72rem Georgia}.map-node.active i,.map-node:hover i{border-color:#e5f6ff;background:#c9ebfc;color:#07101a;box-shadow:0 0 26px #76ccfa55}.map-node span{font-size:.64rem;font-weight:800;letter-spacing:.12em;text-align:center;text-transform:uppercase}.detail-icon{display:grid;place-items:center;width:64px;height:64px;border:1px solid #a4dfff80;border-radius:50%;color:#cceeff;font:400 1.7rem Georgia;box-shadow:inset 0 0 24px #63c7ff16}.detail-actions{display:flex;justify-content:flex-end;margin-top:26px}.finale{text-align:center}.final-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:28px}.finale .start.secondary{background:transparent;color:#e7f5ff}
+    .overlay{position:fixed;z-index:20;inset:0;display:grid;place-items:center;padding:24px;background:#02050bd9;backdrop-filter:blur(18px);transition:opacity .55s var(--ease),visibility .55s}.overlay[hidden]{display:none}.intro{background:linear-gradient(#02060ba8,#02060be8),url('/assets/tour-360-dron.webp') center/cover}.intro-panel{width:min(650px,100%);text-align:center}.intro-logo{width:min(180px,40vw);filter:drop-shadow(0 0 30px #8dcfff45)}.intro-tag{margin:24px 0 10px;color:var(--silver);font-size:.68rem;font-weight:800;letter-spacing:.3em}.intro h2,.finale h2{margin:0;font:400 clamp(2.5rem,7vw,5.7rem)/.92 Georgia,serif;text-transform:uppercase}.intro p,.finale p{max-width:560px;margin:22px auto;color:#c3ced8;line-height:1.7}.start{min-width:230px;min-height:56px;border:1px solid #d8efff;border-radius:999px;background:#e4f4ff;color:#07101a;font-size:.75rem;font-weight:900;letter-spacing:.17em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 42px #68c8ff25;transition:.25s}.start:hover{transform:translateY(-2px);box-shadow:0 10px 46px #68c8ff3d}.intro-note{display:block;margin-top:14px;color:#91a3b3;font-size:.64rem}.map-panel,.detail-panel{position:relative;width:min(820px,100%);max-height:90svh;overflow:auto;padding:clamp(24px,5vw,52px);border:1px solid #a8d9f23d;border-radius:24px;background:linear-gradient(145deg,#0b1926f2,#050a12f2);box-shadow:0 28px 100px #000}.close{position:absolute;right:16px;top:16px;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:#07111d;color:#e8f7ff;cursor:pointer}.panel-kicker{color:var(--silver);font-size:.65rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase}.map-panel h2,.detail-panel h2{margin:8px 0 12px;font:400 clamp(2rem,4vw,3.2rem) Georgia,serif}.map-panel>p,.detail-panel>p{color:#bfcbd5;line-height:1.7}.map-route{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:22px 14px;margin-top:32px}.map-node{position:relative;z-index:1;display:grid;place-items:center;gap:11px;padding:0;border:0;background:none;color:#aebdca;cursor:pointer}.map-node i{display:grid;place-items:center;width:48px;height:48px;border:1px solid #a5dbf17a;border-radius:50%;background:#07131e;font:normal 700 .72rem Georgia}.map-node.active i,.map-node:hover i{border-color:#e5f6ff;background:#c9ebfc;color:#07101a;box-shadow:0 0 26px #76ccfa55}.map-node span{font-size:.64rem;font-weight:800;letter-spacing:.12em;text-align:center;text-transform:uppercase}.detail-icon{display:grid;place-items:center;width:64px;height:64px;border:1px solid #a4dfff80;border-radius:50%;color:#cceeff;font:400 1.7rem Georgia;box-shadow:inset 0 0 24px #63c7ff16}.detail-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:26px}.detail-link[hidden]{display:none}.finale{text-align:center}.final-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:28px}.finale .start.secondary{background:transparent;color:#e7f5ff}
     @media(max-width:840px){.topbar{grid-template-columns:1fr auto}.brand{justify-self:start}.return{display:none}.controls{grid-column:2;grid-row:1}.tip{display:none}.scene-card{grid-template-columns:1fr;gap:20px}.steps{justify-content:flex-end}.progress{left:17px}.hotspot span{display:none}h1{font-size:clamp(2.15rem,10vw,4.5rem)}.description{font-size:.84rem;max-width:90%}.control-label{display:none}}
-    @media(max-width:520px){.topbar{padding:14px}.brand img{width:34px;height:34px}.brand span{font-size:.67rem}.brand small{font-size:.48rem}.controls{gap:5px}.control{width:38px;height:38px;min-height:38px}.scene-card{left:20px;right:16px;bottom:max(19px,env(safe-area-inset-bottom));gap:14px}.eyebrow{margin-bottom:7px}.description{margin-top:11px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.nav-btn{min-height:44px;padding:0 15px;font-size:.63rem}.counter{min-width:42px}.progress{display:none}.watermark{left:20px;right:auto;bottom:7px}.map-route{grid-template-columns:1fr}.map-route:before{top:20px;bottom:20px;left:24px;right:auto;width:1px;height:auto}.map-node{grid-template-columns:48px 1fr;justify-items:start;text-align:left}.map-node span{text-align:left}.intro p{font-size:.88rem}.overlay{padding:14px}.map-panel,.detail-panel{padding:35px 22px 25px}.hotspot{width:44px;height:44px}}
+    @media(max-width:520px){.topbar{padding:14px}.brand img{width:34px;height:34px}.brand span{font-size:.67rem}.brand small{font-size:.48rem}.controls{gap:5px}.control{width:38px;height:38px;min-height:38px}.scene-card{left:20px;right:16px;bottom:max(19px,env(safe-area-inset-bottom));gap:14px}.eyebrow{margin-bottom:7px}.description{margin-top:11px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.nav-btn{min-height:44px;padding:0 15px;font-size:.63rem}.counter{min-width:42px}.progress{display:none}.watermark{left:20px;right:auto;bottom:7px}.map-route{grid-template-columns:1fr}.map-node{grid-template-columns:48px 1fr;justify-items:start;text-align:left}.map-node span{text-align:left}.intro p{font-size:.88rem}.overlay{padding:14px}.map-panel,.detail-panel{padding:35px 22px 25px}.hotspot{width:44px;height:44px}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.scene,.scene.active{transform:none!important}}
   </style>
 </head>
 <body>
   <main id="tour" class="tour" aria-label="Tour virtual de la Ciudadela">
-    <div id="sceneBackground" class="scene active" role="img" aria-label="Puerta de la Ciudadela"></div>
+    <div id="sceneBackground" class="scene active" role="img" aria-label="Vista aérea de la Ciudadela"></div>
+    <div id="webgl" class="webgl" aria-label="Panorama 360 grados; arrastra para mirar alrededor"></div>
     <div class="veil"></div><div class="grain"></div>
+    <div id="sceneLoading" class="scene-loading">Abriendo panorama 360°…</div>
 
     <header class="topbar">
       <a class="return" href="/" aria-label="Volver al sitio principal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/><path d="M8 12h11"/></svg><span>Volver al sitio</span></a>
@@ -40,7 +42,7 @@
 
     <nav id="progress" class="progress" aria-label="Escenas del recorrido"></nav>
     <div id="hotspots" class="hotspots" aria-label="Puntos explorables"></div>
-    <p class="tip">Mueve el cursor para observar · Selecciona los destellos</p>
+    <p class="tip">Arrastra para mirar 360° · Rueda para acercar · Selecciona los destellos</p>
 
     <section class="scene-card" aria-live="polite">
       <div class="copy">
@@ -50,7 +52,7 @@
       </div>
       <div class="steps">
         <button id="prevButton" class="nav-btn" type="button">← Anterior</button>
-        <span class="counter"><b id="sceneNumber">01</b> / 03</span>
+        <span class="counter"><b id="sceneNumber">01</b> / <span id="sceneTotal">07</span></span>
         <button id="nextButton" class="nav-btn primary" type="button">Continuar →</button>
       </div>
     </section>
@@ -61,11 +63,11 @@
   <section id="intro" class="overlay intro" aria-labelledby="introTitle">
     <div class="intro-panel">
       <img class="intro-logo" src="/assets/logo-oficial.png" alt="Sangre de Luna">
-      <p class="intro-tag">TOUR VIRTUAL · PRIMER RECORRIDO</p>
+      <p class="intro-tag">TOUR 360° · EXPLORACIÓN 3D</p>
       <h2 id="introTitle">La Ciudadela<br>te espera</h2>
-      <p>Camina por las puertas, el patio y el Salón del Alfa. El Cronista de la Manada será tu guía durante el recorrido.</p>
+      <p>Sobrevuela la Ciudadela y explora sus puertas, patio, murallas, torre, archivo y Salón del Trono acompañado por el Cronista.</p>
       <button id="startButton" class="start" type="button">Iniciar recorrido</button>
-      <small class="intro-note">Activa música ambiental y narración épica · Puedes silenciarlas cuando quieras</small>
+      <small class="intro-note">Arrastra para mirar en todas direcciones · Música y narración épica incluidas</small>
     </div>
   </section>
 
@@ -86,7 +88,7 @@
       <span id="detailKicker" class="panel-kicker"></span>
       <h2 id="detailTitle"></h2>
       <p id="detailText"></p>
-      <div class="detail-actions"><button class="nav-btn primary" data-close="detailOverlay" type="button">Seguir explorando</button></div>
+      <div class="detail-actions"><a id="detailLink" class="nav-btn primary detail-link" href="/" hidden>Abrir en el sitio</a><button class="nav-btn" data-close="detailOverlay" type="button">Seguir explorando</button></div>
     </div>
   </section>
 
@@ -100,82 +102,110 @@
   </section>
 
   <audio id="ambient" src="/assets/blood-moon-theme.mp3" preload="metadata" loop></audio>
-  <script>
-  (()=>{
+  <script type="module">
+  (async()=>{
     const scenes=[
-      {label:'I · EL UMBRAL',title:'Puerta de la <em>Ciudadela</em>',plain:'Puerta de la Ciudadela',image:'/assets/city-front.webp',description:'Ante ti se alzan las murallas que guardan la memoria de la Manada. Todo juramento comienza cruzando este umbral.',narration:'Has llegado a las puertas de la Ciudadela. Tras estas murallas, la Manada protege sus juramentos y la memoria de sus aliados.',hotspots:[
-        {x:50,y:39,title:'El gran umbral',text:'La entrada principal separa las rutas exteriores del corazón protegido de la Ciudadela.'},
-        {x:25,y:49,title:'Las murallas',text:'Piedra, altura y vigilancia forman la primera defensa de quienes habitan bajo la luna.'},
-        {x:78,y:55,title:'El bosque exterior',text:'Más allá de los muros comienzan los caminos hacia las otras tierras de Sangre de Luna.'}
+      {label:'I · VISTA DE DRON',title:'La Ciudadela desde el <em>cielo</em>',plain:'Vista aérea de la Ciudadela',image:'/assets/tour-360-dron.webp',description:'Un vuelo nocturno revela la fortaleza, los bosques y las rutas que conectan las tierras de Sangre de Luna.',narration:'Desde las alturas puedes contemplar la Ciudadela completa. Sus torres vigilan los bosques, los caminos y las tierras que se extienden bajo la luna.',hotspots:[
+        {yaw:0,pitch:-8,x:50,y:50,title:'La Ciudadela',text:'La fortaleza reúne torres, patios, archivos y salones protegidos por una misma muralla.'},
+        {yaw:-32,pitch:23,x:35,y:28,title:'La luna sobre las tierras',text:'La luz lunar dibuja los caminos y convierte la Ciudadela en un faro visible desde la distancia.'},
+        {yaw:72,pitch:-12,x:76,y:58,title:'Rutas exteriores',text:'Los caminos unen el bosque con las montañas y las regiones todavía no exploradas.'}
       ]},
-      {label:'II · CORAZÓN DE LA MANADA',title:'Patio de la <em>Manada</em>',plain:'Patio de la Manada',image:'/assets/tour-patio-manada.webp',description:'El punto de encuentro de guardias, exploradores y mensajeros. Desde aquí parten las rutas que conectan la Ciudadela con las tierras exteriores.',narration:'Este es el Patio de la Manada. Aquí se reúnen guardias, mensajeros y exploradores antes de partir hacia las tierras que rodean la Ciudadela.',hotspots:[
-        {x:18,y:39,title:'Estandartes de la Manada',text:'Los emblemas recuerdan que cada miembro pertenece a una historia mayor que la suya.'},
-        {x:49,y:54,title:'Plaza central',text:'Aquí convergen los caminos interiores antes de continuar hacia las torres y los salones.'},
-        {x:82,y:39,title:'Galería de vigilancia',text:'Desde las galerías superiores se observa el movimiento de toda la fortaleza.'}
+      {label:'II · EL UMBRAL',title:'Las Puertas de la <em>Ciudadela</em>',plain:'Las Puertas de la Ciudadela',image:'/assets/tour-360-puertas.webp',description:'El visitante cruza el bosque y llega frente a las enormes murallas. Todo juramento comienza atravesando este umbral.',narration:'Has descendido ante las puertas de la Ciudadela. Tras estas murallas, la Manada protege sus juramentos y la memoria de sus aliados.',hotspots:[
+        {yaw:0,pitch:0,x:50,y:46,title:'El gran umbral',text:'La entrada principal separa las rutas exteriores del corazón protegido de la Ciudadela.'},
+        {yaw:168,pitch:-2,x:16,y:50,title:'El bosque exterior',text:'A tu espalda permanece el sendero nocturno por el que llegan aliados, mensajeros y viajeros.'},
+        {yaw:-43,pitch:17,x:30,y:34,title:'Torres de acceso',text:'Desde estas torres la guardia identifica cada movimiento antes de abrir las puertas.'}
       ]},
-      {label:'III · LA VOZ DE LA CIUDADELA',title:'Salón del <em>Alfa</em>',plain:'Salón del Alfa',image:'/assets/tour-salon-alfa.webp',description:'El recinto donde la palabra adquiere peso. Bajo el emblema de la Manada se protegen alianzas, decisiones y antiguos juramentos.',narration:'Ante ti se abre el Salón del Alfa. Aquí se toman decisiones que sostienen la alianza entre lobos, humanos y vampiros.',hotspots:[
-        {x:50,y:41,title:'Emblema de la Manada',text:'El lobo plateado preside el salón como símbolo de memoria, unidad y lealtad.'},
-        {x:50,y:66,title:'Sitial del Alfa',text:'En el centro del salón, cada decisión debe responder al equilibrio de la Ciudadela.'},
-        {x:78,y:45,title:'Galerías de la Corte',text:'Las galerías laterales reciben a representantes, aliados y testigos de los grandes acuerdos.'}
+      {label:'III · CORAZÓN DE LA MANADA',title:'El Patio <em>Exterior</em>',plain:'El Patio Exterior de la Ciudadela',image:'/assets/tour-360-patio.webp',description:'Guardias, estandartes, antorchas y miembros de la Manada dan vida al gran espacio de encuentro de la fortaleza.',narration:'Este es el Patio Exterior de la Ciudadela. Aquí entrenan los guardias, llegan los mensajeros y la Manada cumple sus actividades bajo los estandartes.',hotspots:[
+        {yaw:0,pitch:-5,x:50,y:51,title:'Actividades de la Manada',text:'Entrenamiento, coordinación y vida cotidiana convergen alrededor del fuego central.'},
+        {yaw:-58,pitch:10,x:25,y:38,title:'Estandartes',text:'Los emblemas recuerdan que cada miembro pertenece a una historia mayor que la suya.'},
+        {yaw:70,pitch:1,x:78,y:45,title:'Rutas interiores',text:'Los accesos del patio conducen hacia las murallas, las torres, el Archivo y el Salón del Trono.'}
+      ]},
+      {label:'IV · EL LÍMITE',title:'Las Murallas <em>Exteriores</em>',plain:'Las Murallas Exteriores',image:'/assets/tour-360-murallas.webp',description:'La guardia observa la niebla y busca señales de posibles amenazas más allá de las defensas.',narration:'Caminas ahora sobre las murallas exteriores. Aquí la vigilancia nunca se interrumpe y cada señal en la niebla merece atención.',hotspots:[
+        {yaw:0,pitch:-2,x:50,y:48,title:'La niebla exterior',text:'La bruma oculta distancias y obliga a la guardia a confiar en experiencia, oído y disciplina.'},
+        {yaw:48,pitch:0,x:70,y:46,title:'Puesto de guardia',text:'Los vigilantes recorren la muralla con lanzas cortas y arcos compactos, sin abandonar su posición.'},
+        {yaw:-68,pitch:13,x:22,y:35,title:'Torres defensivas',text:'Cada torre enlaza visualmente con la siguiente para transmitir alertas a toda la fortaleza.'}
+      ]},
+      {label:'V · LOS CONFINES',title:'La Torre de <em>Vigilancia</em>',plain:'La Torre de Vigilancia',image:'/assets/tour-360-torre.webp',description:'Una vista panorámica se abre sobre las montañas, el bosque y las tierras lejanas.',narration:'Has alcanzado la Torre de Vigilancia. Desde este punto, las montañas, los bosques y los caminos lejanos quedan bajo la mirada de la Ciudadela.',hotspots:[
+        {yaw:0,pitch:6,x:50,y:39,title:'Las montañas',text:'Las cumbres marcan los límites visibles y protegen rutas todavía cubiertas por la noche.'},
+        {yaw:82,pitch:-13,x:82,y:59,title:'El bosque',text:'Bajo la torre, el bosque rodea la fortaleza y esconde senderos conocidos solo por los exploradores.'},
+        {yaw:-77,pitch:0,x:19,y:46,title:'Tierras lejanas',text:'Más allá del valle aguardan futuras expediciones y nuevos territorios de Sangre de Luna.'}
+      ]},
+      {label:'VI · LA MEMORIA',title:'El Archivo de la <em>Ciudadela</em>',plain:'El Archivo de la Ciudadela',image:'/assets/tour-360-archivo-nine.webp',description:'Nine custodia una cámara de investigación que conecta al visitante con personajes, historias, temporadas y episodios.',narration:'Has entrado al Archivo de la Ciudadela. Nine protege, estudia y organiza los registros que conservan la memoria de cada temporada y personaje.',hotspots:[
+        {yaw:0,pitch:-7,x:50,y:52,title:'Nine, guardiana del Archivo',text:'Nine combina investigación, memoria y observación para ayudar a interpretar los registros de la Ciudadela.'},
+        {yaw:-57,pitch:0,x:25,y:46,title:'Personajes',text:'Consulta los perfiles oficiales de quienes dan forma al destino de Sangre de Luna.',href:'/#personajes',linkLabel:'Ver personajes'},
+        {yaw:56,pitch:0,x:75,y:46,title:'Historias y temporadas',text:'Abre el archivo narrativo organizado por temporadas y capítulos.',href:'/#historias',linkLabel:'Leer historias'},
+        {yaw:172,pitch:0,x:50,y:44,title:'Episodios',text:'Accede a los episodios publicados y continúa la historia en video.',href:'/#episodios',linkLabel:'Ver episodios'}
+      ]},
+      {label:'VII · LA CORTE',title:'El Salón del <em>Trono</em>',plain:'El Salón del Trono del Alfa',image:'/assets/tour-360-salon-trono.webp',description:'Chris y Ella presiden la Corte desde el trono; Gabriel y Varkos permanecen a sus lados como pilares de la Ciudadela.',narration:'Ante ti se abre el Salón del Trono del Alfa. Chris y Ella presiden la Corte, acompañados por Gabriel y Varkos, mientras la Ciudadela protege sus alianzas y juramentos.',hotspots:[
+        {yaw:0,pitch:-5,x:50,y:50,title:'Chris y Ella',text:'El Alfa y la Luna presiden juntos el salón desde el estrado central.'},
+        {yaw:-20,pitch:-3,x:41,y:48,title:'Gabriel',text:'Como Beta, Gabriel permanece junto al trono y sostiene las decisiones del núcleo principal.'},
+        {yaw:20,pitch:-3,x:59,y:48,title:'Varkos',text:'El comandante vigila el salón y coordina la defensa de la Ciudadela.'},
+        {yaw:0,pitch:19,x:50,y:31,title:'Emblema de la Manada',text:'El lobo plateado preside la Corte como símbolo de memoria, unidad y lealtad.'}
       ]}
     ];
-    const $=selector=>document.querySelector(selector);
-    const ambient=$('#ambient');ambient.volume=.22;
+    const $=selector=>document.querySelector(selector),ambient=$('#ambient');ambient.volume=.22;
     let current=0,started=false,lastFocus=null,speechId=0,renderTimer=null;
-    let musicEnabled=localStorage.getItem('sdl-tour-music')!=='0';
-    let voiceEnabled=localStorage.getItem('sdl-tour-voice')!=='0';
+    let musicEnabled=localStorage.getItem('sdl-tour-music')!=='0',voiceEnabled=localStorage.getItem('sdl-tour-voice')!=='0';
+    let THREE=null,renderer=null,camera=null,world=null,material=null,texture=null,textureRequest=0,lon=0,lat=0,dragging=false,startX=0,startY=0,startLon=0,startLat=0;
 
     function render(announce=true){
-      const scene=scenes[current],background=$('#sceneBackground');
+      const item=scenes[current],background=$('#sceneBackground');
       background.classList.remove('active');clearTimeout(renderTimer);
-      renderTimer=setTimeout(()=>{background.style.backgroundImage=`url("${scene.image}")`;background.setAttribute('aria-label',scene.plain);background.classList.add('active')},180);
-      $('#sceneEyebrow').textContent=scene.label;$('#sceneTitle').innerHTML=scene.title;$('#sceneDescription').textContent=scene.description;$('#sceneNumber').textContent=String(current+1).padStart(2,'0');
+      renderTimer=setTimeout(()=>{background.style.backgroundImage=`url("${item.image}")`;background.setAttribute('aria-label',item.plain);background.classList.add('active')},100);
+      lon=item.yaw||0;lat=item.pitch||0;
+      $('#sceneEyebrow').textContent=item.label;$('#sceneTitle').innerHTML=item.title;$('#sceneDescription').textContent=item.description;$('#sceneNumber').textContent=String(current+1).padStart(2,'0');$('#sceneTotal').textContent=String(scenes.length).padStart(2,'0');
       $('#prevButton').disabled=current===0;$('#nextButton').textContent=current===scenes.length-1?'Finalizar →':'Continuar →';
-      $('#progress').innerHTML=scenes.map((item,index)=>`<button class="${index===current?'active':''}" type="button" data-scene="${index}" aria-label="Ir a ${item.plain}" aria-current="${index===current?'step':'false'}"></button>`).join('');
-      $('#mapRoute').innerHTML=scenes.map((item,index)=>`<button class="map-node ${index===current?'active':''}" type="button" data-map-scene="${index}"><i>0${index+1}</i><span>${item.plain}</span></button>`).join('');
-      $('#hotspots').innerHTML=scene.hotspots.map((spot,index)=>`<button class="hotspot" type="button" style="--x:${spot.x}%;--y:${spot.y}%" data-hotspot="${index}" aria-label="Explorar: ${spot.title}"><span>${spot.title}</span></button>`).join('');
-      if(announce)$('#announcement').textContent=`Escena ${current+1} de ${scenes.length}: ${scene.plain}`;
-      if(started)speak(scene.narration);
+      $('#progress').innerHTML=scenes.map((scene,index)=>`<button class="${index===current?'active':''}" type="button" data-scene="${index}" aria-label="Ir a ${scene.plain}" aria-current="${index===current?'step':'false'}"></button>`).join('');
+      $('#mapRoute').innerHTML=scenes.map((scene,index)=>`<button class="map-node ${index===current?'active':''}" type="button" data-map-scene="${index}"><i>${String(index+1).padStart(2,'0')}</i><span>${scene.plain}</span></button>`).join('');
+      $('#hotspots').innerHTML=item.hotspots.map((spot,index)=>`<button class="hotspot" type="button" style="left:${spot.x}%;top:${spot.y}%" data-hotspot="${index}" aria-label="Explorar: ${spot.title}"><span>${spot.title}</span></button>`).join('');
+      loadPanorama(item);if(announce)$('#announcement').textContent=`Escena ${current+1} de ${scenes.length}: ${item.plain}`;if(started)speak(item.narration);
     }
+    async function init3D(){
+      try{
+        THREE=await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js');
+        const host=$('#webgl');world=new THREE.Scene();camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,220);
+        renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+        const geometry=new THREE.SphereGeometry(100,64,40);geometry.scale(-1,1,1);material=new THREE.MeshBasicMaterial({color:0xffffff});world.add(new THREE.Mesh(geometry,material));
+        const down=e=>{dragging=true;startX=e.clientX;startY=e.clientY;startLon=lon;startLat=lat;renderer.domElement.setPointerCapture?.(e.pointerId)};
+        const move=e=>{if(!dragging)return;lon=startLon-(e.clientX-startX)*.12;lat=startLat+(e.clientY-startY)*.1};
+        const up=e=>{dragging=false;renderer.domElement.releasePointerCapture?.(e.pointerId)};
+        renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointermove',move);renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('pointercancel',up);
+        renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();camera.fov=Math.max(42,Math.min(90,camera.fov+e.deltaY*.025));camera.updateProjectionMatrix()},{passive:false});
+        addEventListener('resize',resize3D);animate3D();loadPanorama(scenes[current]);
+      }catch(error){$('#sceneLoading').hidden=true;$('#announcement').textContent='El modo 3D no pudo iniciarse. Se muestra la vista panorámica alternativa.'}
+    }
+    function loadPanorama(item){
+      if(!THREE||!material)return;const request=++textureRequest;$('#sceneLoading').hidden=false;$('#webgl').classList.remove('ready');
+      new THREE.TextureLoader().load(item.image,newTexture=>{if(request!==textureRequest){newTexture.dispose();return}newTexture.colorSpace=THREE.SRGBColorSpace;if(texture)texture.dispose();texture=newTexture;material.map=texture;material.needsUpdate=true;$('#webgl').classList.add('ready');$('#sceneBackground').classList.remove('active');$('#sceneLoading').hidden=true},undefined,()=>{$('#sceneLoading').hidden=true;$('#sceneBackground').classList.add('active')});
+    }
+    function resize3D(){if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+    function angleVector(yaw,pitch,radius=80){const y=THREE.MathUtils.degToRad(pitch),x=THREE.MathUtils.degToRad(yaw);return new THREE.Vector3(radius*Math.cos(y)*Math.cos(x),radius*Math.sin(y),radius*Math.cos(y)*Math.sin(x))}
+    function positionHotspots(){
+      if(!THREE||!camera)return;const direction=new THREE.Vector3();camera.getWorldDirection(direction);
+      document.querySelectorAll('[data-hotspot]').forEach((button,index)=>{const spot=scenes[current].hotspots[index];if(!spot)return;const position=angleVector(spot.yaw,spot.pitch),visible=position.clone().normalize().dot(direction)>.07,projected=position.clone().project(camera);if(!visible||Math.abs(projected.x)>1.2||Math.abs(projected.y)>1.2){button.style.visibility='hidden';return}button.style.visibility='visible';button.style.left=`${(projected.x*.5+.5)*innerWidth}px`;button.style.top=`${(-projected.y*.5+.5)*innerHeight}px`});
+    }
+    function animate3D(){requestAnimationFrame(animate3D);if(!renderer||!camera)return;lat=Math.max(-72,Math.min(72,lat));const target=angleVector(lon,lat,100);camera.lookAt(target);renderer.render(world,camera);positionHotspots()}
     function selectVoice(){
-      if(!('speechSynthesis'in window))return null;
-      const spanish=speechSynthesis.getVoices().filter(v=>/^es([-_]|$)/i.test(v.lang));
-      const latin=/^es-(mx|us|419|ar|bo|cl|co|cr|cu|do|ec|gt|hn|ni|pa|pe|pr|py|sv|uy|ve)$/i,neutral=/^es-(mx|us|419)$/i;
-      const male=/jorge|raul|raúl|diego|pablo|alvaro|álvaro|carlos|mateo|miguel|andres|andrés|gonzalo|juan|martin|martín|enrique|ricardo|male|masculino/i;
-      const female=/monica|mónica|paulina|sabina|helena|elvira|paloma|dalia|valentina|sofia|sofía|maria|maría|female|femenina/i;
+      if(!('speechSynthesis'in window))return null;const spanish=speechSynthesis.getVoices().filter(v=>/^es([-_]|$)/i.test(v.lang));
+      const latin=/^es-(mx|us|419|ar|bo|cl|co|cr|cu|do|ec|gt|hn|ni|pa|pe|pr|py|sv|uy|ve)$/i,neutral=/^es-(mx|us|419)$/i,male=/jorge|raul|raúl|diego|pablo|alvaro|álvaro|carlos|mateo|miguel|andres|andrés|gonzalo|juan|martin|martín|enrique|ricardo|male|masculino/i,female=/monica|mónica|paulina|sabina|helena|elvira|paloma|dalia|valentina|sofia|sofía|maria|maría|female|femenina/i;
       return spanish.sort((a,b)=>{const score=v=>(male.test(v.name)?240:0)+(latin.test(v.lang)?100:0)+(neutral.test(v.lang)?45:0)+(/natural|neural|online/i.test(v.name)?20:0)-(female.test(v.name)?220:0);return score(b)-score(a)})[0]||null;
     }
     function stopSpeech(){if(!('speechSynthesis'in window))return;speechId++;speechSynthesis.cancel();if(started&&musicEnabled){ambient.volume=.22;ambient.play().catch(()=>{})}}
-    function speak(text){
-      if(!voiceEnabled||!('speechSynthesis'in window)||!text)return;
-      const id=++speechId;speechSynthesis.cancel();if(musicEnabled)ambient.volume=.08;
-      const utterance=new SpeechSynthesisUtterance(text),voice=selectVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}else utterance.lang='es-MX';utterance.rate=.83;utterance.pitch=.74;utterance.volume=1;
-      const finish=()=>{if(id===speechId&&musicEnabled)ambient.volume=.22};utterance.onend=finish;utterance.onerror=finish;speechSynthesis.speak(utterance);
-    }
+    function speak(text){if(!voiceEnabled||!('speechSynthesis'in window)||!text)return;const id=++speechId;speechSynthesis.cancel();if(musicEnabled)ambient.volume=.08;const utterance=new SpeechSynthesisUtterance(text),voice=selectVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}else utterance.lang='es-MX';utterance.rate=.83;utterance.pitch=.74;utterance.volume=1;const finish=()=>{if(id===speechId&&musicEnabled)ambient.volume=.22};utterance.onend=finish;utterance.onerror=finish;speechSynthesis.speak(utterance)}
     function go(index){if(index<0||index>=scenes.length)return;current=index;render()}
     function openOverlay(id){lastFocus=document.activeElement;const overlay=document.getElementById(id);overlay.hidden=false;setTimeout(()=>overlay.querySelector('button,a')?.focus(),0)}
     function closeOverlay(id){document.getElementById(id).hidden=true;lastFocus?.focus()}
-    function updateControls(){
-      $('#musicButton').classList.toggle('on',musicEnabled);$('#musicButton').setAttribute('aria-label',musicEnabled?'Silenciar música':'Activar música');
-      const speechAvailable='speechSynthesis'in window;$('#voiceButton').disabled=!speechAvailable;$('#voiceButton').classList.toggle('on',voiceEnabled&&speechAvailable);$('#voiceButton').setAttribute('aria-label',voiceEnabled?'Silenciar voz del Cronista':'Activar voz del Cronista');
-    }
+    function updateControls(){$('#musicButton').classList.toggle('on',musicEnabled);$('#musicButton').setAttribute('aria-label',musicEnabled?'Silenciar música':'Activar música');const available='speechSynthesis'in window;$('#voiceButton').disabled=!available;$('#voiceButton').classList.toggle('on',voiceEnabled&&available);$('#voiceButton').setAttribute('aria-label',voiceEnabled?'Silenciar voz del Cronista':'Activar voz del Cronista')}
     $('#startButton').addEventListener('click',()=>{started=true;$('#intro').hidden=true;if(musicEnabled)ambient.play().catch(()=>{});render(false);speak(scenes[current].narration)});
-    $('#prevButton').addEventListener('click',()=>go(current-1));
-    $('#nextButton').addEventListener('click',()=>current===scenes.length-1?(stopSpeech(),openOverlay('finale')):go(current+1));
-    $('#repeatButton').addEventListener('click',()=>{closeOverlay('finale');go(0)});
+    $('#prevButton').addEventListener('click',()=>go(current-1));$('#nextButton').addEventListener('click',()=>current===scenes.length-1?(stopSpeech(),openOverlay('finale')):go(current+1));$('#repeatButton').addEventListener('click',()=>{closeOverlay('finale');go(0)});
     $('#progress').addEventListener('click',e=>{const target=e.target.closest('[data-scene]');if(target)go(Number(target.dataset.scene))});
-    $('#hotspots').addEventListener('click',e=>{const target=e.target.closest('[data-hotspot]');if(!target)return;const spot=scenes[current].hotspots[Number(target.dataset.hotspot)];$('#detailKicker').textContent=scenes[current].plain;$('#detailTitle').textContent=spot.title;$('#detailText').textContent=spot.text;openOverlay('detailOverlay')});
-    $('#mapButton').addEventListener('click',()=>openOverlay('mapOverlay'));
-    $('#mapRoute').addEventListener('click',e=>{const target=e.target.closest('[data-map-scene]');if(!target)return;closeOverlay('mapOverlay');go(Number(target.dataset.mapScene))});
-    document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeOverlay(button.dataset.close)));
-    $('#musicButton').addEventListener('click',()=>{musicEnabled=!musicEnabled;localStorage.setItem('sdl-tour-music',musicEnabled?'1':'0');musicEnabled&&started?ambient.play().catch(()=>{}):ambient.pause();updateControls()});
-    $('#voiceButton').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;localStorage.setItem('sdl-tour-voice',voiceEnabled?'1':'0');voiceEnabled?speak('La voz del Cronista ha despertado.'):stopSpeech();updateControls()});
-    $('#fullscreenButton').addEventListener('click',async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch{}});
-    document.addEventListener('fullscreenchange',()=>$('#fullscreenButton').classList.toggle('on',Boolean(document.fullscreenElement)));
+    $('#hotspots').addEventListener('click',e=>{const target=e.target.closest('[data-hotspot]');if(!target)return;const spot=scenes[current].hotspots[Number(target.dataset.hotspot)],link=$('#detailLink');$('#detailKicker').textContent=scenes[current].plain;$('#detailTitle').textContent=spot.title;$('#detailText').textContent=spot.text;link.hidden=!spot.href;if(spot.href){link.href=spot.href;link.textContent=spot.linkLabel||'Abrir en el sitio'}openOverlay('detailOverlay')});
+    $('#mapButton').addEventListener('click',()=>openOverlay('mapOverlay'));$('#mapRoute').addEventListener('click',e=>{const target=e.target.closest('[data-map-scene]');if(!target)return;closeOverlay('mapOverlay');go(Number(target.dataset.mapScene))});document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeOverlay(button.dataset.close)));
+    $('#musicButton').addEventListener('click',()=>{musicEnabled=!musicEnabled;localStorage.setItem('sdl-tour-music',musicEnabled?'1':'0');musicEnabled&&started?ambient.play().catch(()=>{}):ambient.pause();updateControls()});$('#voiceButton').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;localStorage.setItem('sdl-tour-voice',voiceEnabled?'1':'0');voiceEnabled?speak('La voz del Cronista ha despertado.'):stopSpeech();updateControls()});
+    $('#fullscreenButton').addEventListener('click',async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch{}});document.addEventListener('fullscreenchange',()=>$('#fullscreenButton').classList.toggle('on',Boolean(document.fullscreenElement)));
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){['detailOverlay','mapOverlay','finale'].forEach(id=>{if(!document.getElementById(id).hidden)closeOverlay(id)});return}if(!started||!$('#mapOverlay').hidden||!$('#detailOverlay').hidden||!$('#finale').hidden)return;if(event.key==='ArrowRight'&&current<scenes.length-1)go(current+1);if(event.key==='ArrowLeft'&&current>0)go(current-1)});
-    document.addEventListener('pointermove',event=>{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const x=(event.clientX/innerWidth-.5)*-1.1,y=(event.clientY/innerHeight-.5)*-1.1;$('#sceneBackground').style.setProperty('--shift-x',`${x}%`);$('#sceneBackground').style.setProperty('--shift-y',`${y}%`)});
     document.addEventListener('visibilitychange',()=>{if(document.hidden){ambient.pause();if('speechSynthesis'in window){speechId++;speechSynthesis.cancel()}}else if(started&&musicEnabled)ambient.play().catch(()=>{})});
-    render(false);updateControls();
+    render(false);updateControls();init3D();
   })();
   </script>
 </body>
