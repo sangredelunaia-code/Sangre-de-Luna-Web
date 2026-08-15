@@ -1,3 +1,15 @@
+/* NAVEGACION PUBLICA · RESTAURA EL ACCESO AL FAN CLUB */
+(()=>{
+const publicNav=document.querySelector('#publicApp .nav');
+const exploreLink=publicNav?.querySelector('a[href="/tour.html"]');
+if(publicNav&&exploreLink&&!publicNav.querySelector('a[href="/fanclub.html"]')){
+ const fanclubLink=document.createElement('a');
+ fanclubLink.href='/fanclub.html';
+ fanclubLink.textContent='Fan Club';
+ publicNav.insertBefore(fanclubLink,exploreLink);
+}
+})();
+
 /* ADMINISTRACION · DESAFIOS DE LA MANADA */
 (()=>{
 const nav=document.getElementById('adminNav');
