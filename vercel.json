@@ -10,19 +10,36 @@
     {
       "source": "/",
       "headers": [
-        {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate"}
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
       ]
     },
     {
       "source": "/index.html",
       "headers": [
-        {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate"}
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
       ]
     },
     {
       "source": "/desafios-admin.js",
       "headers": [
-        {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate"}
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        }
       ]
     }
   ]
