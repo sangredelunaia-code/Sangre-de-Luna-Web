@@ -5,5 +5,25 @@
     "api/cronista.js": {
       "maxDuration": 30
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate"}
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate"}
+      ]
+    },
+    {
+      "source": "/desafios-admin.js",
+      "headers": [
+        {"key": "Cache-Control", "value": "no-store, no-cache, must-revalidate"}
+      ]
+    }
+  ]
 }
