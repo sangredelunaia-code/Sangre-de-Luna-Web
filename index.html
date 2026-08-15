@@ -103,7 +103,7 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
     </div>
     <form id="cronistaForm" class="cronista-form">
       <div class="cronista-inputrow"><textarea id="cronistaInput" class="cronista-input" maxlength="600" rows="1" placeholder="Escribe tu pregunta…" aria-label="Pregunta para el Cronista"></textarea><button id="cronistaSend" class="cronista-send" type="submit" aria-label="Enviar">➤</button></div>
-      <small class="cronista-note">Versión gratuita · Voz épica · Archivo oficial publicado</small>
+      <small class="cronista-note">Versión gratuita · Voz masculina latino neutro · Archivo oficial</small>
     </form>
   </section>
   <button id="cronistaLaunch" class="cronista-launch" type="button" aria-label="Abrir al Cronista de la Ciudadela" aria-expanded="false"><img src="/assets/logo-oficial.png" alt=""></button>
@@ -159,13 +159,18 @@ function updateCronistaVoiceButton(){
  const button=$('#cronistaVoice'),available='speechSynthesis'in window&&'SpeechSynthesisUtterance'in window;
  button.disabled=!available;button.classList.toggle('on',available&&cronistaVoiceEnabled);
  button.textContent=!available?'Sin voz':cronistaVoiceEnabled?'Voz 🔊':'Voz 🔇';
- button.title=!available?'Este navegador no ofrece lectura de voz':cronistaVoiceEnabled?'Silenciar la voz épica':'Activar la voz épica';
+ button.title=!available?'Este navegador no ofrece lectura de voz':cronistaVoiceEnabled?'Silenciar la voz masculina latina':'Activar la voz masculina latina';
 }
 function cronistaVoice(){
  const voices=speechSynthesis.getVoices(),spanish=voices.filter(voice=>/^es([-_]|$)/i.test(voice.lang));
- const preferred=[/pablo/i,/alvaro/i,/diego/i,/jorge/i,/enrique/i,/male/i,/español.*(méxico|mexico|latino)/i];
- for(const pattern of preferred){const match=spanish.find(voice=>pattern.test(voice.name));if(match)return match}
- return spanish.find(voice=>/es-(mx|us|419)/i.test(voice.lang))||spanish[0]||null;
+ const latin=/^es-(mx|us|419|ar|bo|cl|co|cr|cu|do|ec|gt|hn|ni|pa|pe|pr|py|sv|uy|ve)$/i;
+ const neutral=/^es-(mx|us|419)$/i;
+ const masculine=/jorge|raul|raúl|diego|pablo|alvaro|álvaro|carlos|mateo|miguel|andres|andrés|gonzalo|juan|martin|martín|enrique|ricardo|male|masculino/i;
+ const feminine=/monica|mónica|paulina|sabina|helena|elvira|paloma|dalia|valentina|sofia|sofía|maria|maría|female|femenina/i;
+ return spanish.sort((a,b)=>{
+  const score=voice=>(masculine.test(voice.name)?240:0)+(latin.test(voice.lang)?100:0)+(neutral.test(voice.lang)?45:0)+(/natural|neural|online/i.test(voice.name)?20:0)-(feminine.test(voice.name)?220:0);
+  return score(b)-score(a);
+ })[0]||null;
 }
 function stopCronistaVoice(){
  if(!('speechSynthesis'in window))return;
@@ -176,7 +181,7 @@ function speakCronista(text){
  const speechId=++cronistaSpeechId;speechSynthesis.cancel();pauseAmbientForMedia();
  const utterance=new SpeechSynthesisUtterance(String(text).replace(/[•·→↗]/g,' '));
  const voice=cronistaVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}else utterance.lang='es-MX';
- utterance.rate=.84;utterance.pitch=.76;utterance.volume=1;
+ utterance.rate=.83;utterance.pitch=.74;utterance.volume=1;
  const finish=()=>{if(speechId===cronistaSpeechId)resumeAmbientAfterMedia()};
  utterance.onend=finish;utterance.onerror=finish;speechSynthesis.speak(utterance);
 }
