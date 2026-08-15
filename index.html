@@ -234,6 +234,9 @@ function cronistaLocalReply(rawMessage){
   const guides={inicio:'Desde aquí puedes entrar a los episodios, iniciar el recorrido virtual o explorar cualquier sección.',personajes:'Aquí puedes abrir cada ficha para conocer el rol y la biografía oficial de los personajes publicados.',historias:'Aquí están las historias organizadas por temporadas y capítulos. Pulsa una historia disponible para abrir el lector.',episodios:'Aquí puedes elegir una temporada y pulsar el título de un episodio para reproducirlo.',musica:'Aquí puedes reproducir las canciones originales. El control superior permite silenciar la ambientación.',galeria:'Aquí se reúnen afiches, portadas y artes oficiales en diferentes formatos.'};
   return cronistaAnswer('section_context','Ahora estás en '+sectionName+'. '+guides[section],[cronistaAction('#'+section,'EXPLORAR ESTA SECCIÓN',true)],'Ahora estás en '+sectionName+'. Puedo ayudarte a explorarla.');
  }
+ if(/prueba.*afinidad|mi.*afinidad|mi.*rango|mi.*funcion|mi.*función|sala de mando|mision|misión|viaje del visitante|mi viaje/.test(q)){
+  return cronistaAnswer('visitor_journey','Puedo ayudarte a descubrir tu lugar en la Manada. El Viaje del Visitante presenta seis decisiones narrativas y, según tus respuestas, revela una función de afinidad. Después entrarás a tu Sala de Mando, donde encontrarás misiones conectadas con el mapa, los recorridos 360° y el Fan Club. El progreso se conserva en este dispositivo.',[cronistaAction('/viaje.html','COMENZAR MI VIAJE',true),cronistaAction('/fanclub.html','IR AL FAN CLUB')],'Te llevaré al Viaje del Visitante. Allí descubrirás tu función dentro de la Manada y recibirás tu primera misión.');
+ }
  if(/mapa|tierras industriales|iron haven|ravenport|moonfall|bay of shadows|dusk hollow|umbra keep|tierras prohibidas|tierras nocturnas/.test(q)){
   return cronistaAnswer('world_map','El Mapa de las Tierras es una visualización holográfica en 2.5D que conecta los lugares clave de las temporadas 1 y 2. Puedes filtrar por temporada, alianzas o amenazas, abrir la ficha de cada territorio y entrar directamente a los recorridos 360° disponibles de la Ciudadela y el Reino Vampiro del Este.',[cronistaAction('/mapa.html','ABRIR MAPA DE LAS TIERRAS',true),cronistaAction('/tour.html','VER TOURS 360°')],'Puedo llevarte al Mapa de las Tierras. Allí encontrarás lugares, rutas y accesos a los recorridos virtuales.');
  }
@@ -529,8 +532,10 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
 (()=>{
  const nav=document.querySelector('.nav'),tourLink=nav?.querySelector('a[href="/tour.html"]');
  if(nav&&tourLink&&!nav.querySelector('a[href="/mapa.html"]')){const mapLink=document.createElement('a');mapLink.href='/mapa.html';mapLink.textContent='Mapa';nav.insertBefore(mapLink,tourLink)}
+ if(nav&&tourLink&&!nav.querySelector('a[href="/viaje.html"]')){const journeyLink=document.createElement('a');journeyLink.href='/viaje.html';journeyLink.textContent='Mi viaje';nav.insertBefore(journeyLink,tourLink)}
  const heroTools=document.querySelector('.hero .toolbar'),tourCta=heroTools?.querySelector('a[href="/tour.html"]');
  if(heroTools&&tourCta&&!heroTools.querySelector('a[href="/mapa.html"]')){const mapCta=document.createElement('a');mapCta.className='btn ghost';mapCta.href='/mapa.html';mapCta.textContent='⌖ MAPA DE LAS TIERRAS';heroTools.insertBefore(mapCta,tourCta);tourCta.textContent='✦ EXPLORAR TERRITORIOS'}
+ if(heroTools&&tourCta&&!heroTools.querySelector('a[href="/viaje.html"]')){const journeyCta=document.createElement('a');journeyCta.className='btn';journeyCta.href='/viaje.html';journeyCta.textContent='◈ DESCUBRIR MI LUGAR';heroTools.insertBefore(journeyCta,heroTools.firstChild)}
 })();
 </script>
 <!-- El cierre de BODY se omite intencionalmente: es válido en HTML5 y evita la inyección del cargador heredado de Vercel. -->
