@@ -230,6 +230,9 @@ function cronistaLocalReply(rawMessage){
   const guides={inicio:'Desde aquí puedes entrar a los episodios, iniciar el recorrido virtual o explorar cualquier sección.',personajes:'Aquí puedes abrir cada ficha para conocer el rol y la biografía oficial de los personajes publicados.',historias:'Aquí están las historias organizadas por temporadas y capítulos. Pulsa una historia disponible para abrir el lector.',episodios:'Aquí puedes elegir una temporada y pulsar el título de un episodio para reproducirlo.',musica:'Aquí puedes reproducir las canciones originales. El control superior permite silenciar la ambientación.',galeria:'Aquí se reúnen afiches, portadas y artes oficiales en diferentes formatos.'};
   return cronistaAnswer('section_context','Ahora estás en '+sectionName+'. '+guides[section],[cronistaAction('#'+section,'EXPLORAR ESTA SECCIÓN',true)],'Ahora estás en '+sectionName+'. Puedo ayudarte a explorarla.');
  }
+ if(/mapa|tierras industriales|iron haven|ravenport|moonfall|bay of shadows|dusk hollow|umbra keep|tierras prohibidas|tierras nocturnas/.test(q)){
+  return cronistaAnswer('world_map','El Mapa de las Tierras es una visualización holográfica en 2.5D que conecta los lugares clave de las temporadas 1 y 2. Puedes filtrar por temporada, alianzas o amenazas, abrir la ficha de cada territorio y entrar directamente a los recorridos 360° disponibles de la Ciudadela y el Reino Vampiro del Este.',[cronistaAction('/mapa.html','ABRIR MAPA DE LAS TIERRAS',true),cronistaAction('/tour.html','VER TOURS 360°')],'Puedo llevarte al Mapa de las Tierras. Allí encontrarás lugares, rutas y accesos a los recorridos virtuales.');
+ }
  if(!explicitCharacter&&/tour|recorrido|360|dron|puertas de la ciudadela|torre de vigilancia|murallas|salon del trono|archivo de la ciudadela|patio exterior/.test(q)){
   return cronistaAnswer('tour','En Explorar puedes elegir entre dos territorios. La Ciudadela recorre la vista de dron, puertas, patio exterior, murallas, Torre de Vigilancia, Archivo con Nine y Salón del Trono del Alfa. El Reino Vampiro del Este recorre su vista aérea, puente monumental, Patio de la Corte, Salón del Trono de Aleric, Biblioteca Ancestral y Jardín Lunar. Puedes arrastrar la vista, abrir puntos interactivos y cambiar de territorio desde el mapa.',[cronistaAction('/tour.html','ELEGIR TERRITORIO',true),cronistaAction('#personajes','CONOCER A NINE')],'Puedo llevarte al recorrido 360 grados. Allí podrás elegir entre La Ciudadela y el Reino Vampiro del Este.');
  }
@@ -514,6 +517,14 @@ $$('[data-reset]').forEach(b=>b.onclick=()=>({track:resetTrack,episode:resetEpis
 async function loadPublicSafe(){try{await loadPublic()}catch{}}
 
 })().catch(err=>{console.error(err);document.body.innerHTML='<main style="min-height:100vh;display:grid;place-items:center;background:#03070c;color:#eef7ff;font-family:Arial;padding:30px;text-align:center"><div><h1>Sangre de Luna</h1><p>No se pudo conectar con el sistema de contenido. Recarga la página.</p></div></main>'});
+</script>
+<script>
+(()=>{
+ const nav=document.querySelector('.nav'),tourLink=nav?.querySelector('a[href="/tour.html"]');
+ if(nav&&tourLink&&!nav.querySelector('a[href="/mapa.html"]')){const mapLink=document.createElement('a');mapLink.href='/mapa.html';mapLink.textContent='Mapa';nav.insertBefore(mapLink,tourLink)}
+ const heroTools=document.querySelector('.hero .toolbar'),tourCta=heroTools?.querySelector('a[href="/tour.html"]');
+ if(heroTools&&tourCta&&!heroTools.querySelector('a[href="/mapa.html"]')){const mapCta=document.createElement('a');mapCta.className='btn ghost';mapCta.href='/mapa.html';mapCta.textContent='⌖ MAPA DE LAS TIERRAS';heroTools.insertBefore(mapCta,tourCta);tourCta.textContent='✦ EXPLORAR TERRITORIOS'}
+})();
 </script>
 <!-- El cierre de BODY se omite intencionalmente: es válido en HTML5 y evita la inyección del cargador heredado de Vercel. -->
 <noscript><div style="position:fixed;inset:0;display:grid;place-items:center;background:#03070c;color:#eef7ff;font-family:Arial;padding:24px;text-align:center;z-index:99999"><div><h1>Sangre de Luna</h1><p>Activa JavaScript para ingresar al universo.</p></div></div></noscript>

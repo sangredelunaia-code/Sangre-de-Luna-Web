@@ -261,7 +261,8 @@
     $('#fullscreenButton').addEventListener('click',async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch{}});document.addEventListener('fullscreenchange',()=>$('#fullscreenButton').classList.toggle('on',Boolean(document.fullscreenElement)));
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){['detailOverlay','mapOverlay','finale'].forEach(id=>{if(!document.getElementById(id).hidden)closeOverlay(id)});return}if(!started||!$('#mapOverlay').hidden||!$('#detailOverlay').hidden||!$('#finale').hidden)return;if(event.key==='ArrowRight'&&current<scenes.length-1)go(current+1);if(event.key==='ArrowLeft'&&current>0)go(current-1)});
     document.addEventListener('visibilitychange',()=>{if(document.hidden){ambient.pause();if('speechSynthesis'in window){speechId++;speechSynthesis.cancel()}}else if(started&&musicEnabled)ambient.play().catch(()=>{})});
-    selectTerritory('citadel');updateControls();init3D();
+    const requestedTerritory=new URLSearchParams(location.search).get('territory');
+    selectTerritory(territories[requestedTerritory]?requestedTerritory:'citadel');updateControls();init3D();
   })();
   </script>
 </body>
