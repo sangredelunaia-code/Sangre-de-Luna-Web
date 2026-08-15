@@ -60,7 +60,7 @@
 .cronista-nudge{position:absolute;right:82px;bottom:10px;width:245px;padding:11px 13px;border:1px solid #4d7795;border-radius:14px;background:#07121df2;color:#dbeeff;box-shadow:0 14px 42px #000a;font-size:.8rem;line-height:1.35;opacity:0;transform:translateX(10px);pointer-events:none;transition:.28s}.cronista-nudge.show{opacity:1;transform:none}.cronista-nudge b{display:block;color:#8fd4ff;font:700 .86rem Georgia;margin-bottom:3px}
 .cronista-panel{width:min(405px,calc(100vw - 28px));height:min(650px,78svh);display:none;grid-template-rows:auto 1fr auto;background:linear-gradient(180deg,#07131ef7,#040a10fa);border:1px solid #446b89;border-radius:24px;overflow:hidden;box-shadow:0 28px 90px #000d,0 0 42px #3ea9ff1c;backdrop-filter:blur(18px)}.cronista-panel.open{display:grid;animation:cronistaOpen .25s ease-out}.cronista-widget:has(.cronista-panel.open) .cronista-launch{display:none}@keyframes cronistaOpen{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
 .cronista-head{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;padding:14px;border-bottom:1px solid #284156;background:linear-gradient(135deg,#0c2132,#07121c)}.cronista-avatar{width:48px;height:48px;border:1px solid #87cfff70;border-radius:50%;overflow:hidden;background:#06101a;position:relative}.cronista-avatar img{width:68px;max-width:none;position:absolute;left:50%;top:39%;transform:translate(-50%,-34%)}.cronista-title{min-width:0}.cronista-title b{display:block;font:700 1.05rem Georgia;color:#fff}.cronista-title span{display:flex;align-items:center;gap:6px;color:#96aec1;font-size:.72rem}.cronista-title i{width:7px;height:7px;border-radius:50%;background:#79ddb3;box-shadow:0 0 9px #79ddb3}.cronista-tools{display:flex;gap:5px}.cronista-tool{min-width:34px;height:34px;padding:0 9px;border:1px solid #34536b;border-radius:10px;background:#08141f;color:#d7eaff;cursor:pointer;font-size:.72rem;font-weight:800}.cronista-tool:hover{border-color:#80cfff}.cronista-voice.on{background:#12324a;border-color:#76c9ff;color:#e9f7ff;box-shadow:inset 0 0 16px #64bfff1a}.cronista-spoilers.on{background:#582b32;border-color:#b75d68;color:#ffe5e8}
-.cronista-body{overflow:auto;padding:14px;scroll-behavior:smooth}.cronista-messages{display:grid;gap:10px}.cronista-message{max-width:88%;padding:10px 12px;border-radius:15px;white-space:pre-wrap;font-size:.88rem;line-height:1.47}.cronista-message.assistant{justify-self:start;background:#0d2030;border:1px solid #294963;color:#dcecff;border-bottom-left-radius:5px}.cronista-message.user{justify-self:end;background:linear-gradient(135deg,#bfe8ff,#76c5f7);color:#04101a;border-bottom-right-radius:5px;font-weight:700}.cronista-message.typing{display:flex;gap:5px;align-items:center;width:54px}.cronista-message.typing i{width:6px;height:6px;border-radius:50%;background:#8fcfff;animation:cronistaDot 1.1s infinite}.cronista-message.typing i:nth-child(2){animation-delay:.16s}.cronista-message.typing i:nth-child(3){animation-delay:.32s}@keyframes cronistaDot{50%{opacity:.3;transform:translateY(-3px)}}.cronista-nav-action{justify-self:start;margin-top:-3px;padding:7px 11px;border:1px solid #47708e;border-radius:999px;background:#0a1a27;color:#9dd9ff;font-size:.7rem;font-weight:900;cursor:pointer}.cronista-nav-action:hover{background:#102a3f;color:#fff}
+.cronista-body{overflow:auto;padding:14px;scroll-behavior:smooth}.cronista-messages{display:grid;gap:10px}.cronista-message{max-width:88%;padding:10px 12px;border-radius:15px;white-space:pre-wrap;font-size:.88rem;line-height:1.47}.cronista-message.assistant{justify-self:start;background:#0d2030;border:1px solid #294963;color:#dcecff;border-bottom-left-radius:5px}.cronista-message.user{justify-self:end;background:linear-gradient(135deg,#bfe8ff,#76c5f7);color:#04101a;border-bottom-right-radius:5px;font-weight:700}.cronista-message.typing{display:flex;gap:5px;align-items:center;width:54px}.cronista-message.typing i{width:6px;height:6px;border-radius:50%;background:#8fcfff;animation:cronistaDot 1.1s infinite}.cronista-message.typing i:nth-child(2){animation-delay:.16s}.cronista-message.typing i:nth-child(3){animation-delay:.32s}@keyframes cronistaDot{50%{opacity:.3;transform:translateY(-3px)}}.cronista-actions{justify-self:start;display:flex;flex-wrap:wrap;gap:7px;margin-top:-3px;max-width:94%}.cronista-nav-action{padding:7px 11px;border:1px solid #47708e;border-radius:999px;background:#0a1a27;color:#9dd9ff;font-size:.7rem;font-weight:900;cursor:pointer}.cronista-nav-action:hover{background:#102a3f;color:#fff}.cronista-nav-action.primary{background:linear-gradient(135deg,#cdeeff,#75c8fb);border-color:transparent;color:#04111c}.cronista-nav-action.primary:hover{color:#04111c;filter:brightness(1.08)}
 .cronista-quick{display:flex;gap:7px;overflow:auto;padding:3px 0 12px;scrollbar-width:none}.cronista-quick::-webkit-scrollbar{display:none}.cronista-quick button{flex:0 0 auto;padding:7px 10px;border:1px solid #2f5069;border-radius:999px;background:#091722;color:#bcd7eb;font-size:.7rem;font-weight:800;cursor:pointer}.cronista-quick button:hover{border-color:#82cfff;color:#fff}.cronista-form{padding:11px 12px 12px;border-top:1px solid #243e53;background:#050d14}.cronista-inputrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}.cronista-input{width:100%;min-height:43px;max-height:100px;resize:none;padding:11px 12px;border:1px solid #31516a;border-radius:14px;background:#091722;color:#edf7ff;outline:none}.cronista-input:focus{border-color:#83cfff;box-shadow:0 0 0 3px #78c8ff14}.cronista-send{width:44px;height:44px;border:0;border-radius:13px;background:linear-gradient(135deg,#d8f1ff,#72c5fa);color:#04111d;font-size:1.1rem;font-weight:900;cursor:pointer}.cronista-send:disabled{opacity:.45;cursor:wait}.cronista-note{display:block;margin-top:7px;color:#6f879a;font-size:.65rem;text-align:center}
 body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){.cronista-widget{right:12px;bottom:14px}.cronista-panel{position:fixed;right:0;bottom:0;width:100vw;height:min(720px,84svh);border-radius:22px 22px 0 0}.cronista-launch{width:62px;height:62px}.cronista-nudge{right:72px;width:min(230px,calc(100vw - 100px))}.cronista-head{gap:8px;padding:11px}.cronista-title b{font-size:.9rem}.cronista-title span{font-size:.64rem}.cronista-tools{gap:4px}.cronista-tool{padding:0 6px}.cronista-spoilers{max-width:75px;font-size:.62rem;line-height:1.05}body:has(.playerbar.show) .cronista-widget{bottom:125px}}@media(max-width:400px){.cronista-head{grid-template-columns:40px minmax(72px,1fr) auto;gap:6px;padding:9px}.cronista-avatar{width:40px;height:40px}.cronista-title b{font-size:.78rem;line-height:1.1}.cronista-title span{display:none}.cronista-tools{gap:3px}.cronista-tool{height:32px;min-width:32px}.cronista-voice{width:32px;padding:0;font-size:0}.cronista-voice:after{content:'🔇';font-size:.72rem}.cronista-voice.on:after{content:'🔊'}.cronista-spoilers{max-width:62px;font-size:.55rem}}@media(prefers-reduced-motion:reduce){.cronista-launch,.cronista-panel,.cronista-nudge,.cronista-message.typing i{animation:none!important;transition:none!important}}
 </style>
@@ -85,25 +85,25 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
 <div id="promoModal" class="promo-modal" aria-hidden="true"><div id="promoBox" class="promo-box r169"><button id="promoClose" class="promo-close" aria-label="Cerrar">×</button><div class="wm-stage promo-stage"><img id="promoImg" alt="Próximo estreno Sangre de Luna"></div><div id="promoInfo" class="promo-info"><h2 id="promoTitle"></h2><a id="promoButton" class="btn pri promo-cta hidden" href="#">VER MÁS</a></div></div></div>
 <div id="playerbar" class="playerbar"><div><b id="nowTitle"></b><small id="nowVersion"></small></div><audio id="audio" controls controlsList="nodownload noplaybackrate" preload="none"></audio><button class="xbtn" id="closePlayer">×</button></div>
 <aside id="cronistaWidget" class="cronista-widget" aria-label="Cronista de la Ciudadela">
-  <div id="cronistaNudge" class="cronista-nudge"><b>El Cronista te espera</b>Pregúntame por la historia, los personajes y los secretos publicados.</div>
+  <div id="cronistaNudge" class="cronista-nudge"><b>¿Primera vez en la Ciudadela?</b>Puedo acompañarte y explicarte cada paso.</div>
   <section id="cronistaPanel" class="cronista-panel" aria-hidden="true">
     <header class="cronista-head">
       <div class="cronista-avatar"><img src="/assets/logo-oficial.png" alt=""></div>
-      <div class="cronista-title"><b>Cronista de la Ciudadela</b><span><i></i> Guardián del archivo oficial</span></div>
+      <div class="cronista-title"><b>Cronista de la Ciudadela</b><span><i></i> Guía del archivo oficial</span></div>
       <div class="cronista-tools"><button id="cronistaVoice" class="cronista-tool cronista-voice" type="button" title="Activar o silenciar la voz épica">Voz 🔊</button><button id="cronistaSpoilers" class="cronista-tool cronista-spoilers" type="button" title="Cambiar modo de spoilers">Sin spoilers</button><button id="cronistaClose" class="cronista-tool" type="button" aria-label="Minimizar">—</button></div>
     </header>
     <div id="cronistaBody" class="cronista-body">
-      <div class="cronista-quick" aria-label="Accesos rápidos">
-        <button type="button" data-cronista-go="#personajes">Personajes</button>
-        <button type="button" data-cronista-go="#historias">Historias</button>
-        <button type="button" data-cronista-go="#episodios">Episodios</button>
-        <button type="button" data-cronista-go="/fanclub.html">Unirme a la Manada</button>
+      <div class="cronista-quick" aria-label="Preguntas sugeridas">
+        <button type="button" data-cronista-ask="No sé por dónde empezar">Guíame</button>
+        <button type="button" data-cronista-ask="Quiero conocer a los personajes">Personajes</button>
+        <button type="button" data-cronista-ask="¿Cómo me uno a la Manada?">Unirme a la Manada</button>
+        <button type="button" data-cronista-ask="¿Cómo hago el tour 360?">Tour 360°</button>
       </div>
       <div id="cronistaMessages" class="cronista-messages" aria-live="polite"></div>
     </div>
     <form id="cronistaForm" class="cronista-form">
       <div class="cronista-inputrow"><textarea id="cronistaInput" class="cronista-input" maxlength="600" rows="1" placeholder="Escribe tu pregunta…" aria-label="Pregunta para el Cronista"></textarea><button id="cronistaSend" class="cronista-send" type="submit" aria-label="Enviar">➤</button></div>
-      <small class="cronista-note">Versión gratuita · Voz masculina latino neutro · Archivo oficial</small>
+      <small class="cronista-note">Guía gratuita · Memoria durante la visita · Archivo oficial</small>
     </form>
   </section>
   <button id="cronistaLaunch" class="cronista-launch" type="button" aria-label="Abrir al Cronista de la Ciudadela" aria-expanded="false"><img src="/assets/logo-oficial.png" alt=""></button>
@@ -146,15 +146,31 @@ let cache={characters:[],stories:[],episodes:[],tracks:[],gallery:[],popup:null,
 let premiereTimer=null;
 let galleryFilter='all';
 
-const cronistaGreeting='Bienvenido a la Ciudadela. Soy el Cronista de la Manada. Puedo guiarte por las historias, personajes, episodios y secretos publicados de Sangre de Luna. ¿Qué deseas conocer?';
-const cronistaConversation=[{role:'assistant',content:cronistaGreeting}];
+const cronistaGreeting='Bienvenido a la Ciudadela. Soy el Cronista de la Manada. Si es tu primera visita, puedo acompañarte paso a paso; si ya conoces estas tierras, dime qué deseas encontrar.';
+const CRONISTA_MEMORY_KEY='sdl-cronista-guide-memory-v2';
+const CRONISTA_CONVERSATION_KEY='sdl-cronista-conversation-v2';
+const cronistaDefaultMemory={turns:0,lastIntent:'welcome',lastCharacter:'',lastSeason:null,visitorName:'',lastSection:'inicio'};
+function loadCronistaJson(key,fallback){try{return{...fallback,...JSON.parse(sessionStorage.getItem(key)||'{}')}}catch{return{...fallback}}}
+function loadCronistaConversation(){try{const saved=JSON.parse(sessionStorage.getItem(CRONISTA_CONVERSATION_KEY)||'[]');return Array.isArray(saved)&&saved.length?saved.slice(-16):[{role:'assistant',content:cronistaGreeting}]}catch{return[{role:'assistant',content:cronistaGreeting}]}}
+let cronistaMemory=loadCronistaJson(CRONISTA_MEMORY_KEY,cronistaDefaultMemory);
+const cronistaConversation=loadCronistaConversation();
 let cronistaSpoilers=false;
 let cronistaBusy=false;
 let cronistaVoiceEnabled=localStorage.getItem('sdl-cronista-voice')!=='0';
 let cronistaGreetingSpoken=false;
 let cronistaSpeechId=0;
+let cronistaCurrentSection='inicio';
 const cronistaNormalize=value=>String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9ñ ]/g,' ').replace(/\s+/g,' ').trim();
 const cronistaClip=(value,max=420)=>{const text=String(value||'').replace(/\s+/g,' ').trim();return text.length>max?text.slice(0,max).replace(/\s+\S*$/,'')+'…':text};
+const cronistaAction=(href,label,primary=false)=>({href,label,primary});
+function saveCronistaState(){sessionStorage.setItem(CRONISTA_MEMORY_KEY,JSON.stringify(cronistaMemory));sessionStorage.setItem(CRONISTA_CONVERSATION_KEY,JSON.stringify(cronistaConversation.slice(-16)))}
+function cronistaAnswer(intent,reply,actions=[],voice=''){
+ cronistaMemory={...cronistaMemory,turns:Number(cronistaMemory.turns||0)+1,lastIntent:intent,lastSection:cronistaCurrentSection};
+ saveCronistaState();
+ return{reply,actions,voice:voice||reply};
+}
+function cronistaSectionName(section){return({inicio:'la entrada de la Ciudadela',personajes:'el Archivo de Personajes',historias:'el Archivo de Historias',episodios:'la Sala de Episodios',musica:'la Biblioteca Musical',galeria:'la Galería Oficial'})[section]||'la Ciudadela'}
+function cronistaNamedCharacterFromMemory(){return cache.characters.find(item=>cronistaNormalize(item.name)===cronistaNormalize(cronistaMemory.lastCharacter))||null}
 function updateCronistaVoiceButton(){
  const button=$('#cronistaVoice'),available='speechSynthesis'in window&&'SpeechSynthesisUtterance'in window;
  button.disabled=!available;button.classList.toggle('on',available&&cronistaVoiceEnabled);
@@ -187,77 +203,132 @@ function speakCronista(text){
 }
 function cronistaLocalReply(rawMessage){
  const q=cronistaNormalize(rawMessage),padded=' '+q+' ';
- const navigation=(href,label)=>({href,label});
- const namedCharacter=cache.characters.find(item=>{const name=cronistaNormalize(item.name);return name&&padded.includes(' '+name+' ')});
+ const explicitCharacter=cache.characters.find(item=>{const name=cronistaNormalize(item.name);return name&&padded.includes(' '+name+' ')});
+ const memoryCharacter=cronistaNamedCharacterFromMemory();
+ const namedCharacter=explicitCharacter||((/cuentame mas|dime mas|sobre el|sobre ella|su historia|su biografia|y quien es|quiero conocerlo|quiero conocerla/.test(q))?memoryCharacter:null);
  const namedStory=cache.stories.find(item=>{const title=cronistaNormalize(item.title);return title.length>4&&q.includes(title)});
  const namedEpisode=cache.episodes.find(item=>{const title=cronistaNormalize(item.title);return title.length>4&&q.includes(title)});
  const seasonMatch=q.match(/temporada\s*(\d+)/),season=seasonMatch?Number(seasonMatch[1]):null;
- if(/^(hola|buenas|saludos|buenos dias|buenas tardes|buenas noches)\b/.test(q)){
-  return{reply:'Saludos, viajero. Las puertas de la Ciudadela están abiertas. Puedo orientarte por los personajes, las historias, los episodios, la música y el Fan Club de Sangre de Luna.'};
+ if(season){cronistaMemory.lastSeason=season;saveCronistaState()}
+ const nameMatch=String(rawMessage||'').trim().match(/(?:me llamo|mi nombre es)\s+([a-záéíóúüñ]+(?:\s+[a-záéíóúüñ]+)?)/i);
+ if(nameMatch){
+  const visitorName=nameMatch[1].replace(/\b\p{L}/gu,letter=>letter.toUpperCase());cronistaMemory.visitorName=visitorName;saveCronistaState();
+  return cronistaAnswer('visitor_name','Un honor recibirte, '+visitorName+'. Caminaré contigo por la Ciudadela. ¿Prefieres comenzar por la historia, sus personajes o el recorrido 360°?',[cronistaAction('#episodios','COMENZAR LA HISTORIA',true),cronistaAction('#personajes','CONOCER PERSONAJES'),cronistaAction('/tour.html','TOUR 360°')],'Un honor recibirte, '+visitorName+'. ¿Por dónde comenzamos?');
  }
- if(/fan club|fanclub|unirme|registrarme|registro|manada/.test(q)){
-  return{reply:'La Manada recibe a quienes desean acompañar el legado de Sangre de Luna. En el Fan Club puedes registrarte, elegir tu facción y obtener tu credencial digital oficial.',navigation:navigation('/fanclub.html','UNIRME A LA MANADA')};
+ if(/gracias|muchas gracias|te agradezco/.test(q)){
+  return cronistaAnswer('thanks','Siempre a tu servicio'+(cronistaMemory.visitorName?', '+cronistaMemory.visitorName:'')+'. Cuando quieras continuar, solo dime qué deseas hacer en la Ciudadela.',[cronistaAction('#inicio','SEGUIR EXPLORANDO')],'Siempre a tu servicio.');
+ }
+ if(/^(adios|hasta luego|nos vemos|chao)\b/.test(q)){
+  return cronistaAnswer('farewell','Que la luna ilumine tu camino. Las puertas de la Ciudadela permanecerán abiertas para tu regreso.',[],'Que la luna ilumine tu camino. Hasta tu regreso.');
+ }
+ if(/^(hola|buenas|saludos|buenos dias|buenas tardes|buenas noches)\b/.test(q)){
+  const welcome=cronistaMemory.visitorName?'Qué gusto volver a escucharte, '+cronistaMemory.visitorName+'.':'Saludos, viajero. Las puertas de la Ciudadela están abiertas.';
+  return cronistaAnswer('greeting',welcome+' ¿Quieres que te recomiende un punto de partida o buscas algo en particular?',[cronistaAction('#episodios','QUIERO EMPEZAR',true),cronistaAction('/tour.html','RECORRER LA CIUDADELA'),cronistaAction('/fanclub.html','UNIRME A LA MANADA')],welcome+' ¿En qué puedo guiarte?');
+ }
+ if(/que hay aqui|donde estoy|esta seccion|en esta parte/.test(q)){
+  const section=cronistaCurrentSection,sectionName=cronistaSectionName(section);
+  const guides={inicio:'Desde aquí puedes entrar a los episodios, iniciar el recorrido virtual o explorar cualquier sección.',personajes:'Aquí puedes abrir cada ficha para conocer el rol y la biografía oficial de los personajes publicados.',historias:'Aquí están las historias organizadas por temporadas y capítulos. Pulsa una historia disponible para abrir el lector.',episodios:'Aquí puedes elegir una temporada y pulsar el título de un episodio para reproducirlo.',musica:'Aquí puedes reproducir las canciones originales. El control superior permite silenciar la ambientación.',galeria:'Aquí se reúnen afiches, portadas y artes oficiales en diferentes formatos.'};
+  return cronistaAnswer('section_context','Ahora estás en '+sectionName+'. '+guides[section],[cronistaAction('#'+section,'EXPLORAR ESTA SECCIÓN',true)],'Ahora estás en '+sectionName+'. Puedo ayudarte a explorarla.');
+ }
+ if(!explicitCharacter&&/tour|recorrido|360|dron|puertas de la ciudadela|torre de vigilancia|murallas|salon del trono|archivo de la ciudadela|patio exterior/.test(q)){
+  return cronistaAnswer('tour','El recorrido 360° comienza con una vista aérea de la Ciudadela y continúa, en orden, por sus puertas, el patio exterior, las murallas, la Torre de Vigilancia, el Archivo —donde encontrarás a Nine— y el Salón del Trono del Alfa. Dentro del recorrido puedes arrastrar la vista, usar los puntos interactivos y avanzar con el mapa.',[cronistaAction('/tour.html','INICIAR TOUR 360°',true),cronistaAction('#personajes','CONOCER A NINE')],'Puedo llevarte al recorrido 360 grados. Allí podrás mover la vista y avanzar por cada lugar de la Ciudadela.');
+ }
+ if(/como.*credencial|sacar.*credencial|obtener.*credencial|imprimir.*credencial|guardar.*pdf|tarjeta.*fan/.test(q)){
+  return cronistaAnswer('credential_guide','Claro. Son tres pasos:\n1. Entra al Fan Club y crea tu membresía, o inicia sesión si ya eres miembro.\n2. Tu credencial aparecerá automáticamente en “Mi zona”.\n3. Pulsa “Imprimir / Guardar PDF” para imprimirla o conservarla en tu dispositivo.',[cronistaAction('/fanclub.html#fanMemberCard','IR A MI CREDENCIAL',true),cronistaAction('/fanclub.html#fanJoinCard','CREAR MEMBRESÍA')],'Entra al Fan Club, inicia sesión y abre tu zona. Allí podrás imprimir o guardar tu credencial.');
+ }
+ if(/como.*iniciar sesion|como.*ingresar|ya soy miembro|entrar.*mi zona|olvide.*contrasena/.test(q)){
+  return cronistaAnswer('member_login','Si ya perteneces a la Manada, abre el Fan Club, elige “Ya soy miembro” e ingresa con el correo y la contraseña que usaste al registrarte. Después se abrirán tu credencial y el contenido reservado.',[cronistaAction('/fanclub.html#fanMemberCard','ENTRAR A MI ZONA',true)],'Abre el Fan Club, elige Ya soy miembro e ingresa con tu correo y contraseña.');
+ }
+ if(/trivia|votacion|votación|encuesta|como.*votar|elegir.*faccion|elegir.*facción/.test(q)){
+  return cronistaAnswer('fan_activity_guide','Las actividades están en el Fan Club. Allí puedes conocer las facciones, responder la Trivia de la Luna y participar en la votación activa. Para el contenido reservado y tu credencial primero debes crear tu membresía o iniciar sesión.',[cronistaAction('/fanclub.html','VER ACTIVIDADES',true),cronistaAction('/fanclub.html#fanJoinCard','CREAR MEMBRESÍA')],'Las facciones, la trivia y las votaciones están en el Fan Club.');
+ }
+ if(/fan club|fanclub|unirme|registrarme|registro|crear.*membresia|manada/.test(q)){
+  return cronistaAnswer('join_guide','Será un honor recibirte en la Manada. Para unirte:\n1. Abre el Fan Club.\n2. Escribe tu nombre o alias, correo y una contraseña.\n3. Puedes indicar país, ciudad, personaje favorito y facción.\n4. Acepta el registro y pulsa “Crear mi membresía”.\nTu credencial digital aparecerá al finalizar.',[cronistaAction('/fanclub.html#fanJoinCard','UNIRME A LA MANADA',true),cronistaAction('/fanclub.html#fanMemberCard','YA SOY MIEMBRO')],'Abre el Fan Club, completa tus datos y elige Crear mi membresía. Tu credencial aparecerá al finalizar.');
+ }
+ if(/silenciar|mute|quitar.*musica|apagar.*musica|activar.*musica|sonido ambiental/.test(q)){
+  return cronistaAnswer('ambient_guide','El botón circular de sonido está en la parte superior, junto a las redes sociales. Púlsalo para silenciar o reactivar la música ambiental; el sitio recordará tu elección en este dispositivo.',[cronistaAction('#inicio','VER CONTROL DE SONIDO',true)],'Usa el botón de sonido de la parte superior para silenciar o reactivar la música.');
+ }
+ if(/como.*voz|activar.*voz|silenciar.*voz|escuchar.*cronista/.test(q)){
+  return cronistaAnswer('voice_guide','Usa el botón “Voz” en la parte superior de esta conversación. Desde allí puedes activar o silenciar mi voz masculina latino neutro. Para que la explicación sea cómoda, leeré una versión breve y dejaré todos los pasos completos por escrito.',[],'Usa el botón Voz de esta conversación para activarme o silenciarme.');
+ }
+ if(/como.*(?:buscar|encontrar).*personaje|abrir.*ficha/.test(q)){
+  return cronistaAnswer('character_guide','Ve a Personajes y pulsa el retrato que quieras consultar; se abrirán su rol y biografía oficial. También puedes escribir aquí el nombre del personaje y te ayudaré a encontrarlo sin inventar información.',[cronistaAction('#personajes','BUSCAR PERSONAJE',true)],'Ve a Personajes y pulsa un retrato, o dime aquí el nombre que buscas.');
+ }
+ if(/como.*leer|abrir.*historia|leer.*capitulo|lector.*historia/.test(q)){
+  return cronistaAnswer('reading_guide','Ve a Historias, busca la temporada y pulsa el capítulo que tenga la opción “Leer historia”. El relato se abrirá en un lector; dentro puedes desplazarte y usar “Volver arriba” cuando lo necesites.',[cronistaAction('#historias','ABRIR HISTORIAS',true)],'Ve a Historias, elige un capítulo disponible y pulsa Leer historia.');
+ }
+ if(/como.*ver.*episodio|reproducir.*episodio|ver.*video|como.*youtube/.test(q)){
+  return cronistaAnswer('episode_guide','Ve a Episodios, elige la temporada y pulsa el título del capítulo. El video se abrirá dentro del sitio; también podrás continuar en YouTube cuando esté disponible.',[cronistaAction('#episodios','BUSCAR UN EPISODIO',true)],'Ve a Episodios, elige la temporada y pulsa el título del capítulo.');
  }
  if(namedCharacter){
+  cronistaMemory.lastCharacter=namedCharacter.name;saveCronistaState();
   const identity=[namedCharacter.role,namedCharacter.group_label].filter(Boolean).join(' · ');
-  const detail=cronistaSpoilers?cronistaClip(namedCharacter.bio,480):'Su ficha oficial está disponible sin revelar acontecimientos importantes.';
-  return{reply:namedCharacter.name+(identity?' — '+identity+'.':'.')+' '+detail,navigation:navigation('#personajes','VER PERSONAJES')};
+  const detail=cronistaSpoilers?cronistaClip(namedCharacter.bio,480):(cronistaClip(namedCharacter.bio,210)||'Su ficha oficial está disponible.')+' Evitaré revelar acontecimientos decisivos mientras el modo sin spoilers esté activo.';
+  return cronistaAnswer('character',namedCharacter.name+(identity?' — '+identity+'.':'.')+' '+detail,[cronistaAction('#personajes','ABRIR SU FICHA',true),cronistaAction('#historias','BUSCAR EN HISTORIAS')],'Te presento a '+namedCharacter.name+'. '+(identity||'Su ficha oficial está en el Archivo de Personajes.'));
  }
  if(/personaje|protagonista|quienes son|quien es/.test(q)){
-  if(!cache.characters.length)return{reply:'El archivo de personajes aún está cargando. Intenta nuevamente en unos instantes.'};
+  if(!cache.characters.length)return cronistaAnswer('characters_loading','El Archivo de Personajes todavía está cargando. Dame un instante y vuelve a preguntarme.');
   const names=cache.characters.slice(0,12).map(item=>item.name).join(', ');
-  return{reply:'El archivo oficial reúne '+cache.characters.length+' personajes publicados. Entre ellos están '+names+'. Puedes abrir cada ficha para conocer su rol y biografía.',navigation:navigation('#personajes','VER PERSONAJES')};
+  return cronistaAnswer('characters','El Archivo oficial reúne '+cache.characters.length+' personajes publicados. Entre ellos están '+names+'. Puedes abrir cada retrato para conocer su rol y biografía. Si me dices un nombre, también puedo presentártelo aquí.',[cronistaAction('#personajes','EXPLORAR PERSONAJES',true)],'El Archivo reúne '+cache.characters.length+' personajes. Dime un nombre y te lo presentaré.');
  }
  if(namedEpisode&&/episodio|video|youtube|ver cap/.test(q)){
-  return{reply:'“'+namedEpisode.title+'” corresponde a la temporada '+namedEpisode.season+', '+namedEpisode.chapter_label+'. '+(namedEpisode.youtube_id?'El episodio está disponible para reproducirse en la Ciudadela.':'El video todavía está señalado como próximo.'),navigation:navigation('#episodios','VER EPISODIO')};
+  return cronistaAnswer('episode','“'+namedEpisode.title+'” corresponde a la temporada '+namedEpisode.season+', '+namedEpisode.chapter_label+'. '+(namedEpisode.youtube_id?'Está disponible para reproducirse dentro de la Ciudadela.':'El video todavía está señalado como próximo.'),[cronistaAction('#episodios','VER EPISODIO',true)]);
  }
- if(/recomienda|recomendacion|por donde empiezo|que puedo ver/.test(q)){
+ if(/recomienda|recomendacion|por donde empiezo|no se por donde|primera vez|que puedo ver|guiame|guia por el sitio|quiero empezar/.test(q)){
   const episode=cache.episodes.find(item=>item.youtube_id),story=cache.stories[0];
-  if(episode)return{reply:'Para cruzar el primer umbral, te recomiendo comenzar con “'+episode.title+'”, de la temporada '+episode.season+'. Después puedes explorar las historias y conocer a los personajes de la Manada.',navigation:navigation('#episodios','COMENZAR EPISODIO')};
-  if(story)return{reply:'Puedes comenzar con “'+story.title+'”, de la temporada '+story.season+'. Es una buena entrada al archivo narrativo de la Ciudadela.',navigation:navigation('#historias','COMENZAR HISTORIA')};
+  const characters=cache.characters.slice(0,2).map(item=>item.name).filter(Boolean);
+  if(episode)return cronistaAnswer('start_guide','Estoy contigo. Para entrar al universo sin perderte, comienza con “'+episode.title+'”, de la temporada '+episode.season+'. Después puedes conocer '+(characters.length?characters.join(' y '):'a los personajes principales')+' y, cuando quieras explorar sus tierras, realizar el tour 360°.',[cronistaAction('#episodios','VER PRIMER EPISODIO',true),cronistaAction('#personajes','CONOCER PERSONAJES'),cronistaAction('/tour.html','HACER EL TOUR 360°')],'Estoy contigo. Te recomiendo comenzar con '+episode.title+' y después conocer a sus personajes.');
+  if(story)return cronistaAnswer('start_guide','Comencemos por “'+story.title+'”, de la temporada '+story.season+'. Es una buena entrada al Archivo narrativo. Después puedo llevarte a los personajes o al recorrido 360°.',[cronistaAction('#historias','LEER PRIMERA HISTORIA',true),cronistaAction('#personajes','CONOCER PERSONAJES'),cronistaAction('/tour.html','TOUR 360°')]);
  }
  if(namedStory){
   const preview=cronistaSpoilers?cronistaClip(namedStory.body||namedStory.summary,480):cronistaClip(namedStory.summary,300);
-  return{reply:'Temporada '+namedStory.season+' · '+namedStory.chapter_label+' — “'+namedStory.title+'”. '+(preview||'Su historia completa estará disponible próximamente.'),navigation:navigation('#historias','LEER HISTORIAS')};
+  return cronistaAnswer('story','Temporada '+namedStory.season+' · '+namedStory.chapter_label+' — “'+namedStory.title+'”. '+(preview||'Su historia completa estará disponible próximamente.'),[cronistaAction('#historias','LEER HISTORIA',true),cronistaAction('#episodios','VER EPISODIOS')]);
  }
  if(/historia|capitulo|temporada|leer|relato/.test(q)){
   const stories=season?cache.stories.filter(item=>Number(item.season)===season):cache.stories;
-  if(!stories.length)return{reply:season?'Todavía no existen historias publicadas de la temporada '+season+'.':'El archivo narrativo aún está cargando o no tiene historias publicadas.'};
+  if(!stories.length)return cronistaAnswer('stories_empty',season?'Todavía no existen historias publicadas de la temporada '+season+'.':'El Archivo narrativo aún está cargando o no tiene historias publicadas.');
   const list=stories.slice(-5).map(item=>item.chapter_label+' — '+item.title).join('; ');
-  return{reply:(season?'En la temporada '+season:'En el archivo narrativo')+' encontrarás '+stories.length+' historias publicadas. Algunas de las más recientes son: '+list+'.',navigation:navigation('#historias','VER HISTORIAS')};
+  return cronistaAnswer('stories',(season?'En la temporada '+season:'En el Archivo narrativo')+' encontrarás '+stories.length+' historias publicadas. Algunas son: '+list+'. ¿Quieres leerlas o prefieres ver sus episodios?',[cronistaAction('#historias','LEER HISTORIAS',true),cronistaAction('#episodios','VER EPISODIOS')]);
  }
  if(namedEpisode){
-  return{reply:'“'+namedEpisode.title+'” corresponde a la temporada '+namedEpisode.season+', '+namedEpisode.chapter_label+'. '+(namedEpisode.youtube_id?'El episodio está disponible para reproducirse en la Ciudadela.':'El video todavía está señalado como próximo.'),navigation:navigation('#episodios','VER EPISODIO')};
+  return cronistaAnswer('episode','“'+namedEpisode.title+'” corresponde a la temporada '+namedEpisode.season+', '+namedEpisode.chapter_label+'. '+(namedEpisode.youtube_id?'El episodio está disponible para reproducirse en la Ciudadela.':'El video todavía está señalado como próximo.'),[cronistaAction('#episodios','VER EPISODIO',true)]);
  }
  if(/episodio|video|youtube|ver cap/.test(q)){
   const episodes=season?cache.episodes.filter(item=>Number(item.season)===season):cache.episodes;
-  if(!episodes.length)return{reply:season?'No hay episodios publicados de la temporada '+season+'.':'El archivo de episodios aún está cargando o no tiene videos publicados.'};
+  if(!episodes.length)return cronistaAnswer('episodes_empty',season?'No hay episodios publicados de la temporada '+season+'.':'El Archivo de Episodios aún está cargando o no tiene videos publicados.');
   const available=episodes.filter(item=>item.youtube_id),list=episodes.slice(-5).map(item=>item.chapter_label+' — '+item.title).join('; ');
-  return{reply:(season?'La temporada '+season:'La Ciudadela')+' registra '+episodes.length+' episodios, '+available.length+' disponibles en video. Los más recientes del archivo son: '+list+'.',navigation:navigation('#episodios','VER EPISODIOS')};
+  return cronistaAnswer('episodes',(season?'La temporada '+season:'La Ciudadela')+' registra '+episodes.length+' episodios, '+available.length+' disponibles en video. Entre los más recientes están: '+list+'.',[cronistaAction('#episodios','VER EPISODIOS',true),cronistaAction('#historias','LEER HISTORIAS')]);
  }
  if(/musica|cancion|tema|banda sonora|audio/.test(q)){
-  if(!cache.tracks.length)return{reply:'La biblioteca musical está preparada, pero todavía no muestra canciones publicadas.'};
+  if(!cache.tracks.length)return cronistaAnswer('music_empty','La Biblioteca Musical está preparada, pero todavía no muestra canciones publicadas. La ambientación principal puede controlarse desde el botón de sonido de la parte superior.');
   const titles=cache.tracks.slice(0,8).map(item=>item.title+(item.version?' — '+item.version:'')).join('; ');
-  return{reply:'Estas voces acompañan la memoria de la Manada: '+titles+'. Puedes escucharlas desde la biblioteca musical del sitio.',navigation:navigation('#musica','ESCUCHAR MÚSICA')};
+  return cronistaAnswer('music','Estas voces acompañan la memoria de la Manada: '+titles+'. Pulsa una canción en la Biblioteca Musical para escucharla.',[cronistaAction('#musica','ESCUCHAR MÚSICA',true)]);
+ }
+ if(/galeria|wallpaper|fondo de pantalla|afiche|arte oficial|imagen oficial/.test(q)){
+  return cronistaAnswer('gallery','La Galería Oficial reúne afiches, portadas y artes publicados en formatos cuadrado, horizontal y vertical. Elige un filtro y pulsa una imagen para verla completa.',[cronistaAction('#galeria','ABRIR GALERÍA',true)],'La Galería reúne los artes oficiales. Puedes filtrarlos y abrirlos en tamaño completo.');
  }
  if(/spoiler|secreto|revelacion|final|muere|muerte/.test(q)&&!cronistaSpoilers){
-  return{reply:'Ese sendero puede revelar acontecimientos importantes. Activa “Spoilers” en la parte superior y vuelve a preguntar; el Cronista solo hablará de lo que ya esté publicado oficialmente.'};
+  return cronistaAnswer('spoiler_guard','Ese sendero puede revelar acontecimientos importantes. Activa “Spoilers” en la parte superior y vuelve a preguntarme. Incluso entonces, solo hablaré de lo publicado oficialmente.');
  }
  if(/que es sangre de luna|sobre sangre de luna|de que trata/.test(q)){
-  return{reply:'Sangre de Luna es un universo épico y cinematográfico de alianzas, lealtades y antiguas amenazas. En la Ciudadela convergen lobos, humanos y vampiros mientras el pasado vuelve a reclamar su lugar.'};
+  return cronistaAnswer('about','Sangre de Luna es un universo épico y cinematográfico de poder, lealtad y antiguos juramentos. En la Ciudadela convergen lobos, humanos y vampiros mientras el pasado vuelve a reclamar su lugar. Puedo presentarte la historia sin spoilers o llevarte directamente al primer episodio.',[cronistaAction('#episodios','COMENZAR LA HISTORIA',true),cronistaAction('#personajes','CONOCER PERSONAJES')]);
  }
  if(/ayuda|puedes hacer|que sabes|opciones|secciones|sitio|pagina|web/.test(q)){
-  return{reply:'Puedo guiarte por Personajes, Historias, Episodios, Música y el Fan Club. Mis respuestas proceden únicamente del contenido oficial publicado en este sitio.'};
+  return cronistaAnswer('help','Puedo conversar contigo sobre el contenido oficial, presentarte personajes, recomendarte por dónde comenzar y guiarte paso a paso para leer historias, reproducir episodios, controlar la música, hacer el tour 360°, unirte a la Manada o imprimir tu credencial. ¿Qué quieres hacer ahora?',[cronistaAction('#episodios','EMPEZAR LA HISTORIA',true),cronistaAction('/tour.html','HACER EL TOUR'),cronistaAction('/fanclub.html','IR AL FAN CLUB')],'Puedo guiarte por todo el sitio y explicarte cada paso. ¿Qué quieres hacer ahora?');
  }
- return{reply:'Ese dato todavía no aparece de forma reconocible en el archivo publicado. Prueba preguntando por un personaje concreto, una temporada, un episodio, una canción o cómo unirte a la Manada.'};
+ if(/^(si|sí|claro|de acuerdo|vamos|hazlo)\b/.test(q)&&cronistaMemory.lastIntent==='start_guide'){
+  return cronistaAnswer('start_confirmed','Perfecto. Abramos el primer episodio disponible. Cuando termines, vuelve conmigo y continuaremos con los personajes o las historias.',[cronistaAction('#episodios','IR AL PRIMER EPISODIO',true)]);
+ }
+ return cronistaAnswer('canon_unknown','Ese dato todavía no figura de forma reconocible en el Archivo oficial, y no quiero inventarte una respuesta. Puedes preguntarme por un personaje concreto, una temporada, un episodio, una canción o por cómo utilizar alguna parte del sitio.',[cronistaAction('#personajes','VER PERSONAJES'),cronistaAction('#episodios','VER EPISODIOS'),cronistaAction('#historias','VER HISTORIAS')],'Ese dato todavía no figura en el Archivo oficial. Puedo ayudarte con otro tema publicado.');
 }
-function appendCronistaMessage(role,content,navigation=null){
+function appendCronistaMessage(role,content,actions=[]){
  const box=document.createElement('div');box.className=`cronista-message ${role}`;box.textContent=content;$('#cronistaMessages').appendChild(box);
- if(navigation?.href&&navigation?.label){const action=document.createElement('button');action.type='button';action.className='cronista-nav-action';action.textContent=navigation.label;action.onclick=()=>goFromCronista(navigation.href);$('#cronistaMessages').appendChild(action)}
+ const list=Array.isArray(actions)?actions:(actions?[actions]:[]);
+ if(list.length){const group=document.createElement('div');group.className='cronista-actions';list.forEach((item,index)=>{if(!item?.href||!item?.label)return;const button=document.createElement('button');button.type='button';button.className='cronista-nav-action'+((item.primary||index===0)?' primary':'');button.textContent=item.label;button.onclick=()=>goFromCronista(item.href);group.appendChild(button)});if(group.children.length)$('#cronistaMessages').appendChild(group)}
  $('#cronistaBody').scrollTop=$('#cronistaBody').scrollHeight;
 }
-function renderCronistaGreeting(){if(!$('#cronistaMessages').children.length)appendCronistaMessage('assistant',cronistaGreeting)}
-function openCronista(){renderCronistaGreeting();$('#cronistaPanel').classList.add('open');$('#cronistaPanel').setAttribute('aria-hidden','false');$('#cronistaLaunch').setAttribute('aria-expanded','true');$('#cronistaNudge').classList.remove('show');if(!cronistaGreetingSpoken){cronistaGreetingSpoken=true;speakCronista(cronistaGreeting)}setTimeout(()=>$('#cronistaInput').focus(),80)}
+function renderCronistaGreeting(){if($('#cronistaMessages').children.length)return;cronistaConversation.forEach(message=>appendCronistaMessage(message.role,message.content));}
+function openCronista(){renderCronistaGreeting();$('#cronistaPanel').classList.add('open');$('#cronistaPanel').setAttribute('aria-hidden','false');$('#cronistaLaunch').setAttribute('aria-expanded','true');$('#cronistaNudge').classList.remove('show');if(!cronistaGreetingSpoken){cronistaGreetingSpoken=true;speakCronista(cronistaConversation.at(-1)?.role==='assistant'?cronistaConversation.at(-1).content:cronistaGreeting)}setTimeout(()=>$('#cronistaInput').focus(),80)}
 function closeCronista(){stopCronistaVoice();$('#cronistaPanel').classList.remove('open');$('#cronistaPanel').setAttribute('aria-hidden','true');$('#cronistaLaunch').setAttribute('aria-expanded','false')}
 function goFromCronista(href){if(href.startsWith('#')){document.querySelector(href)?.scrollIntoView({behavior:'smooth'});closeCronista()}else location.href=href}
 function showCronistaNudge(){if(sessionStorage.getItem('sdl-cronista-welcomed'))return;sessionStorage.setItem('sdl-cronista-welcomed','1');$('#cronistaLaunch').classList.add('is-alerting');$('#cronistaNudge').classList.add('show');setTimeout(()=>$('#cronistaNudge').classList.remove('show'),6500)}
@@ -265,11 +336,11 @@ function setCronistaBusy(value){cronistaBusy=value;$('#cronistaSend').disabled=v
 function addCronistaTyping(){const el=document.createElement('div');el.id='cronistaTyping';el.className='cronista-message assistant typing';el.innerHTML='<i></i><i></i><i></i>';$('#cronistaMessages').appendChild(el);$('#cronistaBody').scrollTop=$('#cronistaBody').scrollHeight}
 function removeCronistaTyping(){$('#cronistaTyping')?.remove()}
 async function sendCronista(message){
- cronistaConversation.push({role:'user',content:message});appendCronistaMessage('user',message);setCronistaBusy(true);addCronistaTyping();
+ cronistaConversation.push({role:'user',content:message});saveCronistaState();appendCronistaMessage('user',message);setCronistaBusy(true);addCronistaTyping();
  try{
   await new Promise(resolve=>setTimeout(resolve,420));
   const data=cronistaLocalReply(message),reply=String(data.reply||'').trim();if(!reply)throw new Error('El Cronista no encontró una respuesta en el archivo.');
-  cronistaConversation.push({role:'assistant',content:reply});removeCronistaTyping();appendCronistaMessage('assistant',reply,data.navigation||null);speakCronista(reply);
+  cronistaConversation.push({role:'assistant',content:reply});saveCronistaState();removeCronistaTyping();appendCronistaMessage('assistant',reply,data.actions||[]);speakCronista(data.voice||reply);
  }catch(error){removeCronistaTyping();appendCronistaMessage('assistant',error.message||'El archivo no está disponible. Intenta nuevamente.')}
  finally{setCronistaBusy(false)}
 }
@@ -279,10 +350,11 @@ $('#cronistaLaunch').onclick=()=>$('#cronistaPanel').classList.contains('open')?
 $('#cronistaClose').onclick=closeCronista;
 $('#cronistaVoice').onclick=()=>{if(!('speechSynthesis'in window))return;cronistaVoiceEnabled=!cronistaVoiceEnabled;localStorage.setItem('sdl-cronista-voice',cronistaVoiceEnabled?'1':'0');if(!cronistaVoiceEnabled)stopCronistaVoice();updateCronistaVoiceButton();if(cronistaVoiceEnabled)speakCronista('La voz del Cronista ha despertado.')};
 $('#cronistaSpoilers').onclick=()=>{cronistaSpoilers=!cronistaSpoilers;$('#cronistaSpoilers').classList.toggle('on',cronistaSpoilers);$('#cronistaSpoilers').textContent=cronistaSpoilers?'Spoilers activos':'Sin spoilers';const notice=cronistaSpoilers?'Modo con spoilers activado. Puedo hablar de todo lo que ya está publicado.':'Modo sin spoilers activado. Protegeré los giros importantes de la historia.';appendCronistaMessage('assistant',notice);speakCronista(notice)};
-$$('[data-cronista-go]').forEach(button=>button.onclick=()=>goFromCronista(button.dataset.cronistaGo));
+$$('[data-cronista-ask]').forEach(button=>button.onclick=()=>{if(!cronistaBusy)sendCronista(button.dataset.cronistaAsk)});
 $('#cronistaForm').onsubmit=e=>{e.preventDefault();if(cronistaBusy)return;const value=$('#cronistaInput').value.trim();if(!value)return;$('#cronistaInput').value='';$('#cronistaInput').style.height='';sendCronista(value)};
 $('#cronistaInput').oninput=e=>{e.target.style.height='';e.target.style.height=Math.min(e.target.scrollHeight,100)+'px'};
 $('#cronistaInput').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('#cronistaForm').requestSubmit()}};
+if('IntersectionObserver'in window){const sectionObserver=new IntersectionObserver(entries=>{const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(visible?.target?.id){cronistaCurrentSection=visible.target.id;cronistaMemory.lastSection=cronistaCurrentSection;saveCronistaState()}},{rootMargin:'-25% 0px -55%',threshold:[0,.2,.5]});['inicio','personajes','historias','episodios','musica','galeria'].forEach(id=>{const section=document.getElementById(id);if(section)sectionObserver.observe(section)})}
 
 async function loadPublic(){
  const [c,s,e,t,g,pop,pr,amb]=await Promise.all([
