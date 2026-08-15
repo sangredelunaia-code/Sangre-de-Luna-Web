@@ -1,0 +1,45 @@
+name: Fan Club header repair
+
+on:
+  push:
+    paths:
+      - '.github/workflows/fanclub-header-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-header:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Insert Fan Club button in static header
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          marker = '<a class="btn ghost admin-entry" href="?admin=1">Ingresar</a>'
+          button = '<a class="btn ghost fanclub-head-btn" href="/fanclub.html" aria-label="Abrir Fan Club">Fan Club</a>'
+          if button in text:
+              print('Fan Club button already present; no change needed.')
+          elif marker in text:
+              text = text.replace(marker, button + marker, 1)
+              path.write_text(text, encoding='utf-8')
+              print('Fan Club button inserted.')
+          else:
+              raise SystemExit('Ingresar header marker not found')
+
+      - name: Commit repair
+        run: |
+          if git diff --quiet -- index.html; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "sangredelunaia-code"
+          git config user.email "sangredelunaia@gmail.com"
+          git add index.html
+          git commit -m "Place Fan Club button beside Ingresar"
+          git push
