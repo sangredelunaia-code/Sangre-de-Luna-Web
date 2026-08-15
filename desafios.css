@@ -1,0 +1,68 @@
+/* DESAFIOS DE LA MANADA */
+.manada-challenges{position:relative;overflow:hidden;background:radial-gradient(circle at 82% 8%,#2e81b72b,transparent 30%),linear-gradient(180deg,#040b12,#07131d 52%,#03080d)}
+.manada-challenges:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(125deg,transparent 12%,#8ed8ff08 45%,transparent 72%)}
+.manada-challenges>.w{position:relative;z-index:1}
+.challenge-intro{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:24px;align-items:stretch;margin-bottom:24px}
+.challenge-intro-copy,.challenge-oath{border:1px solid #274359;border-radius:22px;background:linear-gradient(145deg,#091824ed,#040b12ed);padding:25px;box-shadow:0 22px 60px #0005}
+.challenge-intro-copy h3{margin:7px 0 12px;font:700 clamp(1.8rem,4vw,3rem)/1 Georgia,serif}
+.challenge-intro-copy p,.challenge-oath p{color:#aabfce}
+.challenge-oath{display:grid;align-content:center;text-align:center;background:radial-gradient(circle at 50% 28%,#2e87bc36,transparent 36%),#06111a}
+.challenge-oath-icon{font-size:3.5rem;filter:drop-shadow(0 0 20px #7ad3ff66)}
+.challenge-oath b{display:block;margin-top:8px;color:#e5f6ff;font:700 1.2rem Georgia,serif}
+.challenge-preview-grid,.challenge-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.challenge-preview-card,.challenge-card{position:relative;overflow:hidden;border:1px solid #24445a;border-radius:18px;background:linear-gradient(145deg,#081621,#040b12);padding:19px;transition:.22s}
+.challenge-preview-card:hover,.challenge-card:hover{transform:translateY(-2px);border-color:#548db0;box-shadow:0 15px 38px #0005}
+.challenge-card.done{border-color:#4b806f;background:linear-gradient(145deg,#0b211c,#06100f 58%,#06131d)}
+.challenge-card:after{content:"";position:absolute;right:-48px;top:-58px;width:145px;aspect-ratio:1;border-radius:50%;background:#74cfff0a}
+.challenge-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.challenge-icon{display:grid;place-items:center;width:49px;aspect-ratio:1;border:1px solid #477491;border-radius:14px;background:#0d2433;font-size:1.65rem;box-shadow:inset 0 0 24px #77cfff16}
+.challenge-season{color:#8fd8ff;font-size:.68rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.challenge-preview-card h4,.challenge-card h4{margin:8px 0 5px;font:700 1.35rem Georgia,serif;color:#eef9ff}
+.challenge-preview-card p,.challenge-card p{margin:7px 0;color:#93aabd;font-size:.9rem}
+.challenge-meta{display:flex;gap:7px;flex-wrap:wrap;margin:13px 0}
+.challenge-chip{display:inline-flex;align-items:center;gap:5px;border:1px solid #294a60;border-radius:999px;background:#07121b;padding:6px 9px;color:#b8d3e4;font-size:.68rem;font-weight:800}
+.challenge-chip.earned{border-color:#477963;background:#0a211a;color:#aaf0d1}
+.challenge-lock-panel{margin-top:18px;border:1px dashed #3a617b;border-radius:19px;background:#07141e;padding:25px;text-align:center}
+.challenge-lock-panel h4{margin:7px 0;font:700 1.5rem Georgia,serif}
+.challenge-lock-panel p{max-width:660px;margin:8px auto 17px;color:#9eb4c5}
+.challenge-dashboard{display:grid;gap:18px;margin-top:25px}
+.challenge-profile{border:1px solid #34566d;border-radius:22px;background:radial-gradient(circle at 88% 18%,#398dc933,transparent 30%),linear-gradient(145deg,#0a1b28,#040b12);padding:22px}
+.challenge-profile-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.challenge-level{font:800 clamp(2rem,5vw,3.5rem)/1 Georgia,serif;color:#e8f8ff;text-shadow:0 0 22px #58bdf044}
+.challenge-level small{display:block;margin-top:7px;color:#82cdf2;font:900 .68rem Arial,sans-serif;letter-spacing:.15em}
+.challenge-stats{display:grid;grid-template-columns:repeat(3,minmax(92px,1fr));gap:9px;min-width:min(430px,100%)}
+.challenge-stat{border:1px solid #29485d;border-radius:14px;background:#06121bba;padding:12px;text-align:center}
+.challenge-stat b{display:block;color:#e5f7ff;font-size:1.45rem}.challenge-stat small{color:#819bae;font-size:.67rem;font-weight:900;letter-spacing:.07em}
+.challenge-progress{height:10px;overflow:hidden;margin-top:18px;border:1px solid #263e4e;border-radius:999px;background:#02070c}
+.challenge-progress i{display:block;height:100%;width:var(--progress,0%);border-radius:inherit;background:linear-gradient(90deg,#4a9bc8,#9be2ff 64%,#dff7ff);box-shadow:0 0 18px #80d6ff88;transition:width .7s ease}
+.challenge-progress-note{display:flex;justify-content:space-between;gap:16px;margin-top:7px;color:#7690a3;font-size:.7rem}
+.challenge-badges{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px;margin-top:16px}
+.challenge-badge{border:1px solid #29475d;border-radius:15px;background:#07131d;padding:12px;text-align:center;min-height:116px;display:grid;align-content:center}
+.challenge-badge span{font-size:2rem;filter:grayscale(.2);opacity:.95}.challenge-badge b{display:block;margin-top:6px;color:#dcf2ff;font-size:.76rem}.challenge-badge p{margin:4px 0 0;color:#7892a6;font-size:.65rem}
+.challenge-empty-badges{grid-column:1/-1;padding:14px;border:1px dashed #29475d;border-radius:14px;color:#7892a6;text-align:center}
+.challenge-score-line{display:flex;align-items:center;gap:9px;margin:13px 0 16px}.challenge-score-line .challenge-progress{flex:1;margin:0}.challenge-score-line b{min-width:42px;text-align:right;color:#bfe9ff}
+.challenge-runner{scroll-margin-top:84px;border:1px solid #3c6178;border-radius:22px;background:linear-gradient(150deg,#081723,#02070d);padding:23px;box-shadow:0 24px 64px #0007}
+.challenge-runner-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;padding-bottom:16px;border-bottom:1px solid #1d3547}
+.challenge-runner h3{margin:5px 0 4px;font:700 clamp(1.7rem,4vw,2.65rem) Georgia,serif}
+.challenge-runner-q{padding:20px 0;border-bottom:1px solid #193044}.challenge-runner-q:last-of-type{border-bottom:0}
+.challenge-runner-q>p{margin:0 0 12px;color:#e4f3fb;font-weight:800}.challenge-runner-q>p small{color:#7ebfe4;font-weight:900}
+.challenge-answer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.challenge-answer{position:relative;display:flex;align-items:flex-start;gap:9px;border:1px solid #27465b;border-radius:12px;background:#07141e;padding:11px 12px;color:#aec3d2;cursor:pointer;transition:.18s}
+.challenge-answer:hover{border-color:#5b96b8;background:#0a1c29}.challenge-answer:has(input:checked){border-color:#88d7ff;background:#113047;color:#f0faff;box-shadow:inset 0 0 20px #82d5ff12}
+.challenge-answer input{margin-top:3px;accent-color:#78cfff}
+.challenge-runner-actions{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
+.challenge-result{margin-top:20px;border:1px solid #406c5e;border-radius:18px;background:radial-gradient(circle at 88% 20%,#63c59d2a,transparent 30%),#081a16;padding:20px}
+.challenge-result.fail{border-color:#6f5140;background:#1b100b}
+.challenge-result-score{font:800 clamp(2rem,6vw,4rem)/1 Georgia,serif;color:#ddfff1}.challenge-result.fail .challenge-result-score{color:#ffd7bf}
+.challenge-result h4{margin:8px 0 5px;font:700 1.35rem Georgia,serif}.challenge-result p{color:#a8c7ba}
+.fan-achievement-tools{display:flex;justify-content:center;margin:12px 0 4px}
+.fan-achievement-reverse{width:min(440px,100%);aspect-ratio:2/3;margin:14px auto 0;border:1px solid #a9d9ee;border-radius:0;background:radial-gradient(circle at 50% 10%,#3679a05c,transparent 30%),linear-gradient(180deg,#071927,#02070d 58%,#07131c);box-shadow:0 24px 70px #000c,0 0 32px #8bd6ff24;padding:8%;color:#edf8ff;text-align:center;position:relative;overflow:hidden}
+.fan-achievement-reverse:before{content:"";position:absolute;inset:14px;border:1px solid #b9def044;pointer-events:none}
+.fan-achievement-reverse.hidden{display:none!important}
+.fan-achievement-reverse img{width:46%;max-height:80px;object-fit:contain;filter:drop-shadow(0 0 16px #80d6ff55)}
+.fan-achievement-reverse h4{margin:10px 0 3px;font:800 1.35rem Aptos,"Segoe UI",Arial,sans-serif;letter-spacing:.08em}.fan-achievement-reverse>small{color:#89d5f8;font-weight:900;letter-spacing:.16em}
+.fan-achievement-rank{margin:13% 0 7%;font:800 clamp(2rem,9vw,3rem)/1 Georgia,serif;color:#f5fbff}.fan-achievement-rank span{display:block;margin-top:8px;color:#94d9fa;font:900 .7rem Arial,sans-serif;letter-spacing:.15em}
+.fan-achievement-badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13%}.fan-achievement-mini{display:grid;align-content:center;min-height:88px;border:1px solid #41677d;border-radius:14px;background:#06121ca8;padding:8px}.fan-achievement-mini span{font-size:1.7rem}.fan-achievement-mini b{font-size:.63rem;color:#d8effb;margin-top:4px}.fan-achievement-none{grid-column:1/-1;border:1px dashed #35556a;border-radius:14px;padding:17px;color:#8299aa}
+@media(max-width:900px){.challenge-intro{grid-template-columns:1fr}.challenge-oath{min-height:190px}.challenge-profile-head{display:grid}.challenge-stats{min-width:0;width:100%}.challenge-badges{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.challenge-preview-grid,.challenge-grid,.challenge-answer-grid{grid-template-columns:1fr}.challenge-profile{padding:17px}.challenge-stats{grid-template-columns:repeat(3,1fr)}.challenge-stat{padding:10px 5px}.challenge-badges{grid-template-columns:repeat(2,1fr)}.challenge-runner{padding:17px}.challenge-runner-head{display:grid}}
+@media print{.manada-challenges,.fan-achievement-tools,.fan-achievement-reverse{display:none!important}}
