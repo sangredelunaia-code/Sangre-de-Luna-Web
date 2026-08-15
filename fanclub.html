@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#02060a">
 <title>La Manada · Fan Club Oficial | Sangre de Luna</title>
 <meta name="description" content="La Manada, Fan Club Oficial de Sangre de Luna. Únete, elige tu facción, participa y entra a tu zona privada de miembro.">
-<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/Favicon.png?v=20260814-5">
-<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/Favicon.png?v=20260814-5">
+<link rel="icon" type="image/png" href="/assets/logo-oficial.png">
+<link rel="apple-touch-icon" href="/assets/logo-oficial.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--bg:#02060a;--panel:#07111a;--panel2:#0b1824;--line:#20394e;--blue:#89d4ff;--text:#eff8ff;--muted:#9fb3c4;--ok:#75ddb3;--danger:#ff8b98;--silver:#d9ecf7}
@@ -28,7 +28,7 @@
 <div class="portal" id="portal" aria-label="Entrada a La Manada">
  <div class="portal-bg"></div><div class="mist m1"></div><div class="mist m2"></div><div class="mist m3"></div>
  <div class="portal-inner">
-  <img class="portal-emblem" src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/Favicon.png?v=20260814-5" alt="Emblema de La Manada">
+  <img class="portal-emblem" src="/assets/logo-oficial.png" alt="Emblema de La Manada">
   <div class="portal-kicker">FAN CLUB OFICIAL · SANGRE DE LUNA</div>
   <h1>LA <span>MANADA</span></h1>
   <p class="portal-quote">“No todos los que cruzan estas puertas son visitantes. Algunos pertenecen a la noche.”</p>
@@ -41,11 +41,11 @@
  </div>
 </div>
 <header class="top">
- <a class="brand" href="/"><img src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@536a25c6c2792b4398a84cc58d941011c29b42fb/assets/logo.webp" alt="Sangre de Luna"><div><b>La Manada</b><small>FAN CLUB OFICIAL</small></div></a>
+ <a class="brand" href="/"><img src="/assets/logo-oficial.png" alt="Sangre de Luna"><div><b>La Manada</b><small>FAN CLUB OFICIAL</small></div></a>
  <div class="top-actions"><a class="btn ghost site-label" href="/">← SITIO PRINCIPAL</a><button class="btn" id="topMember">🔑 MI ZONA</button></div>
 </header>
 <main id="fanMain">
-<section class="manada-hero"><div class="w"><div class="hero-copy"><span class="ey">UNA PUERTA DISTINTA DE LA CIUDADELA</span><h2>LA <span>MANADA</span></h2><p>Tu espacio dentro del universo Sangre de Luna. Elige tu facción, participa en las decisiones de la comunidad, demuestra cuánto conoces la historia y desbloquea contenido reservado para miembros.</p><div class="toolbar"><button class="btn pri" data-go="join">UNIRME A LA MANADA</button><button class="btn" data-go="member">YA SOY MIEMBRO</button></div></div><div class="hero-crest"><img src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/Favicon.png?v=20260814-5" alt="Emblema de La Manada"></div></div></section>
+<section class="manada-hero"><div class="w"><div class="hero-copy"><span class="ey">UNA PUERTA DISTINTA DE LA CIUDADELA</span><h2>LA <span>MANADA</span></h2><p>Tu espacio dentro del universo Sangre de Luna. Elige tu facción, participa en las decisiones de la comunidad, demuestra cuánto conoces la historia y desbloquea contenido reservado para miembros.</p><div class="toolbar"><button class="btn pri" data-go="join">UNIRME A LA MANADA</button><button class="btn" data-go="member">YA SOY MIEMBRO</button></div></div><div class="hero-crest"><img src="/assets/logo-oficial.png" alt="Emblema de La Manada"></div></div></section>
 <section class="section" id="acceso"><div class="w"><div class="head"><div><span class="ey">PUERTAS DE ACCESO</span><h2>Encuentra tu lugar</h2></div><p>Los miembros crean su contraseña al registrarse y utilizan la misma para volver a entrar desde cualquier dispositivo.</p></div><div class="auth-grid">
  <section class="fan-card" id="fanJoinCard"><span class="ey">NUEVA MEMBRESÍA</span><h3>Únete a la Manada</h3><p>Crea tu identidad dentro del Fan Club oficial.</p><div id="fanJoinMsg"></div><form id="fanJoinForm"><div class="formgrid"><div class="fld"><label>NOMBRE O ALIAS</label><input id="fanName" maxlength="80" required></div><div class="fld"><label>CORREO</label><input id="fanEmail" type="email" autocomplete="email" required></div><div class="fld"><label>CONTRASEÑA</label><input id="fanPassword" type="password" minlength="8" maxlength="72" autocomplete="new-password" required><small class="fan-password-help">Entre 8 y 72 caracteres.</small></div><div class="fld"><label>REPETIR CONTRASEÑA</label><input id="fanPassword2" type="password" minlength="8" maxlength="72" autocomplete="new-password" required></div><div class="fld"><label>PAÍS</label><input id="fanCountry" maxlength="80"></div><div class="fld"><label>CIUDAD</label><input id="fanCity" maxlength="80"></div><div class="fld"><label>PERSONAJE FAVORITO</label><select id="fanCharacter"><option value="">Sin elegir</option></select></div><div class="fld"><label>FACCIÓN</label><select id="fanFaction"><option value="">Elige una facción</option></select></div></div><label class="fan-option" style="margin-top:12px"><input id="fanPrivacy" type="checkbox" required><span>Acepto registrar estos datos para formar parte del Fan Club de Sangre de Luna.</span></label><div class="toolbar" style="margin-top:14px"><button class="btn pri" type="submit">CREAR MI MEMBRESÍA</button></div></form></section>
  <section class="fan-card" id="fanMemberCard"><span class="ey">ZONA PRIVADA</span><h3>Ya soy miembro</h3><div id="fanLoginBox"><p>Ingresa con tu correo y la misma contraseña que creaste al registrarte.</p><div id="fanLoginMsg"></div><form id="fanLoginForm"><div class="fld"><label>CORREO</label><input id="fanLoginEmail" type="email" autocomplete="username" required></div><div class="fld"><label>CONTRASEÑA</label><input id="fanLoginPassword" type="password" autocomplete="current-password" required></div><button class="btn pri" type="submit">INGRESAR A MI ZONA</button></form><div id="fanLegacyBox" class="fan-legacy hidden"><h4>Cuenta anterior detectada</h4><p>Tu membresía se creó antes de habilitar contraseñas. Define una ahora para conservar el acceso.</p><div id="fanLegacyMsg"></div><div class="fld"><label>NUEVA CONTRASEÑA</label><input id="fanLegacyPass" type="password" minlength="8" maxlength="72"></div><div class="fld"><label>REPETIR CONTRASEÑA</label><input id="fanLegacyPass2" type="password" minlength="8" maxlength="72"></div><button class="btn" id="fanActivateLegacy" type="button">ACTIVAR CONTRASEÑA</button></div></div><div id="fanCredential"><div class="fan-lock">Inicia sesión para ver tu credencial y entrar a tu zona de miembro.</div></div></section>
@@ -54,7 +54,7 @@
 <section class="section"><div class="w"><div class="activity-grid"><section class="fan-card"><span class="ey">VOTACIÓN</span><h3>La voz de la Manada</h3><div id="fanPoll"><div class="empty">Cargando encuesta…</div></div></section><section class="fan-card"><span class="ey">TRIVIA DE LA LUNA</span><h3>¿Cuánto conoces Sangre de Luna?</h3><div id="fanTrivia"><div class="empty">Cargando trivia…</div></div></section></div></div></section>
 <section class="section alt" id="zona"><div class="w"><div class="head"><div><span class="ey">MI ZONA DE MIEMBRO</span><h2>Contenido de La Manada</h2></div><p>Noticias, imágenes, wallpapers y piezas especiales reservadas para quienes forman parte del Fan Club.</p></div><div id="fanContent"><div class="fan-lock">Inicia sesión para desbloquear el contenido reservado para miembros.</div></div></div></section>
 </main>
-<footer class="foot"><div class="w row"><div><img src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@536a25c6c2792b4398a84cc58d941011c29b42fb/assets/logo.webp" alt="Sangre de Luna"><div>© 2026 Sangre de Luna - Propiedad Pedro Alvarado</div></div><div>LA MANADA · FAN CLUB OFICIAL</div></div></footer>
+<footer class="foot"><div class="w row"><div><img src="/assets/logo-oficial.png" alt="Sangre de Luna"><div>© 2026 Sangre de Luna - Propiedad Pedro Alvarado</div></div><div>LA MANADA · FAN CLUB OFICIAL</div></div></footer>
 <script>
 (async()=>{
 const cfg=await fetch('https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Configuración no disponible');return r.json()});
