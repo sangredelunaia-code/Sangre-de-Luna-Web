@@ -23,14 +23,14 @@ jobs:
 
           fanclub = Path('fanclub.html')
           text = fanclub.read_text(encoding='utf-8')
-          old = '<a class="btn ghost back" href="/">↩ VOLVER AL SITIO</a>'
-          new = '<a class="btn ghost back" href="/index.html">↩ VOLVER AL SITIO</a>'
+          old = '<a class="btn ghost back" href="/index.html">↩ VOLVER AL SITIO</a>'
+          new = '<a class="btn ghost back" href="/">↩ VOLVER AL SITIO</a>'
           if old in text:
               text = text.replace(old, new, 1)
               fanclub.write_text(text, encoding='utf-8')
-              print('Fan Club return link repaired.')
+              print('Fan Club return link repaired to root route.')
           elif new in text:
-              print('Fan Club return link already repaired.')
+              print('Fan Club return link already points to root route.')
           else:
               raise SystemExit('Fan Club return marker not found')
 
@@ -68,5 +68,5 @@ jobs:
           git config user.name "sangredelunaia-code"
           git config user.email "sangredelunaia@gmail.com"
           git add fanclub.html vercel.json
-          git commit -m "Fix Fan Club return to main site"
+          git commit -m "Fix Fan Club return to root site"
           git push
