@@ -1,5 +1,5 @@
 /* SANGRE DE LUNA · CRONISTA GLOBAL + PUENTE TOUR 360
-   Conserva el Cronista estable y activa el gestor administrable en /tour. */
+   Conserva el Cronista estable, activa el gestor 360 y la recuperación del Fan Club. */
 (()=>{
   const STABLE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@b501154b5d97d09ed75271267e221a8744be6da6/cronista-global.js';
   const isTour=((location.pathname||'/').replace(/\.html$/,'').replace(/\/+$/,'')||'/')==='/tour';
@@ -89,5 +89,16 @@
     if(window.__SDL_TOUR360_MANAGER__||document.querySelector('script[data-sdl360-manager]'))return;
     const s=document.createElement('script');s.src='/tour360-manager.js?v=20260816';s.defer=true;s.dataset.sdl360Manager='1';s.onload=repairTourCTA;document.head.appendChild(s);
   };
-  const legacy=document.createElement('script');legacy.src=STABLE;legacy.async=false;legacy.onload=loadTour;legacy.onerror=loadTour;document.head.appendChild(legacy);
+
+  const loadPasswordRecovery=()=>{
+    if(window.__SDL_FAN_PASSWORD_RECOVERY__||document.querySelector('script[data-sdl-password-recovery]'))return;
+    const s=document.createElement('script');
+    s.src='/fanclub-password-recovery.js?v=20260816';
+    s.defer=true;
+    s.dataset.sdlPasswordRecovery='1';
+    document.head.appendChild(s);
+  };
+
+  const afterLegacy=()=>{loadTour();loadPasswordRecovery()};
+  const legacy=document.createElement('script');legacy.src=STABLE;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
 })();
