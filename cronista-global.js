@@ -40,6 +40,19 @@
         height:auto !important;
         display:initial !important;
       }
+
+      /* Garantiza contraste del CTA principal del Tour. */
+      #sdl360App .s360-btn.primary,
+      #sdl360App .s360-start,
+      #sdl360App button[data-action="start"],
+      #startButton,
+      #chooseTerritoryButton{
+        color:#07101a !important;
+        -webkit-text-fill-color:#07101a !important;
+        text-shadow:none !important;
+        opacity:1 !important;
+      }
+
       @media(max-height:760px){
         #sdl360App .s360-overlay,
         .overlay{
@@ -49,11 +62,32 @@
     `;
     document.head.appendChild(style);
   };
+
+  const repairTourCTA=()=>{
+    if(!isTour)return;
+    const legacyStart=document.getElementById('startButton');
+    if(legacyStart&&!legacyStart.textContent.trim()) legacyStart.textContent='Explorar La Ciudadela';
+    document.querySelectorAll('#sdl360App .s360-btn.primary,#sdl360App .s360-start,#sdl360App button[data-action="start"]').forEach(button=>{
+      button.style.setProperty('color','#07101a','important');
+      button.style.setProperty('-webkit-text-fill-color','#07101a','important');
+      if(!button.textContent.trim()) button.textContent='Explorar ahora';
+    });
+  };
+
+  const observeTourCTA=()=>{
+    repairTourCTA();
+    if(!isTour)return;
+    const observer=new MutationObserver(()=>repairTourCTA());
+    observer.observe(document.documentElement,{childList:true,subtree:true});
+    setTimeout(()=>observer.disconnect(),12000);
+  };
+
   const loadTour=()=>{
     if(!isTour)return;
     addTourScrollbarFix();
+    observeTourCTA();
     if(window.__SDL_TOUR360_MANAGER__||document.querySelector('script[data-sdl360-manager]'))return;
-    const s=document.createElement('script');s.src='/tour360-manager.js?v=20260816';s.defer=true;s.dataset.sdl360Manager='1';document.head.appendChild(s);
+    const s=document.createElement('script');s.src='/tour360-manager.js?v=20260816';s.defer=true;s.dataset.sdl360Manager='1';s.onload=repairTourCTA;document.head.appendChild(s);
   };
   const legacy=document.createElement('script');legacy.src=STABLE;legacy.async=false;legacy.onload=loadTour;legacy.onerror=loadTour;document.head.appendChild(legacy);
 })();
