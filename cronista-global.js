@@ -8,21 +8,43 @@
     const style=document.createElement('style');
     style.id='sdl-tour-scrollbar-fix';
     style.textContent=`
+      /* El desplazamiento pertenece a toda la ventana del Tour.
+         Así la barra aparece en el borde derecho del viewport, no dentro del panel central. */
+      #sdl360App .s360-overlay,
+      .overlay{
+        overflow-y:auto !important;
+        overflow-x:hidden !important;
+        scrollbar-width:auto !important;
+        -ms-overflow-style:auto !important;
+        scrollbar-gutter:stable;
+        overscroll-behavior:contain;
+        align-items:safe center;
+        justify-items:center;
+      }
       #sdl360App .s360-panel,
       #sdl360App .s360-detail,
-      .intro-panel,.map-panel,.detail-panel{
-        scrollbar-width:none;
-        -ms-overflow-style:none;
-        overscroll-behavior:contain;
+      .intro-panel,
+      .map-panel,
+      .detail-panel{
+        max-height:none !important;
+        overflow:visible !important;
+        scrollbar-width:auto !important;
+        -ms-overflow-style:auto !important;
       }
       #sdl360App .s360-panel::-webkit-scrollbar,
       #sdl360App .s360-detail::-webkit-scrollbar,
       .intro-panel::-webkit-scrollbar,
       .map-panel::-webkit-scrollbar,
       .detail-panel::-webkit-scrollbar{
-        width:0;
-        height:0;
-        display:none;
+        width:auto !important;
+        height:auto !important;
+        display:initial !important;
+      }
+      @media(max-height:760px){
+        #sdl360App .s360-overlay,
+        .overlay{
+          align-items:start;
+        }
       }
     `;
     document.head.appendChild(style);
