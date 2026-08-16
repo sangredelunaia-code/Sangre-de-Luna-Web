@@ -1,5 +1,5 @@
 /* SANGRE DE LUNA · CRONISTA GLOBAL + PUENTE TOUR 360
-   Conserva el Cronista estable, activa el gestor 360, recuperación, insignias y expediciones automáticas. */
+   Conserva el Cronista estable, activa el gestor 360, recuperación, insignias, expediciones, progreso y ranking. */
 (()=>{
   const STABLE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@b501154b5d97d09ed75271267e221a8744be6da6/cronista-global.js';
   const isTour=((location.pathname||'/').replace(/\.html$/,'').replace(/\/+$/,'')||'/')==='/tour';
@@ -26,6 +26,7 @@
   const loadPasswordRecovery=()=>{if(window.__SDL_FAN_PASSWORD_RECOVERY__||document.querySelector('script[data-sdl-password-recovery]'))return;const s=document.createElement('script');s.src='/fanclub-password-recovery.js?v=20260816-2';s.defer=true;s.dataset.sdlPasswordRecovery='1';document.head.appendChild(s)};
   const loadAchievements=()=>{if(window.__SDL_FAN_ACHIEVEMENTS__||document.querySelector('script[data-sdl-achievements]'))return;const s=document.createElement('script');s.src='/fanclub-achievements.js?v=20260816-1';s.defer=true;s.dataset.sdlAchievements='1';document.head.appendChild(s)};
   const loadExpeditions=()=>{if(window.__SDL_FAN_EXPEDITIONS__||document.querySelector('script[data-sdl-expeditions]'))return;const s=document.createElement('script');s.src='/fanclub-expeditions.js?v=20260816-1';s.defer=true;s.dataset.sdlExpeditions='1';document.head.appendChild(s)};
-  const afterLegacy=()=>{loadTour();loadPasswordRecovery();loadAchievements();loadExpeditions()};
+  const loadProgress=()=>{if(window.__SDL_FAN_PROGRESS__||document.querySelector('script[data-sdl-progress]'))return;const s=document.createElement('script');s.src='/fanclub-progress.js?v=20260816-1';s.defer=true;s.dataset.sdlProgress='1';document.head.appendChild(s)};
+  const afterLegacy=()=>{loadTour();loadPasswordRecovery();loadAchievements();loadExpeditions();loadProgress()};
   const legacy=document.createElement('script');legacy.src=STABLE;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
 })();
