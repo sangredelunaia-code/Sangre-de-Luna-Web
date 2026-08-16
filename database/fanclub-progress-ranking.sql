@@ -1,0 +1,23 @@
+-- SANGRE DE LUNA · PROGRESO, RANKING Y AVISOS AUTOMÁTICOS
+-- Migración aplicada en Supabase: fanclub_progress_emails_admin_ranking
+--
+-- Funcionalidad activa:
+-- 1. fanclub_members incorpora ranking_opt_in, ranking_alias y progress_email_enabled.
+-- 2. fanclub_member_progress_state conserva el rango actual y evita ascensos duplicados.
+-- 3. fanclub_progress_notifications funciona como cola idempotente de correos.
+-- 4. Triggers sobre desafíos y expediciones detectan ascensos automáticamente.
+-- 5. Insignias épicas/legendarias nuevas generan un aviso de logro extraordinario,
+--    excepto las insignias de progresión para evitar duplicar el correo de ascenso.
+-- 6. Los miembros existentes se inicializan como línea base sin correos retroactivos.
+-- 7. fanclub_member_ranking(access_token) devuelve únicamente miembros opt-in y solo alias.
+-- 8. fanclub_member_progress_preferences(...) permite al fan controlar ranking y correos.
+-- 9. fanclub_progress_admin_dashboard() expone datos internos de consulta a administradores
+--    con permiso Fan Club; no permite modificar puntos, niveles ni insignias.
+-- 10. La entrega de correo se realiza mediante la Edge Function
+--     fanclub-progress-notifications utilizando la configuración Gmail ya conectada.
+--
+-- Privacidad del ranking:
+-- - participación desactivada por defecto;
+-- - se exige un alias público de 2 a 40 caracteres;
+-- - jamás se devuelve correo, ciudad, país u otros datos personales en el ranking;
+-- - el correo sí es visible únicamente en el panel administrativo de consulta.
