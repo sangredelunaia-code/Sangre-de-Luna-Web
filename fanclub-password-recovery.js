@@ -7,7 +7,7 @@
   const CFG_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
   const FN='fanclub-password-recovery';
   const isAdmin=new URLSearchParams(location.search).get('admin')==='1';
-  let cfg=null,sb=null;
+  let cfg=null,sb=null,publicInjecting=false;
   const $=(s,r=document)=>r.querySelector(s);
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
@@ -70,9 +70,26 @@
 
   async function injectPublic(){
     if(isAdmin)return;
-    const form=$('#fanLoginForm');if(!form||$('#sdlForgotButton'))return;
-    try{await ensureSupabase();const {data}=await sb.rpc('fanclub_mail_public_status');if(!data?.configured)return}catch{return}
-    const b=document.createElement('button');b.type='button';b.id='sdlForgotButton';b.className='sdl-reset-link';b.textContent='🔑 ¿Olvidaste tu contraseña?';b.onclick=openForgot;form.insertAdjacentElement('afterend',b);
+    const form=$('#fanLoginForm');if(!form)return;
+
+    const existing=[...document.querySelectorAll('#sdlForgotButton')];
+    if(existing.length){existing.slice(1).forEach(el=>el.remove());return}
+    if(publicInjecting)return;
+
+    publicInjecting=true;
+    try{
+      await ensureSupabase();
+      const {data}=await sb.rpc('fanclub_mail_public_status');
+      if(!data?.configured)return;
+      if($('#sdlForgotButton'))return;
+      const b=document.createElement('button');
+      b.type='button';
+      b.id='sdlForgotButton';
+      b.className='sdl-reset-link';
+      b.textContent='🔑 ¿Olvidaste tu contraseña?';
+      b.onclick=openForgot;
+      form.insertAdjacentElement('afterend',b);
+    }catch{}finally{publicInjecting=false}
   }
 
   async function adminStatus(){
