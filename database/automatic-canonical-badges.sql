@@ -1,0 +1,30 @@
+-- SANGRE DE LUNA · INSIGNIAS CANÓNICAS AUTOMÁTICAS
+-- Esquema aplicado en Supabase mediante las migraciones:
+--   automatic_canonical_badges
+--   automatic_badges_activity_hooks
+--
+-- Principios:
+-- 1. Las insignias se generan solo desde registros oficiales publicados del sitio:
+--    stories, episodes, fanclub_challenges, tour_territories y progression_level.
+-- 2. Los nombres/títulos canónicos se copian literalmente desde esos registros.
+-- 3. Publicar/editar/ocultar contenido dispara fanclub_sync_canonical_badges().
+-- 4. La concesión es automática mediante fanclub_award_automatic_badges().
+-- 5. No existe asignación manual de insignias a miembros.
+-- 6. fanclub_member_activity registra únicamente acciones verificables del miembro.
+--
+-- Funciones de producción:
+--   fanclub_sync_canonical_badges()
+--   fanclub_award_automatic_badges(uuid)
+--   fanclub_record_activity(uuid,text,uuid)
+--   fanclub_record_poll_vote(uuid,uuid,text)
+--   fanclub_vote_member(uuid,uuid,uuid,text)
+--   fanclub_grade_trivia_member(uuid,jsonb)
+--   fanclub_member_achievement_dashboard(uuid)
+--
+-- Tablas:
+--   fanclub_badge_catalog
+--   fanclub_member_activity
+--   fanclub_member_badges (ampliada con badge_id)
+--
+-- Este archivo documenta la arquitectura activa. La migración completa se conserva
+-- en el historial de Supabase para evitar duplicar DDL en despliegues posteriores.
