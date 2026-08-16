@@ -24,26 +24,37 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify Vercel credential
+      - name: Detect Vercel credential
+        id: auth
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          if [ -z "$VERCEL_TOKEN" ]; then
-            echo "::error::Repository secret VERCEL_TOKEN is not configured. No deployment was attempted."
-            exit 1
+          if [ -n "$VERCEL_TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+            echo "Vercel credential detected."
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "VERCEL_TOKEN is not configured yet. Deployment is safely skipped."
           fi
 
       - name: Set up Node.js
+        if: steps.auth.outputs.ready == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
       - name: Pull Vercel project settings
+        if: steps.auth.outputs.ready == 'true'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
 
       - name: Deploy repository to production
+        if: steps.auth.outputs.ready == 'true'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deployment status
+        if: steps.auth.outputs.ready != 'true'
+        run: echo "No production deployment was attempted because VERCEL_TOKEN is not configured."
