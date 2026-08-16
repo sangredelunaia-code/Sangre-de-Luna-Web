@@ -1,0 +1,32 @@
+{
+  "name": "Sangre de Luna — Universo Oficial",
+  "short_name": "Sangre de Luna",
+  "description": "Explora historias, episodios, personajes, territorios, La Manada y experiencias del universo Sangre de Luna.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#03070c",
+  "theme_color": "#03070c",
+  "icons": [
+    {
+      "src": "/assets/logo-oficial.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/logo-oficial.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {"name":"Episodios","short_name":"Episodios","url":"/episodios"},
+    {"name":"Mapa","short_name":"Mapa","url":"/mapa"},
+    {"name":"La Manada","short_name":"La Manada","url":"/fanclub"},
+    {"name":"Mi Viaje","short_name":"Mi Viaje","url":"/viaje"}
+  ]
+}
