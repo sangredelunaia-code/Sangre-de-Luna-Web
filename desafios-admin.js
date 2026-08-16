@@ -75,12 +75,17 @@
   body.portal-home #inicio .hero-bg{filter:brightness(.42) saturate(.9);transform:scale(1.015)}
   body.portal-home #inicio:after{background:linear-gradient(90deg,#02060ad9,#02060a70 52%,#02060a45),linear-gradient(0deg,#02070cf8 0%,transparent 48%,#02070c38)}
   body.portal-home #inicio .hi{max-width:none;width:min(1320px,94%);margin:auto;text-align:center}
-  .portal-copy{max-width:900px;margin:0 auto 34px;display:flex;flex-direction:column;align-items:center}
+  .portal-copy{max-width:1000px;margin:0 auto 34px;display:flex;flex-direction:column;align-items:center}
   .portal-copy .portal-kicker{color:#d0a65e;font:700 clamp(.78rem,1.3vw,1rem) Georgia,serif;letter-spacing:.24em;text-transform:uppercase}
   .portal-copy h1{margin:12px 0 4px;font:500 clamp(3rem,7vw,6.4rem)/.96 Georgia,serif;letter-spacing:.025em;color:#e7e0d4;text-shadow:0 4px 28px #000,0 0 34px #8ccaff18}
   .portal-copy .portal-tagline{margin:8px 0 24px;color:#d0d5dc;font:500 clamp(.9rem,1.6vw,1.18rem) Georgia,serif;letter-spacing:.16em;text-transform:uppercase}
+  .portal-actions{width:100%;display:flex;flex-direction:column;align-items:center;gap:11px}
   .portal-explore{border-color:#9d7238!important;color:#f4dfb7!important;background:linear-gradient(180deg,#152130e6,#09111ae6)!important;border-radius:5px!important;padding:13px 27px!important;letter-spacing:.09em;box-shadow:inset 0 0 0 1px #c89b4c20,0 10px 34px #0008}
   .portal-explore:hover{border-color:#d6a75d!important;box-shadow:0 0 28px #c6924142,0 12px 34px #0009}
+  .portal-quick-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;width:100%;max-width:980px}
+  .portal-quick{min-height:42px;padding:10px 15px!important;border:1px solid #506476!important;border-radius:5px!important;background:linear-gradient(180deg,#0d1925dc,#071019e8)!important;color:#d9e6f1!important;font-size:.75rem!important;font-weight:900!important;letter-spacing:.055em;box-shadow:inset 0 0 18px #7fcaff08,0 8px 24px #0005;transition:transform .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease}
+  .portal-quick:hover{transform:translateY(-2px);border-color:#c69a55!important;color:#f7e4c0!important;box-shadow:0 0 22px #b6803930,0 10px 28px #0007}
+  .portal-quick .portal-quick-icon{margin-right:7px;color:#d7aa60;font-size:.92rem}
   .portal-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;text-align:left;scroll-margin-top:88px}
   .portal-card{position:relative;min-height:390px;display:flex;align-items:flex-end;overflow:hidden;border:1px solid #7f633b;border-radius:4px;background:#07101a;color:#fff;isolation:isolate;box-shadow:0 18px 45px #0007;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
   .portal-card:before{content:'';position:absolute;inset:0;z-index:-2;background-image:var(--portal-image);background-size:cover;background-position:center 20%;transition:transform .5s ease,filter .35s ease;filter:saturate(.82) brightness(.73)}
@@ -112,10 +117,13 @@
    body.portal-home #inicio.hero{padding-top:38px}
    .portal-copy h1{font-size:clamp(2.6rem,13vw,4.2rem)}
    .portal-copy .portal-tagline{letter-spacing:.1em}
+   .portal-quick-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-width:520px}
+   .portal-quick{width:100%;padding:10px 8px!important;font-size:.7rem!important}
    .portal-grid{grid-template-columns:1fr;gap:13px}
    .portal-card{min-height:340px}
    .portal-section-hero{min-height:290px}
   }
+  @media(max-width:410px){.portal-quick-actions{grid-template-columns:1fr}.portal-explore{width:100%;max-width:320px}}
  `;
  document.head.appendChild(style);
 
@@ -152,7 +160,7 @@
   document.body.classList.add('portal-home');
   const hero=document.getElementById('inicio'),hi=hero?.querySelector('.hi');if(!hero||!hi)return;
   const premiere=hi.querySelector('#premiereAlert');
-  hi.innerHTML=`<div class="portal-copy"><span class="portal-kicker">BIENVENIDO AL UNIVERSO</span><h1>SANGRE DE LUNA</h1><p class="portal-tagline">DONDE LA LEYENDA COBRA VIDA</p><a class="btn portal-explore" href="#portalSections">EXPLORAR AHORA&nbsp; ›</a></div><div class="portal-grid" id="portalSections"></div>`;
+  hi.innerHTML=`<div class="portal-copy"><span class="portal-kicker">BIENVENIDO AL UNIVERSO</span><h1>SANGRE DE LUNA</h1><p class="portal-tagline">DONDE LA LEYENDA COBRA VIDA</p><div class="portal-actions"><a class="btn portal-explore" href="#portalSections">EXPLORAR AHORA&nbsp; ›</a><div class="portal-quick-actions" aria-label="Accesos directos al universo"><a class="btn portal-quick" href="/viaje"><span class="portal-quick-icon">◈</span>DESCUBRE MI LUGAR</a><a class="btn portal-quick" href="/episodios"><span class="portal-quick-icon">▶</span>VER EPISODIOS</a><a class="btn portal-quick" href="/mapa"><span class="portal-quick-icon">⌖</span>MAPAS DE LA TIERRA</a><a class="btn portal-quick" href="/tour"><span class="portal-quick-icon">✦</span>EXPLORAR TERRITORIOS</a></div></div></div><div class="portal-grid" id="portalSections"></div>`;
   if(premiere)hi.querySelector('.portal-copy')?.appendChild(premiere);
   const grid=hi.querySelector('#portalSections');
   grid.innerHTML=cards.map(card=>`<a class="portal-card" href="${card.href}" style="--portal-image:url('${card.image}')"><div class="portal-card-body"><div class="portal-card-icon">${card.icon}</div><h2>${card.title}</h2><p>${card.desc}</p><div class="portal-card-cta"><span>${card.cta}</span><span>›</span></div></div></a>`).join('');
