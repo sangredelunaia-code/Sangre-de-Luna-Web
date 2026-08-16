@@ -1,0 +1,36 @@
+name: Challenge card Fan Club link
+
+on:
+  push:
+    paths:
+      - '.github/workflows/challenge-card-fanclub.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Point Desafíos card to Fan Club access
+        shell: python
+        run: |
+          from pathlib import Path
+          path = Path('desafios-admin.js')
+          text = path.read_text(encoding='utf-8')
+          old = "{title:'Desafíos',desc:'Pon a prueba cuánto conoces y consigue recompensas de la Manada.',href:'/desafios',image:'/assets/credencial-lobo-luna.webp',cta:'VER DESAFÍOS',icon:'✧'}"
+          new = "{title:'Desafíos',desc:'Pon a prueba cuánto conoces y consigue recompensas de la Manada.',href:'/fanclub',image:'/assets/credencial-lobo-luna.webp',cta:'VER DESAFÍOS',icon:'✧'}"
+          if old not in text:
+              raise SystemExit('Challenge card marker not found')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+      - name: Commit final change and remove one-shot workflow
+        run: |
+          rm .github/workflows/challenge-card-fanclub.yml
+          git config user.name "sangredelunaia-code"
+          git config user.email "sangredelunaia@gmail.com"
+          git add desafios-admin.js .github/workflows/challenge-card-fanclub.yml
+          git commit -m "Route Desafíos card to Fan Club access"
+          git push
