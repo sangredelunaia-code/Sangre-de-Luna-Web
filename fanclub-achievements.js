@@ -7,8 +7,8 @@
   const CFG_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
   const token=()=>sessionStorage.getItem('sdl_fanclub_token')||'';
   const path=()=>((location.pathname||'/').replace(/\.html$/,'').replace(/\/+$/,'')||'/');
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let sb=null,cfg=null,stories=null,episodes=null,territories=null,storyWatch=null,ytReady=null,currentEpisode=null;
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
+  let sb=null,cfg=null,stories=null,episodes=null,territories=null,storyWatch=null,ytReady=null,currentEpisode=null,panelBusy=false;
 
   async function ensureSupabase(){
     if(sb)return sb;
@@ -25,39 +25,119 @@
     @media(max-width:900px){.sdl-ach-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.sdl-ach-grid{grid-template-columns:1fr}.sdl-ach-toast{bottom:76px}}
   `;document.head.appendChild(s)}
 
-  function showAwards(list){if(!Array.isArray(list)||!list.length)return;let i=0;const next=()=>{document.querySelector('.sdl-ach-toast')?.remove();const b=list[i++];if(!b)return;const el=document.createElement('div');el.className='sdl-ach-toast';el.innerHTML=`<div class="icon">${esc(b.icon||'🌙')}</div><small>NUEVA INSIGNIA DESBLOQUEADA</small><b>${esc(b.badge_name||'Insignia de La Manada')}</b><p>${esc(b.description||'Tu progreso dentro de La Manada ha sido reconocido.')}</p>`;document.body.appendChild(el);setTimeout(()=>{el.remove();next()},4800)};next()}
+  function showAwards(list){
+    if(!Array.isArray(list)||!list.length)return;
+    let i=0;
+    const next=()=>{document.querySelector('.sdl-ach-toast')?.remove();const b=list[i++];if(!b)return;const el=document.createElement('div');el.className='sdl-ach-toast';el.innerHTML=`<div class="icon">${esc(b.icon||'🌙')}</div><small>NUEVA INSIGNIA DESBLOQUEADA</small><b>${esc(b.badge_name||'Insignia de La Manada')}</b><p>${esc(b.description||'Tu progreso dentro de La Manada ha sido reconocido.')}</p>`;document.body.appendChild(el);setTimeout(()=>{el.remove();next()},4800)};
+    next();
+  }
 
-  async function record(activity,sourceId){const t=token();if(!t||!sourceId)return null;try{await ensureSupabase();const {data,error}=await sb.rpc('fanclub_record_activity',{p_access_token:t,p_activity_type:activity,p_source_id:sourceId});if(error)throw error;showAwards(data?.new_badges);refreshMemberPanel();return data}catch(e){console.debug('[SDL insignias]',e.message);return null}}
+  async function record(activity,sourceId){
+    const t=token();if(!t||!sourceId)return null;
+    try{await ensureSupabase();const {data,error}=await sb.rpc('fanclub_record_activity',{p_access_token:t,p_activity_type:activity,p_source_id:sourceId});if(error)throw error;showAwards(data?.new_badges);refreshMemberPanel(true);return data}catch(e){console.debug('[SDL insignias]',e.message);return null}
+  }
   window.SDLAchievements={record,showAwards};
 
-  async function loadContentMaps(){await ensureSupabase();if(!stories){const r=await sb.from('stories').select('id,season,chapter_label,title,sort_order,body').eq('is_published',true).order('season').order('sort_order');stories=r.data||[]}if(!episodes){const r=await sb.from('episodes').select('id,season,chapter_label,title,sort_order,youtube_id').eq('is_published',true).order('season').order('sort_order');episodes=r.data||[]}if(!territories){const r=await sb.from('tour_territories').select('id,slug,name,status').eq('is_published',true);territories=r.data||[]}}
+  async function loadContentMaps(){
+    await ensureSupabase();
+    if(!stories){const r=await sb.from('stories').select('id,season,chapter_label,title,sort_order,body').eq('is_published',true).order('season').order('sort_order');stories=r.data||[]}
+    if(!episodes){const r=await sb.from('episodes').select('id,season,chapter_label,title,sort_order,youtube_id').eq('is_published',true).order('season').order('sort_order');episodes=r.data||[]}
+    if(!territories){const r=await sb.from('tour_territories').select('id,slug,name,status').eq('is_published',true);territories=r.data||[]}
+  }
 
-  function beginStoryRead(story,body){if(!token()||!story?.id||!body)return;if(storyWatch?.cleanup)storyWatch.cleanup();let done=false,timer=null;const complete=()=>{if(done)return;done=true;cleanup();record('story_read',story.id)};const check=()=>{if(done)return;const max=body.scrollHeight-body.clientHeight;if(max<=18)return;if(body.scrollTop/max>=.93)complete()};const cleanup=()=>{body.removeEventListener('scroll',check);if(timer)clearTimeout(timer)};body.addEventListener('scroll',check,{passive:true});timer=setTimeout(()=>{if(body.scrollHeight<=body.clientHeight+18)complete()},18000);storyWatch={cleanup};}
+  function beginStoryRead(story,body){
+    if(!token()||!story?.id||!body)return;
+    storyWatch?.cleanup?.();
+    let done=false,timer=null;
+    const readerOpen=()=>document.getElementById('storyModal')?.classList.contains('open');
+    const cleanup=()=>{body.removeEventListener('scroll',check);if(timer)clearTimeout(timer)};
+    const complete=()=>{if(done||!readerOpen())return;done=true;cleanup();record('story_read',story.id)};
+    const check=()=>{if(done||!readerOpen())return;const max=body.scrollHeight-body.clientHeight;if(max>18&&body.scrollTop/max>=.93)complete()};
+    body.addEventListener('scroll',check,{passive:true});
+    timer=setTimeout(()=>{if(readerOpen()&&body.scrollHeight<=body.clientHeight+18)complete()},18000);
+    storyWatch={cleanup};
+  }
 
-  async function identifyStory(button){await loadContentMaps();const idx=Number(button.dataset.story);if(Number.isFinite(idx)&&stories[idx])return stories[idx];const title=button.querySelector('.story-main>b')?.textContent?.trim();const ch=button.querySelector('.ey')?.textContent?.trim();return stories.find(x=>x.title===title&&x.chapter_label===ch)||null}
+  async function identifyStory(button){
+    await loadContentMaps();
+    const idx=Number(button.dataset.story);if(Number.isFinite(idx)&&stories[idx])return stories[idx];
+    const title=button.querySelector('.story-main>b')?.textContent?.trim(),ch=button.querySelector('.ey')?.textContent?.trim();
+    return stories.find(x=>x.title===title&&x.chapter_label===ch)||null;
+  }
 
-  function loadYT(){if(window.YT?.Player)return Promise.resolve(window.YT);if(ytReady)return ytReady;ytReady=new Promise(resolve=>{const old=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=()=>{try{old?.()}catch{}resolve(window.YT)};if(!document.querySelector('script[data-sdl-yt-api]')){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.dataset.sdlYtApi='1';document.head.appendChild(s)}});return ytReady}
+  function loadYT(){
+    if(window.YT?.Player)return Promise.resolve(window.YT);if(ytReady)return ytReady;
+    ytReady=new Promise(resolve=>{const old=window.onYouTubeIframeAPIReady;window.onYouTubeIframeAPIReady=()=>{try{old?.()}catch{}resolve(window.YT)};if(!document.querySelector('script[data-sdl-yt-api]')){const s=document.createElement('script');s.src='https://www.youtube.com/iframe_api';s.dataset.sdlYtApi='1';document.head.appendChild(s)}});
+    return ytReady;
+  }
 
-  async function watchEpisode(episode){if(!token()||!episode?.id)return;currentEpisode=episode;try{const YT=await loadYT();setTimeout(()=>{const frame=document.getElementById('videoFrame');if(!frame||currentEpisode?.id!==episode.id)return;const u=new URL(frame.src);u.searchParams.set('enablejsapi','1');u.searchParams.set('origin',location.origin);frame.src=u.toString();setTimeout(()=>{try{new YT.Player(frame,{events:{onStateChange:e=>{if(e.data===YT.PlayerState.ENDED&&currentEpisode?.id===episode.id)record('episode_watch',episode.id)}}})}catch{}},500)},120)}catch{}}
+  async function watchEpisode(episode){
+    if(!token()||!episode?.id)return;currentEpisode=episode;
+    try{const YT=await loadYT();setTimeout(()=>{const frame=document.getElementById('videoFrame');if(!frame||currentEpisode?.id!==episode.id||!frame.src)return;const u=new URL(frame.src);u.searchParams.set('enablejsapi','1');u.searchParams.set('origin',location.origin);frame.src=u.toString();setTimeout(()=>{try{new YT.Player(frame,{events:{onStateChange:e=>{if(e.data===YT.PlayerState.ENDED&&currentEpisode?.id===episode.id)record('episode_watch',episode.id)}}})}catch(e){console.debug('[SDL insignias YouTube]',e.message)}},650)},180)}catch(e){console.debug('[SDL insignias YouTube]',e.message)}
+  }
 
-  async function identifyEpisode(button){await loadContentMaps();const row=button.closest('.erow');const chapter=row?.querySelector('.ech')?.textContent?.trim();const title=button.textContent?.trim();const active=document.querySelector('#seasonTabs .tabbtn.on')?.textContent||'';const season=Number(active.match(/\d+/)?.[0]);return episodes.find(x=>(!season||x.season===season)&&x.chapter_label===chapter&&x.title===title)||episodes.find(x=>x.title===title&&x.chapter_label===chapter)||null}
+  async function identifyEpisode(button){
+    await loadContentMaps();
+    const row=button.closest('.erow'),chapter=row?.querySelector('.ech')?.textContent?.trim(),title=button.textContent?.trim(),active=document.querySelector('#seasonTabs .tabbtn.on')?.textContent||'',season=Number(active.match(/\d+/)?.[0]);
+    return episodes.find(x=>(!season||x.season===season)&&x.chapter_label===chapter&&x.title===title)||episodes.find(x=>x.title===title&&x.chapter_label===chapter)||null;
+  }
 
-  async function recordTourIfFinished(){if(!token()||path()!=='/tour')return;await new Promise(r=>setTimeout(r,30));const final=document.getElementById('s360Final');if(!final||final.hidden)return;await loadContentMaps();const slug=new URLSearchParams(location.search).get('territory');const t=territories.find(x=>x.slug===slug);if(t?.id)record('tour_complete',t.id)}
+  async function recordTourIfFinished(){
+    if(!token()||path()!=='/tour')return;
+    await new Promise(r=>setTimeout(r,60));
+    const final=document.getElementById('s360Final');if(!final||final.hidden)return;
+    await loadContentMaps();const slug=new URLSearchParams(location.search).get('territory'),t=territories.find(x=>x.slug===slug);if(t?.id)record('tour_complete',t.id);
+  }
 
-  async function recordVoteIfSucceeded(){if(!token())return;await new Promise(r=>setTimeout(r,250));const m=document.getElementById('fanVoteMsg');if(!/voto fue registrado/i.test(m?.textContent||''))return;try{await ensureSupabase();const now=new Date().toISOString();const {data:polls}=await sb.from('fanclub_polls').select('id,status,starts_at,ends_at').eq('status','published').order('sort_order');const poll=(polls||[]).find(p=>(!p.starts_at||p.starts_at<=now)&&(!p.ends_at||p.ends_at>=now));const voter=localStorage.getItem('sdl_fan_voter');if(!poll||!voter)return;const {data,error}=await sb.rpc('fanclub_record_poll_vote',{p_access_token:token(),p_poll_id:poll.id,p_voter_key:voter});if(!error){showAwards(data?.new_badges);refreshMemberPanel()}}catch{}}
+  async function recordVoteIfSucceeded(){
+    if(!token())return;
+    for(let i=0;i<25;i++){await new Promise(r=>setTimeout(r,180));const m=document.getElementById('fanVoteMsg');if(/voto fue registrado/i.test(m?.textContent||'')){try{await ensureSupabase();const now=Date.now(),{data:polls}=await sb.from('fanclub_polls').select('id,status,starts_at,ends_at').eq('status','published').order('sort_order');const poll=(polls||[]).find(p=>(!p.starts_at||new Date(p.starts_at).getTime()<=now)&&(!p.ends_at||new Date(p.ends_at).getTime()>=now)),voter=localStorage.getItem('sdl_fan_voter');if(!poll||!voter)return;const {data,error}=await sb.rpc('fanclub_record_poll_vote',{p_access_token:token(),p_poll_id:poll.id,p_voter_key:voter});if(!error){showAwards(data?.new_badges);refreshMemberPanel(true)}}catch{}return}if(/error|no válido|ya participaste/i.test(m?.textContent||''))return}
+  }
 
-  async function gradeTriviaAsMember(form){if(!token()||!form)return;try{await ensureSupabase();const answers={};form.querySelectorAll('input[type="radio"]:checked').forEach(o=>{const name=o.name||'';if(name.startsWith('tq_'))answers[name.slice(3)]=o.value});if(!Object.keys(answers).length)return;const {data,error}=await sb.rpc('fanclub_grade_trivia_member',{p_access_token:token(),p_answers:answers});if(!error){showAwards(data?.new_badges);refreshMemberPanel()}}catch{}}
+  async function gradeTriviaAsMember(form){
+    if(!token()||!form)return;
+    try{await ensureSupabase();const answers={};form.querySelectorAll('input[type="radio"]:checked').forEach(o=>{const name=o.name||'';if(name.startsWith('tq_'))answers[name.slice(3)]=o.value});if(!Object.keys(answers).length)return;const {data,error}=await sb.rpc('fanclub_grade_trivia_member',{p_access_token:token(),p_answers:answers});if(!error){showAwards(data?.new_badges);refreshMemberPanel(true)}}catch{}
+  }
 
-  document.addEventListener('click',async e=>{const story=e.target.closest?.('[data-story]');if(story&&token()){const s=await identifyStory(story);setTimeout(()=>beginStoryRead(s,document.getElementById('storyReaderBody')),100)}const ep=e.target.closest?.('[data-episode]');if(ep&&token()){const x=await identifyEpisode(ep);watchEpisode(x)}if(e.target.closest?.('#s360Next'))recordTourIfFinished();if(e.target.closest?.('#fanVoteBtn'))recordVoteIfSucceeded()},true);
-  document.addEventListener('submit',e=>{if(e.target?.id==='fanTriviaFormPublic'&&token())setTimeout(()=>gradeTriviaAsMember(e.target),50)},true);
+  document.addEventListener('click',async e=>{
+    if(e.target.closest?.('#storyModal .close'))storyWatch?.cleanup?.();
+    const story=e.target.closest?.('[data-story]');if(story&&token()){const s=await identifyStory(story);setTimeout(()=>beginStoryRead(s,document.getElementById('storyReaderBody')),120)}
+    const ep=e.target.closest?.('[data-episode]');if(ep&&token()){const x=await identifyEpisode(ep);watchEpisode(x)}
+    if(e.target.closest?.('#s360Next'))recordTourIfFinished();
+    if(e.target.closest?.('#fanVoteBtn'))recordVoteIfSucceeded();
+  },true);
+  document.addEventListener('submit',e=>{if(e.target?.id==='fanTriviaFormPublic'&&token())setTimeout(()=>gradeTriviaAsMember(e.target),60)},true);
 
-  let panelBusy=false;
-  async function refreshMemberPanel(){if(panelBusy||!token()||path()!=='/la-manada')return;const portal=document.getElementById('sdlManadaPortal');if(!portal)return;panelBusy=true;try{await ensureSupabase();const {data,error}=await sb.rpc('fanclub_member_achievement_dashboard',{p_access_token:token()});if(error)throw error;let host=document.getElementById('sdlAchievementsPanel');if(!host){host=document.createElement('section');host.id='sdlAchievementsPanel';host.className='sdl-ach-panel';portal.querySelector('.w')?.appendChild(host)}const catalog=Array.isArray(data?.catalog)?data.catalog:[];host.innerHTML=`<div class="sdl-ach-head"><div><span class="ey">PROGRESO AUTOMÁTICO</span><h3>Mis insignias de La Manada</h3></div><div class="sdl-ach-stats"><span class="sdl-ach-stat">RANGO · ${esc(data?.level||'Iniciado')}</span><span class="sdl-ach-stat">${Number(data?.earned_count)||0} DESBLOQUEADAS</span></div></div><div class="sdl-ach-grid">${catalog.map(b=>`<article class="sdl-ach-badge ${b.earned?'':'locked'}"><div class="ico">${b.earned?esc(b.icon||'🌙'):'🔒'}</div><b>${esc(b.badge_name)}</b><small>${b.earned?'DESBLOQUEADA':'PENDIENTE'}</small><p>${esc(b.description||'')}</p><span class="sdl-ach-rarity">${esc(String(b.rarity||'comun').replace('_',' '))}</span></article>`).join('')}</div>`}catch(e){console.debug('[SDL insignias panel]',e.message)}finally{panelBusy=false}}
+  async function refreshMemberPanel(force=false){
+    if(panelBusy||!token()||path()!=='/la-manada')return;
+    const portal=document.getElementById('sdlManadaPortal');if(!portal)return;
+    if(!force&&document.getElementById('sdlAchievementsPanel'))return;
+    panelBusy=true;
+    try{await ensureSupabase();const {data,error}=await sb.rpc('fanclub_member_achievement_dashboard',{p_access_token:token()});if(error)throw error;let host=document.getElementById('sdlAchievementsPanel');if(!host){host=document.createElement('section');host.id='sdlAchievementsPanel';host.className='sdl-ach-panel';portal.querySelector('.w')?.appendChild(host)}const catalog=Array.isArray(data?.catalog)?data.catalog:[];host.innerHTML=`<div class="sdl-ach-head"><div><span class="ey">PROGRESO AUTOMÁTICO</span><h3>Mis insignias de La Manada</h3></div><div class="sdl-ach-stats"><span class="sdl-ach-stat">RANGO · ${esc(data?.level||'Iniciado')}</span><span class="sdl-ach-stat">${Number(data?.earned_count)||0} DESBLOQUEADAS</span></div></div><div class="sdl-ach-grid">${catalog.map(b=>`<article class="sdl-ach-badge ${b.earned?'':'locked'}"><div class="ico">${b.earned?esc(b.icon||'🌙'):'🔒'}</div><b>${esc(b.badge_name)}</b><small>${b.earned?'DESBLOQUEADA':'PENDIENTE'}</small><p>${esc(b.description||'')}</p><span class="sdl-ach-rarity">${esc(String(b.rarity||'comun').replaceAll('_',' '))}</span></article>`).join('')}</div>`}
+    catch(e){console.debug('[SDL insignias panel]',e.message)}finally{panelBusy=false}
+  }
 
-  async function injectAdmin(){if(new URLSearchParams(location.search).get('admin')!=='1')return;const tabs=document.getElementById('fanAdminTabs');if(!tabs||document.getElementById('sdlAchAdminTab'))return;const tab=document.createElement('button');tab.type='button';tab.id='sdlAchAdminTab';tab.dataset.fanPane='badges-auto';tab.textContent='Insignias automáticas';tabs.appendChild(tab);const panes=[...document.querySelectorAll('[data-fan-admin-pane]')];const anchor=panes.at(-1);if(!anchor)return;const pane=document.createElement('div');pane.className='fanclub-admin-pane hidden';pane.dataset.fanAdminPane='badges-auto';pane.innerHTML='<div class="sdl-ach-admin" id="sdlAchAdmin"><h3>🌙 Insignias automáticas</h3><p class="sdl-ach-admin-note">Cargando catálogo canónico…</p></div>';anchor.parentElement.appendChild(pane);tab.addEventListener('click',()=>setTimeout(loadAdminBadges,40));}
+  async function injectAdmin(){
+    if(new URLSearchParams(location.search).get('admin')!=='1')return;
+    const tabs=document.getElementById('fanAdminTabs');if(!tabs||document.getElementById('sdlAchAdminTab'))return;
+    const panes=[...document.querySelectorAll('[data-fan-admin-pane]')],anchor=panes.at(-1);if(!anchor)return;
+    const tab=document.createElement('button');tab.type='button';tab.id='sdlAchAdminTab';tab.dataset.fanPane='badges-auto';tab.textContent='Insignias automáticas';tabs.appendChild(tab);
+    const pane=document.createElement('div');pane.className='fanclub-admin-pane hidden';pane.dataset.fanAdminPane='badges-auto';pane.innerHTML='<div class="sdl-ach-admin" id="sdlAchAdmin"><h3>🌙 Insignias automáticas</h3><p class="sdl-ach-admin-note">Cargando catálogo canónico…</p></div>';anchor.parentElement.appendChild(pane);
+    tab.addEventListener('click',()=>setTimeout(loadAdminBadges,50));
+  }
 
-  async function loadAdminBadges(){const host=document.getElementById('sdlAchAdmin');if(!host)return;try{await ensureSupabase();const {data,error}=await sb.from('fanclub_badge_catalog').select('*').order('sort_order').order('badge_name');if(error)throw error;const rows=data||[];host.innerHTML=`<h3>🌙 Insignias automáticas</h3><p class="sdl-ach-admin-note"><strong>${rows.filter(x=>x.is_active).length} insignias activas.</strong> El catálogo se sincroniza automáticamente al publicar o actualizar historias, episodios, desafíos, niveles y territorios. No existe asignación manual: cada insignia se obtiene únicamente al cumplir su condición.</p><div style="overflow:auto"><table class="sdl-ach-table"><thead><tr><th>INSIGNIA</th><th>CATEGORÍA</th><th>RAREZA</th><th>ORIGEN CANÓNICO</th><th>CONDICIÓN</th><th>ESTADO</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.icon)} <b>${esc(x.badge_name)}</b><br><span class="sdl-ach-source">${esc(x.description||'')}</span></td><td>${esc(x.category)}</td><td>${esc(x.rarity)}</td><td>${esc(x.source_type||'sistema')}${x.canon_ref?.title?` · ${esc(x.canon_ref.title)}`:''}${x.canon_ref?.territory?` · ${esc(x.canon_ref.territory)}`:''}</td><td>${esc(x.condition_type)}${Number(x.threshold)>1?` · ${x.threshold}`:''}</td><td class="${x.is_active?'sdl-ach-auto':''}">${x.is_active?'● AUTOMÁTICA':'OCULTA'}</td></tr>`).join('')}</tbody></table></div>`}catch(e){host.innerHTML=`<h3>🌙 Insignias automáticas</h3><p class="sdl-ach-admin-note">${esc(e.message)}</p>`}}
+  async function loadAdminBadges(){
+    const host=document.getElementById('sdlAchAdmin');if(!host)return;
+    try{await ensureSupabase();const {data,error}=await sb.from('fanclub_badge_catalog').select('*').order('sort_order').order('badge_name');if(error)throw error;const rows=data||[];host.innerHTML=`<h3>🌙 Insignias automáticas</h3><p class="sdl-ach-admin-note"><strong>${rows.filter(x=>x.is_active).length} insignias activas.</strong> El catálogo se sincroniza automáticamente al publicar o actualizar historias, episodios, desafíos, niveles y territorios. No existe asignación manual: cada insignia se obtiene únicamente al cumplir su condición.</p><div style="overflow:auto"><table class="sdl-ach-table"><thead><tr><th>INSIGNIA</th><th>CATEGORÍA</th><th>RAREZA</th><th>ORIGEN CANÓNICO</th><th>CONDICIÓN</th><th>ESTADO</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.icon)} <b>${esc(x.badge_name)}</b><br><span class="sdl-ach-source">${esc(x.description||'')}</span></td><td>${esc(x.category)}</td><td>${esc(x.rarity)}</td><td>${esc(x.source_type||'sistema')}${x.canon_ref?.title?` · ${esc(x.canon_ref.title)}`:''}${x.canon_ref?.territory?` · ${esc(x.canon_ref.territory)}`:''}</td><td>${esc(x.condition_type)}${Number(x.threshold)>1?` · ${x.threshold}`:''}</td><td class="${x.is_active?'sdl-ach-auto':''}">${x.is_active?'● AUTOMÁTICA':'OCULTA'}</td></tr>`).join('')}</tbody></table></div>`}
+    catch(e){host.innerHTML=`<h3>🌙 Insignias automáticas</h3><p class="sdl-ach-admin-note">${esc(e.message)}</p>`}
+  }
 
-  function boot(){style();const obs=new MutationObserver(()=>{injectAdmin();refreshMemberPanel()});obs.observe(document.documentElement,{childList:true,subtree:true});injectAdmin();refreshMemberPanel();setTimeout(()=>obs.disconnect(),45000)}
+  function boot(){
+    style();
+    const obs=new MutationObserver(()=>{injectAdmin();if(!document.getElementById('sdlAchievementsPanel'))refreshMemberPanel()});
+    obs.observe(document.documentElement,{childList:true,subtree:true});
+    injectAdmin();refreshMemberPanel();
+    setTimeout(()=>obs.disconnect(),45000);
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 })();
