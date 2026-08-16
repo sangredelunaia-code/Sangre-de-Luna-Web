@@ -127,6 +127,42 @@
           "value": "noindex, nofollow, nosnippet"
         }
       ]
+    },
+    {
+      "source": "/la-manada",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/fanclub-separation.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/la-manada",
+      "destination": "/fanclub.html"
+    },
+    {
+      "source": "/la-manada.html",
+      "destination": "/fanclub.html"
     }
   ]
 }
