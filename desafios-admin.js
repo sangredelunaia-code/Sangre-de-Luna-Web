@@ -63,7 +63,7 @@
   {title:'Episodios',desc:'Revive cada capítulo y sus momentos más épicos.',href:'/episodios',image:'/assets/chris.webp',cta:'VER EPISODIOS',icon:'▶'},
   {title:'Música Original',desc:'Escucha la banda sonora original de Sangre de Luna.',href:'/musica',image:'/assets/city-front.webp',cta:'ESCUCHAR MÚSICA',icon:'♫'},
   {title:'Galería',desc:'Explora imágenes, arte y momentos oficiales del universo.',href:'/galeria',image:'/assets/mesa-mapa-ciudadela.webp',cta:'VER GALERÍA',icon:'◇'},
-  {title:'Desafíos',desc:'Pon a prueba cuánto conoces y consigue recompensas de la Manada.',href:'/desafios',image:'/assets/credencial-lobo-luna.webp',cta:'VER DESAFÍOS',icon:'✧'}
+  {title:'Desafíos',desc:'Pon a prueba cuánto conoces y consigue recompensas de la Manada.',href:'/fanclub',image:'/assets/credencial-lobo-luna.webp',cta:'VER DESAFÍOS',icon:'✧'}
  ];
 
  const style=document.createElement('style');
