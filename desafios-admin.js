@@ -9,7 +9,7 @@
   };
   const loadPasswordRecovery=()=>{
     if(window.__SDL_FAN_PASSWORD_RECOVERY__||document.querySelector('script[data-sdl-password-recovery]'))return;
-    const s=document.createElement('script');s.src='/fanclub-password-recovery.js?v=20260816';s.defer=true;s.dataset.sdlPasswordRecovery='1';document.head.appendChild(s);
+    const s=document.createElement('script');s.src='/fanclub-password-recovery.js?v=20260816-2';s.defer=true;s.dataset.sdlPasswordRecovery='1';document.head.appendChild(s);
   };
   const afterLegacy=()=>{loadTourManager();loadPasswordRecovery()};
   const legacy=document.createElement('script');legacy.src=LEGACY;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
