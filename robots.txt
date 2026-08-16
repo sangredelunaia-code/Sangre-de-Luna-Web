@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /*?admin=1
+
+Sitemap: https://sangre-de-luna-public.vercel.app/sitemap.xml
