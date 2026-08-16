@@ -195,3 +195,14 @@
     sessionStorage.setItem(MEMORY_KEY,JSON.stringify({...mem,lastSection:page,lastPage:path}));
   }catch(_){ }
 })();
+
+
+/* SANGRE DE LUNA · MÚSICA AMBIENTAL GLOBAL */
+(()=>{
+  if(document.getElementById('sdlAmbientGlobalLoader')) return;
+  const s=document.createElement('script');
+  s.id='sdlAmbientGlobalLoader';
+  s.src='/ambient-global.js';
+  s.defer=true;
+  document.head.appendChild(s);
+})();
