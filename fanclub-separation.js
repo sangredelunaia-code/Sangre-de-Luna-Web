@@ -2,6 +2,7 @@
 (()=>{
   const cleanPath=location.pathname.replace(/\/+$/,'')||'/';
   const isMemberArea=cleanPath==='/la-manada'||cleanPath==='/la-manada.html';
+  const params=new URLSearchParams(location.search);
   const tokenKey='sdl_fanclub_token';
   const token=()=>sessionStorage.getItem(tokenKey)||'';
   const goMember=()=>location.assign('/la-manada');
@@ -25,6 +26,13 @@
     @media(max-width:700px){.sdl-private-credential{padding:36px 0}.sdl-private-nav a{flex:1 1 44%}}
   `;
   document.head.appendChild(style);
+
+  function revealAccessCard(){
+    const portal=document.getElementById('portal');
+    if(portal){portal.classList.add('out','hidden')}
+    document.body.classList.remove('locked');
+    requestAnimationFrame(()=>document.getElementById('fanMemberCard')?.scrollIntoView({behavior:'smooth',block:'center'}));
+  }
 
   function hideAccessOnlyContent(){
     const main=document.getElementById('fanMain');
@@ -103,7 +111,13 @@
     const brandText=document.querySelector('.brand div');
     if(brandText)brandText.innerHTML='<b>La Manada</b><small>ZONA PRIVADA DEL FAN CLUB</small>';
     const topMember=document.getElementById('topMember');
-    if(topMember){topMember.textContent='◈ MI CREDENCIAL';topMember.onclick=()=>document.getElementById('mi-credencial')?.scrollIntoView({behavior:'smooth',block:'start'})}
+    if(topMember){
+      topMember.textContent='◈ MI CREDENCIAL';
+      topMember.addEventListener('click',event=>{
+        event.preventDefault();event.stopImmediatePropagation();
+        document.getElementById('mi-credencial')?.scrollIntoView({behavior:'smooth',block:'start'});
+      },true);
+    }
 
     const credential=document.getElementById('fanCredential');
     const main=document.getElementById('fanMain');
@@ -118,10 +132,12 @@
       section.querySelector('#sdlCredentialHost')?.appendChild(credential);
     }
 
-    const nav=document.createElement('div');
-    nav.className='sdl-private-nav';
-    nav.innerHTML='<a href="#mi-credencial">Credencial</a><a href="#desafios">Desafíos</a><a href="#zona">Wallpapers y contenidos</a><a href="#fanFactions">Facciones</a>';
-    document.querySelector('.manada-hero .hero-copy')?.appendChild(nav);
+    if(!document.querySelector('.sdl-private-nav')){
+      const nav=document.createElement('div');
+      nav.className='sdl-private-nav';
+      nav.innerHTML='<a href="#mi-credencial">Credencial</a><a href="#desafios">Desafíos</a><a href="#zona">Wallpapers y contenidos</a><a href="#fanFactions">Facciones</a>';
+      document.querySelector('.manada-hero .hero-copy')?.appendChild(nav);
+    }
 
     document.title='La Manada | Sangre de Luna';
     const desc=document.querySelector('meta[name="description"]');
@@ -141,6 +157,7 @@
     const observer=new MutationObserver(()=>hideAccessOnlyContent());
     const main=document.getElementById('fanMain');
     if(main)observer.observe(main,{childList:true,subtree:false});
+    if(params.get('acceso')==='miembro'||params.has('sesion'))setTimeout(revealAccessCard,120);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});
