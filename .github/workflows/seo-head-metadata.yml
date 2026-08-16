@@ -1,0 +1,150 @@
+name: Apply SEO head metadata
+
+on:
+  push:
+    paths:
+      - '.github/workflows/seo-head-metadata.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-seo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Add SEO metadata without changing page layout
+        shell: python
+        run: |
+          from pathlib import Path
+          import html
+          import json
+          import re
+
+          BASE = 'https://sangre-de-luna-public.vercel.app'
+          pages = {
+              'index.html': {
+                  'title': 'Sangre de Luna | Sitio oficial',
+                  'description': 'Sitio oficial de Sangre de Luna: personajes, historias, episodios, música, recorridos virtuales, mapas y Fan Club de la Manada.',
+                  'url': f'{BASE}/',
+                  'image': f'{BASE}/assets/hero.webp',
+              },
+              'fanclub.html': {
+                  'title': 'Fan Club | Sangre de Luna',
+                  'description': 'Únete al Fan Club oficial de Sangre de Luna, crea tu credencial digital, participa en desafíos, gana insignias y forma parte de la Manada.',
+                  'url': f'{BASE}/fanclub',
+                  'image': f'{BASE}/assets/credencial-diseno-oficial.webp',
+              },
+              'mapa.html': {
+                  'title': 'Mapa de las Tierras | Sangre de Luna',
+                  'description': 'Explora el mapa oficial de las Tierras de Sangre de Luna y descubre la Ciudadela, reinos, rutas y lugares del universo.',
+                  'url': f'{BASE}/mapa',
+                  'image': f'{BASE}/assets/mapa-tierras-sangre-de-luna.webp',
+              },
+              'tour.html': {
+                  'title': 'Recorrido 360° | Sangre de Luna',
+                  'description': 'Recorre en 360° los escenarios del universo Sangre de Luna y descubre la Ciudadela y sus espacios.',
+                  'url': f'{BASE}/tour',
+                  'image': f'{BASE}/assets/hero.webp',
+              },
+              'viaje.html': {
+                  'title': 'Tu viaje | Sangre de Luna',
+                  'description': 'Vive tu recorrido por el universo Sangre de Luna y explora experiencias, lugares y contenidos del sitio oficial.',
+                  'url': f'{BASE}/viaje',
+                  'image': f'{BASE}/assets/hero.webp',
+              },
+          }
+
+          def attr(value):
+              return html.escape(value, quote=True)
+
+          for filename, meta in pages.items():
+              path = Path(filename)
+              text = path.read_text(encoding='utf-8')
+
+              text = re.sub(r'\s*<!-- SDL SEO START -->.*?<!-- SDL SEO END -->\s*', '\n', text, flags=re.S)
+              text = re.sub(r'\s*<meta\s+name=["\']description["\'][^>]*>', '', text, flags=re.I)
+              text = re.sub(r'\s*<meta\s+name=["\']robots["\'][^>]*>', '', text, flags=re.I)
+              text = re.sub(r'\s*<link\s+rel=["\']canonical["\'][^>]*>', '', text, flags=re.I)
+              text = re.sub(r'\s*<meta\s+property=["\']og:[^"\']+["\'][^>]*>', '', text, flags=re.I)
+              text = re.sub(r'\s*<meta\s+name=["\']twitter:[^"\']+["\'][^>]*>', '', text, flags=re.I)
+
+              title_tag = f'<title>{html.escape(meta["title"])}</title>'
+              if re.search(r'<title>.*?</title>', text, flags=re.I | re.S):
+                  text = re.sub(r'<title>.*?</title>', title_tag, text, count=1, flags=re.I | re.S)
+              else:
+                  text = text.replace('</head>', f'{title_tag}\n</head>', 1)
+
+              block = [
+                  '<!-- SDL SEO START -->',
+                  f'<meta name="description" content="{attr(meta["description"])}">',
+                  '<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">',
+                  f'<link rel="canonical" href="{attr(meta["url"])}">',
+                  '<meta property="og:type" content="website">',
+                  '<meta property="og:site_name" content="Sangre de Luna">',
+                  f'<meta property="og:title" content="{attr(meta["title"])}">',
+                  f'<meta property="og:description" content="{attr(meta["description"])}">',
+                  f'<meta property="og:url" content="{attr(meta["url"])}">',
+                  f'<meta property="og:image" content="{attr(meta["image"])}">',
+                  '<meta name="twitter:card" content="summary_large_image">',
+                  f'<meta name="twitter:title" content="{attr(meta["title"])}">',
+                  f'<meta name="twitter:description" content="{attr(meta["description"])}">',
+                  f'<meta name="twitter:image" content="{attr(meta["image"])}">',
+              ]
+
+              if filename == 'index.html':
+                  structured = {
+                      '@context': 'https://schema.org',
+                      '@graph': [
+                          {
+                              '@type': 'WebSite',
+                              '@id': f'{BASE}/#website',
+                              'url': f'{BASE}/',
+                              'name': 'Sangre de Luna',
+                              'description': meta['description'],
+                              'inLanguage': 'es',
+                          },
+                          {
+                              '@type': 'CreativeWorkSeries',
+                              '@id': f'{BASE}/#series',
+                              'name': 'Sangre de Luna',
+                              'url': f'{BASE}/',
+                              'inLanguage': 'es',
+                              'sameAs': ['https://www.youtube.com/@SangredeLunaIA'],
+                          },
+                      ],
+                  }
+                  block.append('<script type="application/ld+json">' + json.dumps(structured, ensure_ascii=False, separators=(',', ':')) + '</script>')
+
+              block.append('<!-- SDL SEO END -->')
+              seo = '\n'.join(block)
+              text = text.replace('</head>', seo + '\n</head>', 1)
+              path.write_text(text, encoding='utf-8')
+              print(f'SEO metadata applied to {filename}')
+
+      - name: Verify only head metadata changed
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for name in ['index.html','fanclub.html','mapa.html','tour.html','viaje.html']:
+              text=Path(name).read_text(encoding='utf-8')
+              assert '<!-- SDL SEO START -->' in text, name
+              assert '<link rel="canonical"' in text, name
+              assert '<meta name="description"' in text, name
+          print('SEO metadata verification passed.')
+          PY
+
+      - name: Commit SEO metadata
+        run: |
+          if git diff --quiet -- index.html fanclub.html mapa.html tour.html viaje.html; then
+            echo "No SEO changes to commit"
+            exit 0
+          fi
+          git config user.name "sangredelunaia-code"
+          git config user.email "sangredelunaia@gmail.com"
+          git add index.html fanclub.html mapa.html tour.html viaje.html
+          git commit -m "Add search and social metadata"
+          git push
