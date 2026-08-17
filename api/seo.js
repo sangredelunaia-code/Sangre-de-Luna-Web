@@ -1,6 +1,8 @@
 const SITE='https://sangre-de-luna-public.vercel.app';
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main';
-const IMAGE=`${SITE}/assets/logo-oficial.png`;
+const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
+const ASSETS=`${CDN}/assets`;
+const IMAGE=`${ASSETS}/logo-oficial.png`;
 
 const pages={
   home:{file:'index.html',path:'/',title:'Sangre de Luna | Serie Épica y Mundo Interactivo',description:'Sangre de Luna es una serie cinematográfica de fantasía épica donde reinos, linajes, alianzas y secretos despiertan antiguos conflictos. Mira los episodios, lee las historias, explora mapas y tours 360° y únete a La Manada.'},
@@ -27,11 +29,11 @@ const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 
 async function source(file){
   const hit=cache.get(file);
-  if(hit&&Date.now()-hit.at<300000)return hit.html;
+  if(hit&&Date.now()-hit.at<60000)return hit.html;
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
   try{
-    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.0'}});
+    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.1'}});
     if(!r.ok)throw new Error(`source ${r.status}`);
     const html=await r.text();
     cache.set(file,{html,at:Date.now()});
@@ -54,6 +56,20 @@ function resolveKey(req){
   return 'home';
 }
 
+function externalizeStatic(html){
+  // Los despliegues gateway de Vercel contienen solo las funciones y no los binarios.
+  // Servimos imágenes, audio y demás assets desde el CDN del repositorio para que
+  // el logo, la portada, las nubes y los tours nunca dependan del bundle de Vercel.
+  html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
+  for(const file of ['desafios-admin.js','cronista-global.js','fanclub-separation.js']){
+    html=html
+      .replaceAll(`src="/${file}"`,`src="${CDN}/${file}"`)
+      .replaceAll(`src='/${file}'`,`src='${CDN}/${file}'`)
+      .replaceAll(`src=\`/${file}\``,`src=\`${CDN}/${file}\``);
+  }
+  return html;
+}
+
 function inject(html,p){
   const canonical=`${SITE}${p.path==='/'?'':p.path}`;
   const meta=`\n<meta name="description" content="${esc(p.description)}">\n<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">\n<link rel="canonical" href="${canonical}">\n<meta property="og:locale" content="es_EC">\n<meta property="og:type" content="website">\n<meta property="og:site_name" content="Sangre de Luna">\n<meta property="og:title" content="${esc(p.title)}">\n<meta property="og:description" content="${esc(p.description)}">\n<meta property="og:url" content="${canonical}">\n<meta property="og:image" content="${IMAGE}">\n<meta property="og:image:alt" content="Sangre de Luna — universo oficial">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="${esc(p.title)}">\n<meta name="twitter:description" content="${esc(p.description)}">\n<meta name="twitter:image" content="${IMAGE}">`;
@@ -67,13 +83,15 @@ function inject(html,p){
   };
   const structured=`\n<script type="application/ld+json">${JSON.stringify(schema).replace(/</g,'\\u003c')}</script>\n`;
   const focus=p.section?`\n<script>addEventListener('DOMContentLoaded',()=>{const target=document.getElementById(${JSON.stringify(p.section)});if(target)setTimeout(()=>target.scrollIntoView({block:'start'}),80)},{once:true});</script>\n`:'';
-  html=html
+
+  html=externalizeStatic(html)
     .replace(/<meta\s+name=["']description["'][^>]*>\s*/gi,'')
     .replace(/<meta\s+name=["']robots["'][^>]*>\s*/gi,'')
     .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi,'')
     .replace(/<meta\s+property=["']og:[^"']+["'][^>]*>\s*/gi,'')
     .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>\s*/gi,'')
     .replace(/<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
   return html.replace(/<\/head>/i,`${meta}${structured}${focus}</head>`);
@@ -86,7 +104,7 @@ module.exports=async(req,res)=>{
   try{
     const html=inject(await source(p.file),p);
     res.setHeader('Content-Type','text/html; charset=utf-8');
-    res.setHeader('Cache-Control','public, s-maxage=300, stale-while-revalidate=3600');
+    res.setHeader('Cache-Control','public, s-maxage=60, stale-while-revalidate=300');
     res.setHeader('Vary','Accept-Encoding');
     res.setHeader('Link',`<${SITE}${p.path==='/'?'':p.path}>; rel="canonical"`);
     res.setHeader('X-Robots-Tag',req.query?.admin==='1'?'noindex, nofollow, nosnippet':'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
