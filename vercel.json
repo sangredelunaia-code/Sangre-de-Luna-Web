@@ -3,7 +3,8 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/cronista.js": {"maxDuration": 30}
+    "api/cronista.js": {"maxDuration": 30},
+    "api/seo.js": {"maxDuration": 10}
   },
   "redirects": [
     {"source":"/index.html","destination":"/","permanent":true},
@@ -29,12 +30,17 @@
     {"source":"/fanclub-separation.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]}
   ],
   "rewrites": [
-    {"source":"/personajes","destination":"/index.html"},
-    {"source":"/historias","destination":"/index.html"},
-    {"source":"/episodios","destination":"/index.html"},
-    {"source":"/musica","destination":"/index.html"},
-    {"source":"/galeria","destination":"/index.html"},
-    {"source":"/desafios","destination":"/index.html"},
+    {"source":"/","destination":"/api/seo?route=home"},
+    {"source":"/personajes","destination":"/api/seo?route=personajes"},
+    {"source":"/historias","destination":"/api/seo?route=historias"},
+    {"source":"/episodios","destination":"/api/seo?route=episodios"},
+    {"source":"/musica","destination":"/api/seo?route=musica"},
+    {"source":"/galeria","destination":"/api/seo?route=galeria"},
+    {"source":"/desafios","destination":"/api/seo?route=desafios"},
+    {"source":"/fanclub","destination":"/api/seo?route=fanclub"},
+    {"source":"/mapa","destination":"/api/seo?route=mapa"},
+    {"source":"/tour","destination":"/api/seo?route=tour"},
+    {"source":"/viaje","destination":"/api/seo?route=viaje"},
     {"source":"/la-manada","destination":"/fanclub.html"},
     {"source":"/la-manada.html","destination":"/fanclub.html"},
     {"source":"/la-manada/credencial","destination":"/fanclub.html"},
