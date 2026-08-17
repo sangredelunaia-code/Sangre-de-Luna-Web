@@ -33,6 +33,7 @@
     {"source":"/fanclub-separation.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]}
   ],
   "rewrites": [
+    {"source":"/assets/:path*","destination":"https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/:path*"},
     {"source":"/","destination":"/api/seo?route=home"},
     {"source":"/personajes","destination":"/api/seo?route=personajes"},
     {"source":"/historias","destination":"/api/seo?route=historias"},
