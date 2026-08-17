@@ -1,14 +1,42 @@
 /* SANGRE DE LUNA · CARGADOR DE COMPATIBILIDAD
    Conserva navegación, Fan Club y portal, y añade Tour 360, recuperación, insignias, expediciones, progreso, ranking, ruta guiada y tarjetas compartibles. */
 (()=>{
+  const STABLE_REF='f52310ad74363701dbbbebe6baa8e78627b55f3c';
+  const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${STABLE_REF}`;
   const LEGACY='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@956f18b6f95258b4ada2402585f81e61f6d45b48/desafios-admin.js';
-  const loadTourManager=()=>{if(window.__SDL_TOUR360_MANAGER__||document.querySelector('script[data-sdl360-manager]'))return;const s=document.createElement('script');s.src='/tour360-manager.js?v=20260816';s.defer=true;s.dataset.sdl360Manager='1';document.head.appendChild(s)};
-  const loadPasswordRecovery=()=>{if(window.__SDL_FAN_PASSWORD_RECOVERY__||document.querySelector('script[data-sdl-password-recovery]'))return;const s=document.createElement('script');s.src='/fanclub-password-recovery.js?v=20260816-2';s.defer=true;s.dataset.sdlPasswordRecovery='1';document.head.appendChild(s)};
-  const loadAchievements=()=>{if(window.__SDL_FAN_ACHIEVEMENTS__||document.querySelector('script[data-sdl-achievements]'))return;const s=document.createElement('script');s.src='/fanclub-achievements.js?v=20260816-1';s.defer=true;s.dataset.sdlAchievements='1';document.head.appendChild(s)};
-  const loadExpeditions=()=>{if(window.__SDL_FAN_EXPEDITIONS__||document.querySelector('script[data-sdl-expeditions]'))return;const s=document.createElement('script');s.src='/fanclub-expeditions.js?v=20260816-1';s.defer=true;s.dataset.sdlExpeditions='1';document.head.appendChild(s)};
-  const loadProgress=()=>{if(window.__SDL_FAN_PROGRESS__||document.querySelector('script[data-sdl-progress]'))return;const s=document.createElement('script');s.src='/fanclub-progress.js?v=20260816-1';s.defer=true;s.dataset.sdlProgress='1';document.head.appendChild(s)};
-  const loadMissionPath=()=>{if(window.__SDL_MISSION_PATH__||document.querySelector('script[data-sdl-mission-path]'))return;const s=document.createElement('script');s.src='/fanclub-mission-path.js?v=20260816-1';s.defer=true;s.dataset.sdlMissionPath='1';document.head.appendChild(s)};
-  const loadSharing=()=>{if(window.__SDL_ACHIEVEMENT_SHARING__||document.querySelector('script[data-sdl-achievement-sharing]'))return;const s=document.createElement('script');s.src='/fanclub-achievement-sharing.js?v=20260816-1';s.defer=true;s.dataset.sdlAchievementSharing='1';document.head.appendChild(s)};
-  const afterLegacy=()=>{loadTourManager();loadPasswordRecovery();loadAchievements();loadExpeditions();loadProgress();setTimeout(loadMissionPath,120);setTimeout(loadSharing,260)};
+
+  const loadFanclubAdmin=()=>{
+    if(document.querySelector('[data-page="fanclub"]')||document.querySelector('script[data-fanclub-admin-module]'))return;
+    if(!document.getElementById('adminApp')||!document.getElementById('adminNav'))return;
+    const s=document.createElement('script');
+    s.src=`${CDN}/fanclub.js?v=admin-restore-20260817`;
+    s.async=false;
+    s.dataset.fanclubAdminModule='1';
+    document.head.appendChild(s);
+  };
+
+  const loadTourManager=()=>{if(window.__SDL_TOUR360_MANAGER__||document.querySelector('script[data-sdl360-manager]'))return;const s=document.createElement('script');s.src=`${CDN}/tour360-manager.js?v=20260816`;s.defer=true;s.dataset.sdl360Manager='1';document.head.appendChild(s)};
+  const loadPasswordRecovery=()=>{if(window.__SDL_FAN_PASSWORD_RECOVERY__||document.querySelector('script[data-sdl-password-recovery]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-password-recovery.js?v=20260816-2`;s.defer=true;s.dataset.sdlPasswordRecovery='1';document.head.appendChild(s)};
+  const loadAchievements=()=>{if(window.__SDL_FAN_ACHIEVEMENTS__||document.querySelector('script[data-sdl-achievements]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-achievements.js?v=20260816-1`;s.defer=true;s.dataset.sdlAchievements='1';document.head.appendChild(s)};
+  const loadExpeditions=()=>{if(window.__SDL_FAN_EXPEDITIONS__||document.querySelector('script[data-sdl-expeditions]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-expeditions.js?v=20260816-1`;s.defer=true;s.dataset.sdlExpeditions='1';document.head.appendChild(s)};
+  const loadProgress=()=>{if(window.__SDL_FAN_PROGRESS__||document.querySelector('script[data-sdl-progress]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-progress.js?v=20260816-1`;s.defer=true;s.dataset.sdlProgress='1';document.head.appendChild(s)};
+  const loadMissionPath=()=>{if(window.__SDL_MISSION_PATH__||document.querySelector('script[data-sdl-mission-path]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-mission-path.js?v=20260816-1`;s.defer=true;s.dataset.sdlMissionPath='1';document.head.appendChild(s)};
+  const loadSharing=()=>{if(window.__SDL_ACHIEVEMENT_SHARING__||document.querySelector('script[data-sdl-achievement-sharing]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-achievement-sharing.js?v=20260816-1`;s.defer=true;s.dataset.sdlAchievementSharing='1';document.head.appendChild(s)};
+
+  const ensureFanclubAdmin=()=>{
+    const adminVisible=new URLSearchParams(location.search).get('admin')==='1'||!document.getElementById('adminApp')?.classList.contains('hidden');
+    if(adminVisible)setTimeout(loadFanclubAdmin,40);
+  };
+
+  const afterLegacy=()=>{
+    ensureFanclubAdmin();
+    loadTourManager();loadPasswordRecovery();loadAchievements();loadExpeditions();loadProgress();
+    setTimeout(loadMissionPath,120);setTimeout(loadSharing,260);
+  };
+
   const legacy=document.createElement('script');legacy.src=LEGACY;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
+
+  document.addEventListener('click',event=>{if(event.target.closest?.('.admin-entry'))setTimeout(loadFanclubAdmin,120)},true);
+  addEventListener('popstate',ensureFanclubAdmin);
+  setTimeout(ensureFanclubAdmin,900);
 })();
