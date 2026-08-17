@@ -4,7 +4,8 @@
   "trailingSlash": false,
   "functions": {
     "api/cronista.js": {"maxDuration": 30},
-    "api/seo.js": {"maxDuration": 10}
+    "api/seo.js": {"maxDuration": 10},
+    "api/private.js": {"maxDuration": 10}
   },
   "redirects": [
     {"source":"/index.html","destination":"/","permanent":true},
@@ -23,13 +24,12 @@
     {"source":"/tour","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/tour>; rel=\"canonical\""}]},
     {"source":"/viaje","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/viaje>; rel=\"canonical\""}]},
     {"source":"/api/:path*","headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"}]},
     {"source":"/robots.txt","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=3600, must-revalidate"},{"key":"Content-Type","value":"text/plain; charset=utf-8"}]},
     {"source":"/sitemap.xml","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=3600, must-revalidate"},{"key":"Content-Type","value":"application/xml; charset=utf-8"}]},
     {"source":"/desafios-admin.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/la-manada/:path*","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
     {"source":"/la-manada","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
     {"source":"/la-manada.html","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
+    {"source":"/la-manada/:path*","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
     {"source":"/fanclub-separation.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]}
   ],
   "rewrites": [
@@ -44,11 +44,8 @@
     {"source":"/mapa","destination":"/api/seo?route=mapa"},
     {"source":"/tour","destination":"/api/seo?route=tour"},
     {"source":"/viaje","destination":"/api/seo?route=viaje"},
-    {"source":"/la-manada","destination":"/fanclub.html"},
-    {"source":"/la-manada.html","destination":"/fanclub.html"},
-    {"source":"/la-manada/credencial","destination":"/fanclub.html"},
-    {"source":"/la-manada/desafios","destination":"/fanclub.html"},
-    {"source":"/la-manada/contenidos","destination":"/fanclub.html"},
-    {"source":"/la-manada/facciones","destination":"/fanclub.html"}
+    {"source":"/la-manada","destination":"/api/private"},
+    {"source":"/la-manada.html","destination":"/api/private"},
+    {"source":"/la-manada/:path*","destination":"/api/private"}
   ]
 }
