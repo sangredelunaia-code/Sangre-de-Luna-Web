@@ -3,13 +3,11 @@ const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@ma
 const ASSETS=`${CDN}/assets`;
 
 function externalizeStatic(html){
+  // El gateway de Vercel no publica los archivos estáticos del repositorio.
+  // Convertimos todos los recursos locales del Fan Club a URLs públicas del CDN.
   html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
-  for(const file of ['desafios-admin.js','cronista-global.js','fanclub-separation.js']){
-    html=html
-      .replaceAll(`src="/${file}"`,`src="${CDN}/${file}"`)
-      .replaceAll(`src='/${file}'`,`src='${CDN}/${file}'`)
-      .replaceAll(`src=\`/${file}\``,`src=\`${CDN}/${file}\``);
-  }
+  html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
+  html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
   return html;
 }
 
@@ -19,7 +17,7 @@ module.exports=async(req,res)=>{
     const timer=setTimeout(()=>controller.abort(),8000);
     let response;
     try{
-      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.1'}});
+      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.2'}});
     }finally{
       clearTimeout(timer);
     }
