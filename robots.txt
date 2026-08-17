@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /la-manada
+Disallow: /logro/
 Disallow: /*?admin=1
 
 Sitemap: https://sangre-de-luna-public.vercel.app/sitemap.xml
