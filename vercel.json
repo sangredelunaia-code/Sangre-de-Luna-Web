@@ -24,6 +24,8 @@
     {"source":"/viaje","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/viaje>; rel=\"canonical\""}]},
     {"source":"/api/:path*","headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
     {"source":"/index.html","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"}]},
+    {"source":"/robots.txt","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=3600, must-revalidate"},{"key":"Content-Type","value":"text/plain; charset=utf-8"}]},
+    {"source":"/sitemap.xml","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=3600, must-revalidate"},{"key":"Content-Type","value":"application/xml; charset=utf-8"}]},
     {"source":"/desafios-admin.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
     {"source":"/la-manada/:path*","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
     {"source":"/la-manada","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
