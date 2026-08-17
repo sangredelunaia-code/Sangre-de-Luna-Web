@@ -22,7 +22,16 @@
   .sdl-manada-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.sdl-manada-card{position:relative;min-height:330px;overflow:hidden;border:1px solid #36566e;border-radius:24px;background:#07131e;box-shadow:0 24px 70px #0008;isolation:isolate;transition:.3s}.sdl-manada-card:before{content:'';position:absolute;inset:0;background-image:var(--img);background-size:cover;background-position:center;filter:brightness(.48) saturate(.82);transform:scale(1.01);transition:.5s;z-index:-2}.sdl-manada-card:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 12%,#02070b38 45%,#02070bf2 100%),linear-gradient(110deg,#07131ea6,transparent 68%);z-index:-1}.sdl-manada-card:hover{transform:translateY(-5px);border-color:#8ed8ff;box-shadow:0 30px 85px #000b,0 0 28px #57b9f31c}.sdl-manada-card:hover:before{transform:scale(1.065);filter:brightness(.58) saturate(.94)}
   .sdl-manada-card-body{position:absolute;inset:auto 0 0;padding:27px}.sdl-manada-card .ey{color:#9adfff}.sdl-manada-card h3{font:700 clamp(1.8rem,4vw,2.55rem) Georgia,serif;margin:7px 0 8px}.sdl-manada-card p{max-width:540px;margin:0 0 17px;color:#b5c6d4}.sdl-card-go{display:inline-flex;align-items:center;gap:8px;color:#e9f8ff;font-size:.78rem;font-weight:900;letter-spacing:.08em}.sdl-card-go:after{content:'→';transition:.2s}.sdl-manada-card:hover .sdl-card-go:after{transform:translateX(5px)}
   .sdl-private-page-head{padding:38px 0 4px}.sdl-private-page-head .back{display:inline-flex;align-items:center;gap:8px;color:#9edcff;font-size:.78rem;font-weight:900;letter-spacing:.06em}.sdl-private-page-head .back:hover{color:#fff}.sdl-private-page-head h2{font:700 clamp(2.3rem,6vw,4rem) Georgia,serif;margin:12px 0 5px}.sdl-private-page-head p{max-width:680px;color:#9fb3c4;margin:0}
-  @media(max-width:760px){.sdl-manada-cards{grid-template-columns:1fr}.sdl-manada-card{min-height:285px}.sdl-private-credential{padding:36px 0}}@media(max-width:440px){.sdl-manada-card{min-height:260px}.sdl-manada-card-body{padding:21px}}
+  html.sdl-manada-private[data-manada-page="contenidos"] .manada-hero,html.sdl-manada-private[data-manada-page="contenidos"] .sdl-private-page-head{display:none!important}
+  html.sdl-manada-private[data-manada-page="contenidos"] #zona{padding-top:28px!important;min-height:auto!important;border-top:0!important}
+  html.sdl-manada-private[data-manada-page="contenidos"] #zona>.w{padding-top:0!important}
+  html.sdl-manada-private[data-manada-page="contenidos"] #zona .head{margin-bottom:18px!important;align-items:end}
+  html.sdl-manada-private[data-manada-page="contenidos"] #zona .head h2{margin-top:4px;font-size:clamp(2.15rem,4.6vw,3.6rem)}
+  html.sdl-manada-private[data-manada-page="contenidos"] #fanContent{scroll-margin-top:88px}
+  html.sdl-manada-private[data-manada-page="contenidos"] .fan-content-grid{margin-top:6px}
+  html.sdl-manada-private[data-manada-page="contenidos"] .fan-content{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}
+  html.sdl-manada-private[data-manada-page="contenidos"] .fan-content:hover{transform:translateY(-3px);border-color:#5f9bc3;box-shadow:0 16px 38px rgba(0,0,0,.24)}
+  @media(max-width:760px){.sdl-manada-cards{grid-template-columns:1fr}.sdl-manada-card{min-height:285px}.sdl-private-credential{padding:36px 0}html.sdl-manada-private[data-manada-page="contenidos"] #zona{padding-top:20px!important}html.sdl-manada-private[data-manada-page="contenidos"] #zona .head{margin-bottom:14px!important}html.sdl-manada-private[data-manada-page="contenidos"] #zona .head h2{font-size:clamp(2rem,9vw,2.8rem)}}@media(max-width:440px){.sdl-manada-card{min-height:260px}.sdl-manada-card-body{padding:21px}}
   `;
   document.head.appendChild(css);
 
@@ -63,6 +72,16 @@
 
   function pageHead(title,copy){const e=document.createElement('div');e.className='sdl-private-page-head';e.innerHTML=`<div class="w"><a class="back" href="/la-manada">← VOLVER A LA MANADA</a><h2>${title}</h2><p>${copy}</p></div>`;return e}
 
+  function contentFirst(main,content){
+    if(page!=='contenidos'||!main||!content)return;
+    main.insertBefore(content,main.firstChild);
+    const rank=card=>{const type=(card.querySelector('.ey')?.textContent||'').trim().toUpperCase();if(type.includes('WALLPAPER'))return 0;if(type.includes('IMAGEN'))return 1;return 2};
+    let busy=false;
+    const sort=()=>{const grid=content.querySelector('.fan-content-grid');if(!grid||busy)return;busy=true;requestAnimationFrame(()=>{const cards=[...grid.children],ordered=[...cards].sort((a,b)=>rank(a)-rank(b));if(ordered.some((c,i)=>c!==cards[i]))ordered.forEach(c=>grid.appendChild(c));busy=false})};
+    const host=document.getElementById('fanContent');if(host)new MutationObserver(sort).observe(host,{childList:true,subtree:true});sort();
+    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
+  }
+
   function privateArea(){
     if(!token()){goAccess('acceso=miembro');return}document.body.classList.remove('locked');document.getElementById('portal')?.classList.add('hidden');
     const main=document.getElementById('fanMain');if(!main)return;document.getElementById('acceso')?.classList.add('sdl-route-hidden');
@@ -73,7 +92,7 @@
     const heroTitle=document.querySelector('.manada-hero h2'),heroText=document.querySelector('.manada-hero .hero-copy p'),toolbar=document.querySelector('.manada-hero .toolbar');if(toolbar)toolbar.innerHTML='<a class="btn pri" href="/la-manada">CENTRO DE LA MANADA</a><a class="btn ghost" href="/">SITIO PRINCIPAL</a>';
     const info={credencial:['MI CREDENCIAL','Tu identidad oficial dentro de La Manada. Consulta tus datos, código QR y opciones de impresión.'],desafios:['DESAFÍOS DE LA MANADA','Pon a prueba tus conocimientos, participa en las decisiones de la comunidad y demuestra tu conexión con Sangre de Luna.'],contenidos:['ARCHIVO DE LA MANADA','Wallpapers, imágenes y contenidos especiales reservados para miembros del Fan Club.'],facciones:['FACCIONES DE LA MANADA','Conoce las banderas, emblemas e identidades que forman la comunidad de Sangre de Luna.']};
     if(!page){if(heroTitle)heroTitle.innerHTML='CENTRO DE <span>LA MANADA</span>';if(heroText)heroText.textContent='Tu territorio privado dentro de Sangre de Luna. Elige una de las áreas de La Manada y entra a un espacio dedicado para cada experiencia.';hero?.insertAdjacentHTML('afterend',cards());document.title='La Manada | Sangre de Luna'}
-    else{const [title,copy]=info[page],target={credencial:cred,desafios:challenges,contenidos:content,facciones:factions}[page];if(heroTitle)heroTitle.innerHTML=title.replace('LA MANADA','<span>LA MANADA</span>');if(heroText)heroText.textContent=copy;if(target){target.classList.remove('sdl-route-hidden');target.parentNode?.insertBefore(pageHead(title,copy),target)}document.title=`${title} | La Manada`}
+    else{const [title,copy]=info[page],target={credencial:cred,desafios:challenges,contenidos:content,facciones:factions}[page];if(heroTitle)heroTitle.innerHTML=title.replace('LA MANADA','<span>LA MANADA</span>');if(heroText)heroText.textContent=copy;if(target){target.classList.remove('sdl-route-hidden');if(page==='contenidos')contentFirst(main,target);else target.parentNode?.insertBefore(pageHead(title,copy),target)}document.title=`${title} | La Manada`}
     const desc=document.querySelector('meta[name="description"]');if(desc)desc.content=page?`${info[page][0]}. Zona privada del Fan Club de Sangre de Luna.`:'Centro privado de La Manada: credencial, desafíos, facciones y contenido exclusivo.';
     document.addEventListener('click',e=>{if(e.target?.id==='fanLogout')setTimeout(()=>goAccess('sesion=cerrada'),120)},true);setInterval(()=>{if(!token())goAccess('sesion=expirada')},1200);
   }
