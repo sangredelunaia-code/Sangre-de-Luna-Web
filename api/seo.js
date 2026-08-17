@@ -33,7 +33,7 @@ async function source(file){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
   try{
-    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.1'}});
+    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.2'}});
     if(!r.ok)throw new Error(`source ${r.status}`);
     const html=await r.text();
     cache.set(file,{html,at:Date.now()});
@@ -57,16 +57,11 @@ function resolveKey(req){
 }
 
 function externalizeStatic(html){
-  // Los despliegues gateway de Vercel contienen solo las funciones y no los binarios.
-  // Servimos imágenes, audio y demás assets desde el CDN del repositorio para que
-  // el logo, la portada, las nubes y los tours nunca dependan del bundle de Vercel.
+  // El gateway sirve HTML dinámico, mientras los recursos estáticos viven en GitHub.
+  // Reescribimos imágenes, hojas de estilo y módulos JS al CDN público para evitar 404.
   html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
-  for(const file of ['desafios-admin.js','cronista-global.js','fanclub-separation.js']){
-    html=html
-      .replaceAll(`src="/${file}"`,`src="${CDN}/${file}"`)
-      .replaceAll(`src='/${file}'`,`src='${CDN}/${file}'`)
-      .replaceAll(`src=\`/${file}\``,`src=\`${CDN}/${file}\``);
-  }
+  html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
+  html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
   return html;
 }
 
@@ -104,7 +99,7 @@ module.exports=async(req,res)=>{
   try{
     const html=inject(await source(p.file),p);
     res.setHeader('Content-Type','text/html; charset=utf-8');
-    res.setHeader('Cache-Control','public, s-maxage=60, stale-while-revalidate=300');
+    res.setHeader('Cache-Control','public, s-maxage=30, stale-while-revalidate=120');
     res.setHeader('Vary','Accept-Encoding');
     res.setHeader('Link',`<${SITE}${p.path==='/'?'':p.path}>; rel="canonical"`);
     res.setHeader('X-Robots-Tag',req.query?.admin==='1'?'noindex, nofollow, nosnippet':'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
