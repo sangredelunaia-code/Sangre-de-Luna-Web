@@ -6,6 +6,50 @@
   const LEGACY='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@956f18b6f95258b4ada2402585f81e61f6d45b48/desafios-admin.js';
   const PASSWORD_RECOVERY='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@bcf92b7c3b24cb07e08b8392bc506146d26833fd/fanclub-password-recovery.js';
   const ADMIN_WELCOME='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@4e4489428bc7988f21065a912dc707ab16f0ca92/fanclub-admin-welcome.js';
+  const CFG_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
+
+  const resetEntryExperience=()=>{
+    try{
+      sessionStorage.removeItem('sdl-entered');
+      sessionStorage.removeItem('sdl-admin-active');
+    }catch{}
+  };
+
+  const goFreshPublic=()=>{
+    resetEntryExperience();
+    location.replace('/');
+  };
+
+  const signOutAndGoPublic=async()=>{
+    try{
+      const cfg=await fetch(CFG_URL,{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null);
+      if(cfg?.url&&cfg?.key&&window.supabase?.createClient){
+        const client=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:true,autoRefreshToken:false,detectSessionInUrl:false}});
+        await client.auth.signOut({scope:'local'}).catch(()=>{});
+      }
+    }finally{
+      goFreshPublic();
+    }
+  };
+
+  /* Al salir del administrador no mostramos el DOM público que quedó cargado en memoria.
+     Siempre volvemos a / y recargamos la experiencia vigente desde cero. */
+  document.addEventListener('click',event=>{
+    const publicExit=event.target.closest?.('.public-entry');
+    if(publicExit){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      goFreshPublic();
+      return;
+    }
+    const signOut=event.target.closest?.('#signOutBtn,#signOutBtn2');
+    if(signOut){
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      signOut.disabled=true;
+      signOutAndGoPublic();
+    }
+  },true);
 
   const ensureFanclubButton=()=>{
     const nav=document.getElementById('adminNav');
@@ -18,9 +62,6 @@
     if(document.querySelector('[data-page="fanclub"]')){ensureFanclubButton();return}
     if(!document.getElementById('adminApp')||!document.getElementById('adminNav'))return;
 
-    /* Un módulo heredado puede crear #fanclub antes que el módulo administrativo.
-       fanclub.js interpreta ese id como "ya cargado" y se detiene. En admin retiramos
-       únicamente esa copia pública/oculta para permitir que el panel completo se inicie. */
     const legacyPublic=document.getElementById('fanclub');
     if(legacyPublic)legacyPublic.remove();
 
@@ -51,7 +92,11 @@
 
   const ensureFanclubAdmin=()=>{
     const adminVisible=new URLSearchParams(location.search).get('admin')==='1'||!document.getElementById('adminApp')?.classList.contains('hidden');
-    if(adminVisible){ensureFanclubButton();setTimeout(()=>loadFanclubAdmin(),40)}
+    if(adminVisible){
+      try{sessionStorage.setItem('sdl-admin-active','1')}catch{}
+      ensureFanclubButton();
+      setTimeout(()=>loadFanclubAdmin(),40);
+    }
   };
 
   const afterLegacy=()=>{
@@ -63,7 +108,12 @@
   const legacy=document.createElement('script');legacy.src=LEGACY;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
 
   document.addEventListener('click',event=>{if(event.target.closest?.('.admin-entry'))setTimeout(ensureFanclubAdmin,120)},true);
-  addEventListener('popstate',ensureFanclubAdmin);
+  addEventListener('popstate',()=>{
+    let wasAdmin=false;try{wasAdmin=sessionStorage.getItem('sdl-admin-active')==='1'}catch{}
+    const stillAdmin=new URLSearchParams(location.search).get('admin')==='1';
+    if(wasAdmin&&!stillAdmin){goFreshPublic();return}
+    ensureFanclubAdmin();
+  });
   const watchdog=setInterval(()=>{
     const adminVisible=new URLSearchParams(location.search).get('admin')==='1'||!document.getElementById('adminApp')?.classList.contains('hidden');
     if(adminVisible&&!document.querySelector('[data-page="fanclub"]'))loadFanclubAdmin();
