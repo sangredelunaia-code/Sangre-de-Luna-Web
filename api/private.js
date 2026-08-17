@@ -8,6 +8,9 @@ function externalizeStatic(html){
   html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
   html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
   html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
+  if(!html.includes('fanclub-registration-email.js')){
+    html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
+  }
   return html;
 }
 
@@ -17,7 +20,7 @@ module.exports=async(req,res)=>{
     const timer=setTimeout(()=>controller.abort(),8000);
     let response;
     try{
-      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.2'}});
+      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.3'}});
     }finally{
       clearTimeout(timer);
     }
