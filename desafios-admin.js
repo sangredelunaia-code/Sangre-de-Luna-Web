@@ -7,13 +7,36 @@
   const PASSWORD_RECOVERY='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@bcf92b7c3b24cb07e08b8392bc506146d26833fd/fanclub-password-recovery.js';
   const ADMIN_WELCOME='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@4e4489428bc7988f21065a912dc707ab16f0ca92/fanclub-admin-welcome.js';
 
-  const loadFanclubAdmin=()=>{
-    if(document.querySelector('[data-page="fanclub"]')||document.querySelector('script[data-fanclub-admin-module]'))return;
+  const ensureFanclubButton=()=>{
+    const nav=document.getElementById('adminNav');
+    if(!nav||nav.querySelector('[data-panel="fanclub"]'))return;
+    const anchor=nav.querySelector('[data-panel="challenges"]')||nav.querySelector('[data-panel="gallery"]');
+    if(anchor)anchor.insertAdjacentHTML('afterend','<button data-panel="fanclub">Fan Club</button>');
+  };
+
+  const loadFanclubAdmin=(retry=0)=>{
+    if(document.querySelector('[data-page="fanclub"]')){ensureFanclubButton();return}
     if(!document.getElementById('adminApp')||!document.getElementById('adminNav'))return;
+
+    /* Un módulo heredado puede crear #fanclub antes que el módulo administrativo.
+       fanclub.js interpreta ese id como "ya cargado" y se detiene. En admin retiramos
+       únicamente esa copia pública/oculta para permitir que el panel completo se inicie. */
+    const legacyPublic=document.getElementById('fanclub');
+    if(legacyPublic)legacyPublic.remove();
+
+    const old=document.querySelector('script[data-fanclub-admin-module]');
+    if(old)old.remove();
     const s=document.createElement('script');
-    s.src=`${CDN}/fanclub.js?v=admin-restore-20260817`;
+    s.src=`${CDN}/fanclub.js?v=admin-fixed-20260817-${retry}`;
     s.async=false;
     s.dataset.fanclubAdminModule='1';
+    s.onload=()=>{
+      setTimeout(()=>{
+        if(document.querySelector('[data-page="fanclub"]'))ensureFanclubButton();
+        else if(retry<2)loadFanclubAdmin(retry+1);
+      },350);
+    };
+    s.onerror=()=>{if(retry<2)setTimeout(()=>loadFanclubAdmin(retry+1),500)};
     document.head.appendChild(s);
   };
 
@@ -28,7 +51,7 @@
 
   const ensureFanclubAdmin=()=>{
     const adminVisible=new URLSearchParams(location.search).get('admin')==='1'||!document.getElementById('adminApp')?.classList.contains('hidden');
-    if(adminVisible)setTimeout(loadFanclubAdmin,40);
+    if(adminVisible){ensureFanclubButton();setTimeout(()=>loadFanclubAdmin(),40)}
   };
 
   const afterLegacy=()=>{
@@ -39,7 +62,13 @@
 
   const legacy=document.createElement('script');legacy.src=LEGACY;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
 
-  document.addEventListener('click',event=>{if(event.target.closest?.('.admin-entry'))setTimeout(loadFanclubAdmin,120)},true);
+  document.addEventListener('click',event=>{if(event.target.closest?.('.admin-entry'))setTimeout(ensureFanclubAdmin,120)},true);
   addEventListener('popstate',ensureFanclubAdmin);
+  const watchdog=setInterval(()=>{
+    const adminVisible=new URLSearchParams(location.search).get('admin')==='1'||!document.getElementById('adminApp')?.classList.contains('hidden');
+    if(adminVisible&&!document.querySelector('[data-page="fanclub"]'))loadFanclubAdmin();
+    else if(adminVisible)ensureFanclubButton();
+  },2000);
+  setTimeout(()=>clearInterval(watchdog),30000);
   setTimeout(ensureFanclubAdmin,900);
 })();
