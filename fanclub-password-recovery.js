@@ -1,4 +1,4 @@
-/* SANGRE DE LUNA · RECUPERACIÓN DE CONTRASEÑA DEL FAN CLUB */
+/* SANGRE DE LUNA · RECUPERACIÓN DE CONTRASEÑA + BIENVENIDA DEL FAN CLUB */
 (()=>{
   'use strict';
   if(window.__SDL_FAN_PASSWORD_RECOVERY__)return;
@@ -6,6 +6,7 @@
 
   const CFG_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
   const FN='fanclub-password-recovery';
+  const WELCOME_FN='fanclub-registration-notify';
   const isAdmin=new URLSearchParams(location.search).get('admin')==='1';
   let cfg=null,sb=null,publicInjecting=false;
   const $=(s,r=document)=>r.querySelector(s);
@@ -20,7 +21,7 @@
     return sb;
   }
 
-  async function invoke(action,payload={},admin=false){
+  async function invokeFn(fn,action,payload={},admin=false){
     await ensureSupabase();
     const headers={'Content-Type':'application/json','apikey':cfg.key,'Authorization':`Bearer ${cfg.key}`};
     if(admin){
@@ -29,11 +30,13 @@
       if(!token)throw new Error('Tu sesión de administrador expiró. Vuelve a ingresar.');
       headers.Authorization=`Bearer ${token}`;
     }
-    const r=await fetch(`${cfg.url}/functions/v1/${FN}`,{method:'POST',headers,body:JSON.stringify({action,...payload})});
+    const r=await fetch(`${cfg.url}/functions/v1/${fn}`,{method:'POST',headers,body:JSON.stringify({action,...payload}),cache:'no-store'});
     let data={};try{data=await r.json()}catch{}
     if(!r.ok||data.ok===false)throw new Error(data.message||'No se pudo completar la operación.');
     return data;
   }
+  const invoke=(action,payload={},admin=false)=>invokeFn(FN,action,payload,admin);
+  const resendWelcome=memberId=>invokeFn(WELCOME_FN,'admin-resend',{member_id:memberId},true);
 
   function addStyle(){
     if($('#sdl-reset-style'))return;
@@ -46,6 +49,7 @@
       .sdl-reset-field{display:grid;gap:6px;margin:13px 0}.sdl-reset-field label{font-size:.72rem;color:#aec6d8;font-weight:900;letter-spacing:.05em}.sdl-reset-field input{width:100%;padding:12px 13px;border:1px solid #2c4a61;border-radius:12px;background:#040b11;color:#fff;outline:none}.sdl-reset-field input:focus{border-color:#78caff;box-shadow:0 0 0 3px #78caff12}
       .sdl-reset-btn{width:100%;margin-top:12px;padding:13px 17px;border:0;border-radius:999px;background:linear-gradient(135deg,#edf9ff,#8bd5ff 58%,#4ba9e5);color:#05131d;font-weight:900;cursor:pointer}.sdl-reset-btn:disabled{opacity:.55;cursor:wait}
       .sdl-mail-admin{margin:14px 0 18px;padding:16px;border:1px solid #31516a;border-radius:16px;background:#07131d}.sdl-mail-admin h4{margin:0 0 6px;font:600 1.15rem Georgia,serif}.sdl-mail-admin p{margin:5px 0;color:#91a8ba;font-size:.8rem}.sdl-mail-status{display:inline-flex;align-items:center;gap:7px;margin:6px 0 10px;font-size:.72rem;font-weight:900}.sdl-mail-status.ok{color:#88e0bd}.sdl-mail-status.off{color:#f0c57a}.sdl-mail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.sdl-mail-actions button{padding:8px 11px;border:1px solid #35546c;border-radius:9px;background:#0b1823;color:#d7edfb;cursor:pointer}.sdl-mail-actions button.primary{background:#d9f1ff;color:#07111a;border-color:#d9f1ff;font-weight:900}.sdl-mail-secret{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}.sdl-mail-secret input{min-width:0;padding:10px 11px;border:1px solid #2c4a61;border-radius:10px;background:#040b11;color:#fff}
+      .sdl-welcome-member{margin-left:6px!important;border-color:#4d7da0!important;color:#dff4ff!important;background:linear-gradient(180deg,#10283a,#0a1925)!important}.sdl-welcome-member:hover{border-color:#86cff8!important;background:#173950!important}.sdl-welcome-member:disabled{opacity:.55;cursor:wait}
       @media(max-width:560px){.sdl-mail-secret{grid-template-columns:1fr}.sdl-reset-box{padding:22px 18px}}
     `;document.head.appendChild(s);
   }
@@ -71,40 +75,39 @@
   async function injectPublic(){
     if(isAdmin)return;
     const form=$('#fanLoginForm');if(!form)return;
-
     const existing=[...document.querySelectorAll('#sdlForgotButton')];
     if(existing.length){existing.slice(1).forEach(el=>el.remove());return}
     if(publicInjecting)return;
-
     publicInjecting=true;
     try{
       await ensureSupabase();
       const {data}=await sb.rpc('fanclub_mail_public_status');
       if(!data?.configured)return;
       if($('#sdlForgotButton'))return;
-      const b=document.createElement('button');
-      b.type='button';
-      b.id='sdlForgotButton';
-      b.className='sdl-reset-link';
-      b.textContent='🔑 ¿Olvidaste tu contraseña?';
-      b.onclick=openForgot;
-      form.insertAdjacentElement('afterend',b);
+      const b=document.createElement('button');b.type='button';b.id='sdlForgotButton';b.className='sdl-reset-link';b.textContent='🔑 ¿Olvidaste tu contraseña?';b.onclick=openForgot;form.insertAdjacentElement('afterend',b);
     }catch{}finally{publicInjecting=false}
   }
 
   async function adminStatus(){
     const host=$('#sdlMailAdmin');if(!host)return;
-    try{const r=await invoke('admin-status',{},true),c=r.config||{};host.dataset.configured=String(!!c.configured);host.innerHTML=`<h4>🔐 Recuperación de contraseña</h4><div class="sdl-mail-status ${c.configured?'ok':'off'}">${c.configured?'● CORREO CONECTADO':'● FALTA CONECTAR GMAIL'}</div><p>Remitente oficial: <strong>${esc(c.sender_email||'sangredelunaia@gmail.com')}</strong></p><p>Los fans recibirán el correo con el logo oficial, un enlace de un solo uso y vigencia de 30 minutos.</p>${c.configured?'':`<div class="sdl-mail-secret"><input id="sdlGmailAppPass" type="password" autocomplete="off" placeholder="Contraseña de aplicación de Google"><button class="primary" id="sdlSaveGmail" type="button">GUARDAR</button></div><p><strong>No uses tu contraseña normal de Gmail.</strong> Aquí se coloca únicamente una contraseña de aplicación de Google.</p>`}<div id="sdlMailAdminMsg"></div><div class="sdl-mail-actions">${c.configured?'<button id="sdlTestGmail" type="button">ENVIAR CORREO DE PRUEBA</button>':''}</div>`;
+    try{const r=await invoke('admin-status',{},true),c=r.config||{};host.dataset.configured=String(!!c.configured);host.innerHTML=`<h4>🔐 Recuperación y correo del Fan Club</h4><div class="sdl-mail-status ${c.configured?'ok':'off'}">${c.configured?'● CORREO CONECTADO':'● FALTA CONECTAR GMAIL'}</div><p>Remitente oficial: <strong>${esc(c.sender_email||'sangredelunaia@gmail.com')}</strong></p><p>Desde este panel también puedes reenviar manualmente la bienvenida a miembros registrados anteriormente.</p>${c.configured?'':`<div class="sdl-mail-secret"><input id="sdlGmailAppPass" type="password" autocomplete="off" placeholder="Contraseña de aplicación de Google"><button class="primary" id="sdlSaveGmail" type="button">GUARDAR</button></div><p><strong>No uses tu contraseña normal de Gmail.</strong> Aquí se coloca únicamente una contraseña de aplicación de Google.</p>`}<div id="sdlMailAdminMsg"></div><div class="sdl-mail-actions">${c.configured?'<button id="sdlTestGmail" type="button">ENVIAR CORREO DE PRUEBA</button>':''}</div>`;
       $('#sdlSaveGmail',host)?.addEventListener('click',async()=>{const p=$('#sdlGmailAppPass',host).value.trim(),m=$('#sdlMailAdminMsg',host);if(!p){msg(m,'Escribe la contraseña de aplicación de Google.','err');return}msg(m,'Guardando configuración…');try{await invoke('admin-configure',{app_password:p},true);msg(m,'Correo conectado. Ahora puedes enviar una prueba.','ok');setTimeout(adminStatus,900)}catch(err){msg(m,err.message,'err')}});
       $('#sdlTestGmail',host)?.addEventListener('click',async()=>{const m=$('#sdlMailAdminMsg',host);msg(m,'Enviando prueba…');try{const r=await invoke('admin-test',{},true);msg(m,r.message,'ok')}catch(err){msg(m,err.message,'err')}});
-    }catch(err){host.innerHTML=`<h4>🔐 Recuperación de contraseña</h4><div class="sdl-reset-msg err">${esc(err.message)}</div>`}
+    }catch(err){host.innerHTML=`<h4>🔐 Recuperación y correo del Fan Club</h4><div class="sdl-reset-msg err">${esc(err.message)}</div>`}
   }
 
   function patchMemberButtons(){
     if(!isAdmin)return;
     document.querySelectorAll('[data-fan-member-id]').forEach(base=>{
-      const tr=base.closest('tr'),cell=base.parentElement,id=base.dataset.fanMemberId;if(!tr||!cell||!id||cell.querySelector(`[data-sdl-reset-member="${id}"]`))return;
-      const b=document.createElement('button');b.className='mini';b.type='button';b.dataset.sdlResetMember=id;b.textContent='Enviar recuperación';b.onclick=async()=>{if(!confirm('¿Enviar un enlace de recuperación de contraseña a este miembro?'))return;b.disabled=true;try{const r=await invoke('admin-send',{member_id:id},true);alert(r.message)}catch(err){alert(err.message)}finally{b.disabled=false}};cell.append(' ',b);
+      const tr=base.closest('tr'),cell=base.parentElement,id=base.dataset.fanMemberId;if(!tr||!cell||!id)return;
+      if(!cell.querySelector(`[data-sdl-reset-member="${id}"]`)){
+        const b=document.createElement('button');b.className='mini';b.type='button';b.dataset.sdlResetMember=id;b.textContent='Enviar recuperación';b.onclick=async()=>{if(!confirm('¿Enviar un enlace de recuperación de contraseña a este miembro?'))return;b.disabled=true;try{const r=await invoke('admin-send',{member_id:id},true);alert(r.message)}catch(err){alert(err.message)}finally{b.disabled=false}};cell.append(' ',b);
+      }
+      if(!cell.querySelector(`[data-sdl-welcome-member="${id}"]`)){
+        const w=document.createElement('button');w.className='mini sdl-welcome-member';w.type='button';w.dataset.sdlWelcomeMember=id;w.textContent='📧 Enviar bienvenida';w.title='Enviar o reenviar el correo oficial de bienvenida a La Manada';
+        w.onclick=async()=>{const label=(tr.querySelector('td')?.textContent||'este miembro').trim();if(!confirm(`¿Enviar nuevamente el correo oficial de bienvenida a ${label}?`))return;const old=w.textContent;w.disabled=true;w.textContent='Enviando…';try{const r=await resendWelcome(id);w.textContent='✓ Bienvenida enviada';alert(r.message||'Correo de bienvenida enviado correctamente.');setTimeout(()=>{w.textContent='📧 Reenviar bienvenida';w.disabled=false},2400)}catch(err){alert(err.message);w.textContent=old;w.disabled=false}};
+        cell.append(' ',w);
+      }
     });
   }
 
@@ -119,7 +122,7 @@
     addStyle();
     const token=new URLSearchParams(location.search).get('restablecer');if(token&&!isAdmin)openReset(token);
     injectPublic();injectAdmin();
-    const o=new MutationObserver(()=>{injectPublic();injectAdmin();patchMemberButtons()});o.observe(document.documentElement,{childList:true,subtree:true});setTimeout(()=>o.disconnect(),30000);
+    const o=new MutationObserver(()=>{injectPublic();injectAdmin();patchMemberButtons()});o.observe(document.documentElement,{childList:true,subtree:true});setTimeout(()=>o.disconnect(),60000);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
