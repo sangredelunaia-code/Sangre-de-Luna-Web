@@ -33,7 +33,7 @@ async function source(file){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
   try{
-    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.2'}});
+    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.3'}});
     if(!r.ok)throw new Error(`source ${r.status}`);
     const html=await r.text();
     cache.set(file,{html,at:Date.now()});
@@ -86,6 +86,10 @@ function inject(html,p){
     .replace(/<meta\s+property=["']og:[^"']+["'][^>]*>\s*/gi,'')
     .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>\s*/gi,'')
     .replace(/<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
+
+  if(p.file==='fanclub.html'&&!html.includes('fanclub-registration-email.js')){
+    html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
+  }
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
