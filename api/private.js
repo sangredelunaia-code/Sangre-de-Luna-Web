@@ -1,6 +1,7 @@
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main/fanclub.html';
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ASSETS=`${CDN}/assets`;
+const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
 
 function externalizeStatic(html){
   // El gateway de Vercel no publica los archivos estáticos del repositorio.
@@ -11,6 +12,9 @@ function externalizeStatic(html){
   if(!html.includes('fanclub-registration-email.js')){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
+  if(!html.includes('fanclub-content-ux.js')){
+    html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);
+  }
   return html;
 }
 
@@ -20,7 +24,7 @@ module.exports=async(req,res)=>{
     const timer=setTimeout(()=>controller.abort(),8000);
     let response;
     try{
-      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.3'}});
+      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.4'}});
     }finally{
       clearTimeout(timer);
     }
