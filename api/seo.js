@@ -1,6 +1,7 @@
 const SITE='https://sangre-de-luna-public.vercel.app';
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main';
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
+const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@58784e3cf8d95a5cc0455774fea32186ab053253/desafios-admin.js';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -25,7 +26,7 @@ const pathAliases={
 };
 
 const cache=new Map();
-const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 
 async function source(file){
   const hit=cache.get(file);
@@ -33,7 +34,7 @@ async function source(file){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
   try{
-    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.3'}});
+    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.4'}});
     if(!r.ok)throw new Error(`source ${r.status}`);
     const html=await r.text();
     cache.set(file,{html,at:Date.now()});
@@ -57,10 +58,9 @@ function resolveKey(req){
 }
 
 function externalizeStatic(html){
-  // El gateway sirve HTML dinámico, mientras los recursos estáticos viven en GitHub.
-  // Reescribimos imágenes, hojas de estilo y módulos JS al CDN público para evitar 404.
   html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
   html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
+  html=html.replace(/src=(["'])\/desafios-admin\.js(?:\?[^"']*)?\1/gi,(_,q)=>`src=${q}${ADMIN_LOADER}${q}`);
   html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
   return html;
 }
