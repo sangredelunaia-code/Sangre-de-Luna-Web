@@ -3,9 +3,10 @@
 const activity=document.querySelector('.activity-grid')?.closest('.section');
 if(!activity||document.getElementById('desafios'))return;
 
-const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+const esc=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[char]));
 const token=()=>sessionStorage.getItem('sdl_fanclub_token')||'';
 const fmt=n=>new Intl.NumberFormat('es-EC').format(Number(n)||0);
+const ASSET_BASE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets';
 let sb=null,preview=[],dashboard=null,activeId=null,lastToken='';
 
 activity.insertAdjacentHTML('afterend',`
@@ -27,14 +28,52 @@ if(heroToolbar&&!heroToolbar.querySelector('[href="#desafios"]'))heroToolbar.ins
 const previewRoot=document.getElementById('challengePreview');
 const memberRoot=document.getElementById('challengeMember');
 
+const cardStyle=document.createElement('style');
+cardStyle.dataset.challengeCards='clickable-v1';
+cardStyle.textContent=`
+.challenge-preview-card,[data-open-challenge]{cursor:pointer;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;position:relative}
+.challenge-preview-card:hover,.challenge-preview-card:focus-visible,[data-open-challenge]:hover,[data-open-challenge]:focus-visible{transform:translateY(-4px);border-color:#66c8ff!important;box-shadow:0 16px 38px rgba(0,0,0,.28),0 0 0 1px rgba(102,200,255,.12);outline:none;background:linear-gradient(145deg,rgba(12,34,50,.98),rgba(5,16,25,.98))}
+.challenge-card-action{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:15px;color:#89d7ff;font-size:.7rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase;opacity:.82}
+.challenge-preview-card:hover .challenge-card-action,.challenge-preview-card:focus-visible .challenge-card-action{opacity:1;transform:translateX(2px)}
+.challenge-card-action span{display:inline-grid;place-items:center;width:25px;height:25px;border:1px solid #3a6682;border-radius:999px;background:#0b2232;color:#dff6ff;font-size:.9rem}
+`;
+document.head.appendChild(cardStyle);
+
 function renderPreview(){
  if(!preview.length){previewRoot.innerHTML='<div class="empty">Los primeros desafíos se publicarán próximamente.</div>';return}
  previewRoot.innerHTML=`<div class="challenge-preview-grid">${preview.map(c=>`
-  <article class="challenge-preview-card">
+  <article class="challenge-preview-card" data-preview-challenge="${esc(c.id)}" role="button" tabindex="0" aria-label="Abrir desafío ${esc(c.title)}">
    <div class="challenge-card-top"><div><span class="challenge-season">Temporada ${esc(c.season)} · ${esc(c.chapter_range)}</span><h4>${esc(c.title)}</h4></div><div class="challenge-icon">${esc(c.icon||'🐺')}</div></div>
    <p>${esc(c.description||'')}</p>
    <div class="challenge-meta"><span class="challenge-chip">${fmt(c.question_count)} PREGUNTAS</span><span class="challenge-chip">${fmt(c.max_points)} PUNTOS</span><span class="challenge-chip">INSIGNIA: ${esc(c.badge_name)}</span></div>
+   <div class="challenge-card-action">ABRIR DESAFÍO <span>→</span></div>
   </article>`).join('')}</div>`;
+ bindPreviewCards();
+}
+
+function bindPreviewCards(){
+ previewRoot.querySelectorAll('[data-preview-challenge]').forEach(card=>{
+  const open=()=>goToChallenge(card.dataset.previewChallenge);
+  card.addEventListener('click',open);
+  card.addEventListener('keydown',event=>{
+   if(event.key==='Enter'||event.key===' '){event.preventDefault();open()}
+  });
+ });
+}
+
+async function goToChallenge(challengeId){
+ if(!token()){
+  const target=document.getElementById('fanMemberCard')||document.getElementById('fanJoinCard');
+  target?.scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>document.getElementById('fanLoginEmail')?.focus({preventScroll:true}),500);
+  return;
+ }
+ if(!dashboard)await syncSession(true);
+ const challenge=(dashboard?.challenges||[]).find(c=>String(c.id)===String(challengeId));
+ if(!challenge)return;
+ activeId=challenge.id;
+ renderMember();
+ requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById('challengeRunner')?.scrollIntoView({behavior:'smooth',block:'start'})));
 }
 
 function renderMember(){
@@ -59,7 +98,7 @@ function renderMember(){
   </section>
   <div class="challenge-grid">${challenges.map(c=>{
    const pct=Number(c.best_percent)||0;
-   return `<article class="challenge-card ${c.earned_badge?'done':''}">
+   return `<article class="challenge-card ${c.earned_badge?'done':''}" data-open-challenge="${esc(c.id)}" role="button" tabindex="0" aria-label="Abrir desafío ${esc(c.title)}">
     <div class="challenge-card-top"><div><span class="challenge-season">Temporada ${esc(c.season)} · ${esc(c.chapter_range)}</span><h4>${esc(c.title)}</h4></div><div class="challenge-icon">${esc(c.icon||'🐺')}</div></div>
     <p>${esc(c.subtitle||c.description||'')}</p>
     <div class="challenge-meta"><span class="challenge-chip">${fmt(c.question_count)} PREGUNTAS</span><span class="challenge-chip">${fmt(c.max_points)} PUNTOS</span>${c.earned_badge?`<span class="challenge-chip earned">✓ ${esc(c.badge_name)}</span>`:''}</div>
@@ -68,7 +107,12 @@ function renderMember(){
    </article>`}).join('')}</div>
   <div id="challengeRunner"></div>
  </div>`;
- memberRoot.querySelectorAll('[data-start-challenge]').forEach(btn=>btn.addEventListener('click',()=>{activeId=btn.dataset.startChallenge;renderRunner();requestAnimationFrame(()=>document.getElementById('challengeRunner')?.scrollIntoView({behavior:'smooth',block:'start'}))}));
+ memberRoot.querySelectorAll('[data-start-challenge]').forEach(btn=>btn.addEventListener('click',event=>{event.stopPropagation();activeId=btn.dataset.startChallenge;renderRunner();requestAnimationFrame(()=>document.getElementById('challengeRunner')?.scrollIntoView({behavior:'smooth',block:'start'}))}));
+ memberRoot.querySelectorAll('[data-open-challenge]').forEach(card=>{
+  const open=()=>{activeId=card.dataset.openChallenge;renderRunner();requestAnimationFrame(()=>document.getElementById('challengeRunner')?.scrollIntoView({behavior:'smooth',block:'start'}))};
+  card.addEventListener('click',event=>{if(event.target.closest('button,a,input,label'))return;open()});
+  card.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&!event.target.closest('button,a,input,label')){event.preventDefault();open()}});
+ });
  if(activeId)renderRunner();
  renderCredentialReverse();
 }
@@ -107,7 +151,7 @@ function renderCredentialReverse(){
  if(existing?.dataset.signature===signature)return;
  existing?.remove();
  const wrap=document.createElement('div');wrap.className='fan-achievement-wrap';wrap.dataset.signature=signature;
- wrap.innerHTML=`<div class="fan-achievement-tools"><button class="btn" type="button" data-toggle-achievements>✦ VER REVERSO DIGITAL: INSIGNIAS</button></div><article class="fan-achievement-reverse hidden"><img src="/assets/logo-oficial.png" alt="Sangre de Luna"><h4>DESAFÍOS DE LA MANADA</h4><small>REVERSO DIGITAL DE LOGROS</small><div class="fan-achievement-rank">${esc(profile.level||'Iniciado')}<span>${fmt(profile.points)} PUNTOS ACUMULADOS</span></div><div class="fan-achievement-badge-grid">${badges.length?badges.slice(0,6).map(b=>`<div class="fan-achievement-mini"><span>${esc(b.icon||'🌙')}</span><b>${esc(b.badge_name)}</b></div>`).join(''):'<div class="fan-achievement-none">Supera tu primer desafío para colocar una insignia en tu credencial.</div>'}</div></article>`;
+ wrap.innerHTML=`<div class="fan-achievement-tools"><button class="btn" type="button" data-toggle-achievements>✦ VER REVERSO DIGITAL: INSIGNIAS</button></div><article class="fan-achievement-reverse hidden"><img src="${ASSET_BASE}/logo-oficial.png" alt="Sangre de Luna"><h4>DESAFÍOS DE LA MANADA</h4><small>REVERSO DIGITAL DE LOGROS</small><div class="fan-achievement-rank">${esc(profile.level||'Iniciado')}<span>${fmt(profile.points)} PUNTOS ACUMULADOS</span></div><div class="fan-achievement-badge-grid">${badges.length?badges.slice(0,6).map(b=>`<div class="fan-achievement-mini"><span>${esc(b.icon||'🌙')}</span><b>${esc(b.badge_name)}</b></div>`).join(''):'<div class="fan-achievement-none">Supera tu primer desafío para colocar una insignia en tu credencial.</div>'}</div></article>`;
  shell.appendChild(wrap);const card=wrap.querySelector('.fan-achievement-reverse'),button=wrap.querySelector('[data-toggle-achievements]');button.addEventListener('click',()=>{const opening=card.classList.contains('hidden');card.classList.toggle('hidden');button.textContent=opening?'✕ OCULTAR REVERSO':'✦ VER REVERSO DIGITAL: INSIGNIAS';if(opening)card.scrollIntoView({behavior:'smooth',block:'center'})});
 }
 
