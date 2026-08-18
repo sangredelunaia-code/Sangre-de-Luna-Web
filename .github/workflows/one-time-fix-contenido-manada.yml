@@ -1,0 +1,96 @@
+name: One-time fix Contenido de la Manada
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/one-time-fix-contenido-manada.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Move Contenido de la Manada to the top
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('fanclub.html')
+          html = path.read_text(encoding='utf-8')
+          marker = 'sdl-contenido-route-fix'
+
+          if marker not in html:
+              script = r'''
+<script id="sdl-contenido-route-fix">
+(function(){
+  function placeContenidoFirst(){
+    var path=(location.pathname||'/').replace(/\/+$/,'')||'/';
+    if(path!=='/la-manada/contenidos') return;
+
+    var main=document.getElementById('fanMain');
+    var zone=document.getElementById('zona');
+    var hero=document.getElementById('fcbHero');
+    var head=document.getElementById('fanHead');
+
+    if(hero){ hero.hidden=true; hero.style.display='none'; }
+    if(head){ head.hidden=true; head.style.display='none'; }
+
+    if(main && zone && main.firstElementChild!==zone){
+      main.insertBefore(zone, main.firstElementChild);
+    }
+
+    if(zone){
+      zone.hidden=false;
+      zone.removeAttribute('aria-hidden');
+      zone.style.display='';
+      zone.style.marginTop='0';
+      zone.style.paddingTop='10px';
+    }
+
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+  }
+
+  function enforce(){
+    placeContenidoFirst();
+    setTimeout(placeContenidoFirst,0);
+    setTimeout(placeContenidoFirst,120);
+    requestAnimationFrame(placeContenidoFirst);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',enforce,{once:true});
+  }else{
+    enforce();
+  }
+})();
+</script>
+'''
+              pos = html.lower().rfind('</body>')
+              if pos < 0:
+                  raise SystemExit('No se encontró </body> en fanclub.html')
+              html = html[:pos] + script + html[pos:]
+              path.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit one-time fix
+        shell: bash
+        run: |
+          git config user.name "sangre-de-luna-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git rm .github/workflows/one-time-fix-contenido-manada.yml
+          git add fanclub.html
+          if git diff --cached --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git commit -m "Fix Contenido de la Manada at top of page"
+          git push origin HEAD:main
