@@ -16,6 +16,32 @@ function externalizeStatic(html){
   if(!html.includes('fanclub-content-ux.js')){
     html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);
   }
+
+  // Failsafe de producción: la ruta de Contenido debe mostrar #zona al principio,
+  // incluso si una revisión antigua del JS quedó cacheada en el CDN.
+  const contenidoRouteFix=`<script id="sdl-contenido-route-fix">(function(){
+    function placeContenidoFirst(){
+      var path=location.pathname.replace(/\\/+$/,'')||'/';
+      if(path!=='/la-manada/contenidos')return;
+      var main=document.getElementById('fanMain');
+      var zone=document.getElementById('zona');
+      var hero=document.getElementById('fcbHero');
+      var head=document.getElementById('fanHead');
+      if(hero)hero.hidden=true;
+      if(head)head.hidden=true;
+      if(main&&zone&&main.firstElementChild!==zone)main.insertBefore(zone,main.firstElementChild);
+      if(zone){
+        zone.hidden=false;
+        zone.removeAttribute('aria-hidden');
+      }
+      window.scrollTo({top:0,left:0,behavior:'auto'});
+    }
+    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeContenidoFirst,{once:true});
+    else placeContenidoFirst();
+  })();</script>`;
+  if(!html.includes('sdl-contenido-route-fix')){
+    html=html.replace(/<\/body>/i,`${contenidoRouteFix}</body>`);
+  }
   return html;
 }
 
@@ -25,7 +51,7 @@ module.exports=async(req,res)=>{
     const timer=setTimeout(()=>controller.abort(),8000);
     let response;
     try{
-      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.4'}});
+      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.5'}});
     }finally{
       clearTimeout(timer);
     }
