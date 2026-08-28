@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - feature/guardian-wolf-assistant
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
