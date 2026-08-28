@@ -3,6 +3,7 @@ const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
 const GUARDIAN=`${CDN}/guardian-wolf.js?v=20260827-3`;
+const LYKOS_WAKE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@3317acb5db25b1057b41d9355a7e3ff5e0133b8c/guardian-wake.js';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -35,7 +36,7 @@ async function source(file){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),8000);
   try{
-    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.4'}});
+    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.5'}});
     if(!r.ok)throw new Error(`source ${r.status}`);
     const html=await r.text();
     cache.set(file,{html,at:Date.now()});
@@ -66,6 +67,14 @@ function externalizeStatic(html){
   return html;
 }
 
+function injectScript(html,src,needle){
+  if(html.includes(needle))return html;
+  const tag=`<script src="${src}" defer></script>`;
+  return /<\/body>/i.test(html)
+    ? html.replace(/<\/body>/i,`${tag}</body>`)
+    : html.replace(/<\/html>/i,`${tag}</html>`);
+}
+
 function inject(html,p){
   const canonical=`${SITE}${p.path==='/'?'':p.path}`;
   const meta=`\n<meta name="description" content="${esc(p.description)}">\n<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">\n<link rel="canonical" href="${canonical}">\n<meta property="og:locale" content="es_EC">\n<meta property="og:type" content="website">\n<meta property="og:site_name" content="Sangre de Luna">\n<meta property="og:title" content="${esc(p.title)}">\n<meta property="og:description" content="${esc(p.description)}">\n<meta property="og:url" content="${canonical}">\n<meta property="og:image" content="${IMAGE}">\n<meta property="og:image:alt" content="Sangre de Luna — universo oficial">\n<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:title" content="${esc(p.title)}">\n<meta name="twitter:description" content="${esc(p.description)}">\n<meta name="twitter:image" content="${IMAGE}">`;
@@ -91,12 +100,9 @@ function inject(html,p){
   if(p.file==='fanclub.html'&&!html.includes('fanclub-registration-email.js')){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
-  if(!html.includes('guardian-wolf.js')){
-    const guardianTag=`<script src="${GUARDIAN}" defer></script>`;
-    html=/<\/body>/i.test(html)
-      ? html.replace(/<\/body>/i,`${guardianTag}</body>`)
-      : html.replace(/<\/html>/i,`${guardianTag}</html>`);
-  }
+
+  html=injectScript(html,GUARDIAN,'guardian-wolf.js');
+  html=injectScript(html,LYKOS_WAKE,'guardian-wake.js');
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
