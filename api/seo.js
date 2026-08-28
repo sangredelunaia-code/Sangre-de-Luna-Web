@@ -4,7 +4,7 @@ const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-W
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
-const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@3fe69f49e026b1a908381f76a1960e3544142165/lykos-ui-v5.js?v=20260828-5';
+const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@05b0fafb641314f1ea0381ba0ea2b79c18f9eac8/lykos-ui-v6.js?v=20260828-6';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -49,7 +49,7 @@ function inject(html,p){
   .replace(/<meta\s+name=["']description["'][^>]*>\s*/gi,'').replace(/<meta\s+name=["']robots["'][^>]*>\s*/gi,'').replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi,'').replace(/<meta\s+property=["']og:[^"']+["'][^>]*>\s*/gi,'').replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>\s*/gi,'').replace(/<script\s+type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>\s*/gi,'');
  if(p.file==='fanclub.html'&&!html.includes('fanclub-registration-email.js'))html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
  html=injectScript(html,GUARDIAN,'guardian-wolf.js');
- html=injectScript(html,LYKOS_UI,'lykos-ui-v5.js');
+ html=injectScript(html,LYKOS_UI,'lykos-ui-v6.js');
  if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
  return html.replace(/<\/head>/i,`${meta}${structured}${focus}</head>`);
 }
