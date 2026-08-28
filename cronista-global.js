@@ -24,6 +24,7 @@
   const loadProgress=()=>{if(window.__SDL_FAN_PROGRESS__||document.querySelector('script[data-sdl-progress]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-progress.js?v=20260816-1`;s.defer=true;s.dataset.sdlProgress='1';document.head.appendChild(s)};
   const loadMissionPath=()=>{if(window.__SDL_MISSION_PATH__||document.querySelector('script[data-sdl-mission-path]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-mission-path.js?v=20260816-1`;s.defer=true;s.dataset.sdlMissionPath='1';document.head.appendChild(s)};
   const loadSharing=()=>{if(window.__SDL_ACHIEVEMENT_SHARING__||document.querySelector('script[data-sdl-achievement-sharing]'))return;const s=document.createElement('script');s.src=`${CDN}/fanclub-achievement-sharing.js?v=20260816-1`;s.defer=true;s.dataset.sdlAchievementSharing='1';document.head.appendChild(s)};
-  const afterLegacy=()=>{loadTour();loadPasswordRecovery();loadWelcomeAdmin();loadAchievements();loadExpeditions();loadProgress();setTimeout(loadMissionPath,120);setTimeout(loadSharing,260)};
+  const loadGuardian=()=>{if(window.__SDL_GUARDIAN_WOLF__||document.querySelector('script[data-sdl-guardian]'))return;const s=document.createElement('script');s.src='/guardian-wolf.js?v=20260827-1';s.defer=true;s.dataset.sdlGuardian='1';document.head.appendChild(s)};
+  const afterLegacy=()=>{loadTour();loadPasswordRecovery();loadWelcomeAdmin();loadAchievements();loadExpeditions();loadProgress();setTimeout(loadGuardian,40);setTimeout(loadMissionPath,120);setTimeout(loadSharing,260)};
   const legacy=document.createElement('script');legacy.src=STABLE;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
 })();
