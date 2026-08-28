@@ -4,7 +4,7 @@ const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-W
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
-const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@b297c4a187db9fcb0c0173c108513f779b57bb06/lykos-ui-fix.js?v=20260828-3';
+const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@06fe74f4254b75220981a444334f49f3edafd626/lykos-ui-v4.js?v=20260828-4';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -35,7 +35,7 @@ async function fetchText(url,timeout=2800){
   const controller=new AbortController();
   const timer=setTimeout(()=>controller.abort(),timeout);
   try{
-    const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.6'}});
+    const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.7'}});
     if(!r.ok)throw new Error(`source ${r.status}`);
     return await r.text();
   }finally{clearTimeout(timer)}
@@ -111,9 +111,8 @@ function inject(html,p){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
 
-  // Lykos mantiene la activación por voz en guardian-wolf.js y aplica el aspecto V3 después.
   html=injectScript(html,GUARDIAN,'guardian-wolf.js');
-  html=injectScript(html,LYKOS_UI,'lykos-ui-fix.js');
+  html=injectScript(html,LYKOS_UI,'lykos-ui-v4.js');
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
@@ -127,7 +126,7 @@ module.exports=async(req,res)=>{
   try{
     const html=inject(await source(p.file),p);
     res.setHeader('Content-Type','text/html; charset=utf-8');
-    res.setHeader('Cache-Control','public, s-maxage=120, stale-while-revalidate=3600');
+    res.setHeader('Cache-Control','public, s-maxage=30, stale-while-revalidate=120');
     res.setHeader('Vary','Accept-Encoding');
     res.setHeader('Link',`<${SITE}${p.path==='/'?'':p.path}>; rel="canonical"`);
     res.setHeader('X-Robots-Tag',req.query?.admin==='1'?'noindex, nofollow, nosnippet':'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
