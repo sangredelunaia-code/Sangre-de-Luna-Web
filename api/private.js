@@ -1,8 +1,17 @@
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main/fanclub.html';
 const REV='13b2bc12f6076c88c734b00b73c9aea92967d724';
 const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${REV}`;
+const LIVE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ASSETS=`${CDN}/assets`;
 const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
+const GUARDIAN=`${LIVE}/guardian-wolf.js?v=20260827-3`;
+const LYKOS_WAKE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@3317acb5db25b1057b41d9355a7e3ff5e0133b8c/guardian-wake.js';
+
+function injectBodyScript(html,src,needle){
+  if(html.includes(needle))return html;
+  const tag=`<script src="${src}" defer></script>`;
+  return /<\/body>/i.test(html)?html.replace(/<\/body>/i,`${tag}</body>`):html.replace(/<\/html>/i,`${tag}</html>`);
+}
 
 function externalizeStatic(html){
   // El gateway de Vercel no publica los archivos estáticos del repositorio.
@@ -16,6 +25,9 @@ function externalizeStatic(html){
   if(!html.includes('fanclub-content-ux.js')){
     html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);
   }
+
+  html=injectBodyScript(html,GUARDIAN,'guardian-wolf.js');
+  html=injectBodyScript(html,LYKOS_WAKE,'guardian-wake.js');
 
   // Failsafe de producción: la ruta de Contenido debe mostrar #zona al principio,
   // incluso si una revisión antigua del JS quedó cacheada en el CDN.
@@ -51,7 +63,7 @@ module.exports=async(req,res)=>{
     const timer=setTimeout(()=>controller.abort(),8000);
     let response;
     try{
-      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.5'}});
+      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.6'}});
     }finally{
       clearTimeout(timer);
     }
