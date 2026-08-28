@@ -1,9 +1,9 @@
 const SITE='https://sangre-de-luna-public.vercel.app';
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main';
+const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@532117388011ebcf0c8ffe7547c9ddb467d7d1ca';
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
-const GUARDIAN=`${CDN}/guardian-wolf.js?v=20260827-3`;
-const LYKOS_WAKE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@3317acb5db25b1057b41d9355a7e3ff5e0133b8c/guardian-wake.js';
+const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@532117388011ebcf0c8ffe7547c9ddb467d7d1ca/guardian-wolf.js?v=20260828-1';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -30,18 +30,27 @@ const pathAliases={
 const cache=new Map();
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 
+async function fetchText(url,timeout=2800){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.6'}});
+    if(!r.ok)throw new Error(`source ${r.status}`);
+    return await r.text();
+  }finally{clearTimeout(timer)}
+}
+
 async function source(file){
   const hit=cache.get(file);
-  if(hit&&Date.now()-hit.at<60000)return hit.html;
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),8000);
-  try{
-    const r=await fetch(`${RAW}/${file}`,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.5'}});
-    if(!r.ok)throw new Error(`source ${r.status}`);
-    const html=await r.text();
-    cache.set(file,{html,at:Date.now()});
-    return html;
-  }finally{clearTimeout(timer)}
+  if(hit&&Date.now()-hit.at<5*60*1000)return hit.html;
+  let html;
+  try{html=await fetchText(`${RAW}/${file}`,2800)}
+  catch(err){
+    console.warn('SEO raw fallback:',file,err?.message||err);
+    html=await fetchText(`${FALLBACK}/${file}`,3500);
+  }
+  cache.set(file,{html,at:Date.now()});
+  return html;
 }
 
 function resolveKey(req){
@@ -101,8 +110,9 @@ function inject(html,p){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
 
+  // Lykos incluye la activación "Lykos Despierta" dentro de una sola capa ligera.
+  // No se vuelve a inyectar guardian-wake.js para evitar observadores y escucha duplicados.
   html=injectScript(html,GUARDIAN,'guardian-wolf.js');
-  html=injectScript(html,LYKOS_WAKE,'guardian-wake.js');
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
@@ -116,7 +126,7 @@ module.exports=async(req,res)=>{
   try{
     const html=inject(await source(p.file),p);
     res.setHeader('Content-Type','text/html; charset=utf-8');
-    res.setHeader('Cache-Control','public, s-maxage=30, stale-while-revalidate=120');
+    res.setHeader('Cache-Control','public, s-maxage=120, stale-while-revalidate=3600');
     res.setHeader('Vary','Accept-Encoding');
     res.setHeader('Link',`<${SITE}${p.path==='/'?'':p.path}>; rel="canonical"`);
     res.setHeader('X-Robots-Tag',req.query?.admin==='1'?'noindex, nofollow, nosnippet':'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
