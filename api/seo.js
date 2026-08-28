@@ -2,7 +2,7 @@ const SITE='https://sangre-de-luna-public.vercel.app';
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main';
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
-const GUARDIAN=`${CDN}/guardian-wolf.js?v=20260827-2`;
+const GUARDIAN=`${CDN}/guardian-wolf.js?v=20260827-3`;
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -92,7 +92,10 @@ function inject(html,p){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
   if(!html.includes('guardian-wolf.js')){
-    html=html.replace(/<\/body>/i,`<script src="${GUARDIAN}" defer></script></body>`);
+    const guardianTag=`<script src="${GUARDIAN}" defer></script>`;
+    html=/<\/body>/i.test(html)
+      ? html.replace(/<\/body>/i,`${guardianTag}</body>`)
+      : html.replace(/<\/html>/i,`${guardianTag}</html>`);
   }
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
