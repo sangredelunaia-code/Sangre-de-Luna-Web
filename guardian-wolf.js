@@ -1,155 +1,85 @@
-/* SANGRE DE LUNA · GUARDIÁN LOBO
-   Capa visual e interactiva sobre el asistente existente.
-   Mantiene el archivo oficial, memoria y navegación; añade identidad lobo,
-   estados visuales y dictado por micrófono cuando el navegador lo permite. */
+/* SANGRE DE LUNA · LYKOS / GUARDIÁN LIGERO
+   Hotfix de rendimiento: sin observadores globales ni escucha durante el splash. */
 (()=>{
-  if(window.__SDL_GUARDIAN_WOLF__) return;
+  if(window.__SDL_GUARDIAN_WOLF__)return;
   window.__SDL_GUARDIAN_WOLF__=true;
+  // Neutraliza la versión antigua de guardian-wake.js que producción aún puede tener cacheada.
+  window.__SDL_LYKOS_WAKE__=true;
 
+  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
   const WOLF='/assets/credencial-lobo-luna.webp';
   const FALLBACK='/assets/logo-oficial.png';
-  const Recognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const upgraded=new WeakSet();
+  const ROOTS='#cronistaWidget,#sdlgCronista';
+  const LAUNCH='#cronistaLaunch,#sdlgLaunch';
+  const PANEL='.cronista-panel,.sdlg-panel';
+  const INPUT='#cronistaInput,#sdlgInput';
+  let awake=false,armed=false,wakeRec=null,wakeRunning=false,restartTimer=0;
+
+  // Entrada inmediata: nunca depende de Supabase ni de Lykos.
+  const fastEnter=()=>{
+    document.getElementById('splash')?.classList.add('hide');
+    try{sessionStorage.setItem('sdl-entered','1')}catch{}
+    if(Recognition&&!awake)setTimeout(()=>startWake(false),1800);
+  };
+  document.getElementById('enterSite')?.addEventListener('click',fastEnter,{capture:true});
 
   const style=document.createElement('style');
-  style.id='sdl-guardian-wolf-style';
   style.textContent=`
-    #cronistaWidget.sdl-guardian-ready,#sdlgCronista.sdl-guardian-ready{--guardian-cyan:#8bd9ff;--guardian-ice:#e8f8ff;--guardian-deep:#04101a;--guardian-line:rgba(139,217,255,.42)}
-    #cronistaWidget.sdl-guardian-ready .cronista-panel,#sdlgCronista.sdl-guardian-ready .sdlg-panel{border-color:rgba(128,207,255,.54)!important;box-shadow:0 28px 90px rgba(0,0,0,.88),0 0 50px rgba(62,169,255,.14)!important}
-    #cronistaWidget.sdl-guardian-ready .cronista-head,#sdlgCronista.sdl-guardian-ready .sdlg-head{background:linear-gradient(135deg,rgba(9,31,48,.98),rgba(4,13,21,.99))!important;position:relative;overflow:hidden}
-    #cronistaWidget.sdl-guardian-ready .cronista-head:after,#sdlgCronista.sdl-guardian-ready .sdlg-head:after{content:'';position:absolute;inset:auto 0 0;height:1px;background:linear-gradient(90deg,transparent,#8bd9ff,transparent);opacity:.7}
-    #cronistaWidget.sdl-guardian-ready .cronista-avatar,#sdlgCronista.sdl-guardian-ready .sdlg-avatar{border-color:rgba(171,228,255,.62)!important;background:radial-gradient(circle at 50% 35%,#173c58,#040a10 70%)!important;box-shadow:0 0 20px rgba(94,193,255,.18);overflow:hidden!important}
-    #cronistaWidget.sdl-guardian-ready .cronista-avatar img,#sdlgCronista.sdl-guardian-ready .sdlg-avatar img{width:100%!important;height:100%!important;max-width:none!important;left:0!important;top:0!important;transform:none!important;object-fit:cover!important;object-position:center!important;filter:saturate(.82) contrast(1.1) brightness(1.08) drop-shadow(0 0 9px rgba(142,211,255,.28))}
-    #cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{width:88px!important;height:88px!important;border-radius:46% 54% 48% 52%/55% 48% 52% 45%!important;border:1px solid rgba(180,230,255,.7)!important;background:radial-gradient(circle at 50% 40%,#143b57,#03080d 72%)!important;box-shadow:0 18px 56px rgba(0,0,0,.78),0 0 40px rgba(74,184,255,.28)!important;overflow:visible!important;isolation:isolate}
-    #cronistaWidget.sdl-guardian-ready .cronista-launch:before,#sdlgCronista.sdl-guardian-ready .sdlg-launch:before{content:'';position:absolute;inset:-9px;border-radius:inherit;border:1px solid rgba(113,204,255,.28);box-shadow:inset 0 0 22px rgba(92,192,255,.1);animation:sdlGuardianHalo 3.2s ease-in-out infinite;z-index:-2}
-    #cronistaWidget.sdl-guardian-ready .cronista-launch:after,#sdlgCronista.sdl-guardian-ready .sdlg-launch:after{content:''!important;position:absolute!important;inset:-18px!important;border-radius:50%!important;background:conic-gradient(from 0deg,transparent 0 16%,rgba(124,212,255,.26) 22%,transparent 30% 58%,rgba(202,240,255,.18) 66%,transparent 74%)!important;animation:sdlGuardianOrbit 8s linear infinite!important;z-index:-3!important;border:0!important;pointer-events:none}
-    #cronistaWidget.sdl-guardian-ready .cronista-launch img,#sdlgCronista.sdl-guardian-ready .sdlg-launch img{position:absolute!important;inset:4px!important;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;max-width:none!important;transform:none!important;object-fit:cover!important;object-position:center!important;border-radius:43% 57% 48% 52%/55% 46% 54% 45%!important;filter:saturate(.82) contrast(1.13) brightness(1.08) drop-shadow(0 0 12px rgba(133,216,255,.45))!important}
-    #cronistaWidget.sdl-guardian-ready[data-guardian-state="listening"] .cronista-launch,#sdlgCronista.sdl-guardian-ready[data-guardian-state="listening"] .sdlg-launch{box-shadow:0 18px 56px rgba(0,0,0,.78),0 0 0 7px rgba(110,213,255,.08),0 0 58px rgba(94,211,255,.62)!important;animation:sdlGuardianListen .9s ease-in-out infinite alternate}
-    #cronistaWidget.sdl-guardian-ready[data-guardian-state="thinking"] .cronista-avatar,#sdlgCronista.sdl-guardian-ready[data-guardian-state="thinking"] .sdlg-avatar{animation:sdlGuardianThink 1.05s ease-in-out infinite}
-    #cronistaWidget.sdl-guardian-ready[data-guardian-state="speaking"] .cronista-avatar,#sdlgCronista.sdl-guardian-ready[data-guardian-state="speaking"] .sdlg-avatar{box-shadow:0 0 0 4px rgba(121,211,255,.08),0 0 28px rgba(121,211,255,.48)!important;animation:sdlGuardianSpeak .72s ease-in-out infinite alternate}
-    .sdl-guardian-mic{min-width:36px;height:34px;padding:0 9px;border:1px solid #34536b;border-radius:10px;background:#08141f;color:#d7eaff;cursor:pointer;font-size:.78rem;font-weight:900;transition:.2s}
-    .sdl-guardian-mic:hover{border-color:#80cfff;box-shadow:0 0 16px rgba(102,201,255,.12)}
-    .sdl-guardian-mic.listening{background:#12374e;border-color:#8bdcff;color:#fff;box-shadow:0 0 20px rgba(95,203,255,.3);animation:sdlGuardianMic .75s ease-in-out infinite alternate}
-    .sdl-guardian-mic:disabled{opacity:.42;cursor:not-allowed}
-    .sdl-guardian-state{display:inline-flex!important;align-items:center;gap:6px}
-    .sdl-guardian-state:before{content:'';width:7px;height:7px;border-radius:50%;background:#79ddb3;box-shadow:0 0 9px #79ddb3;flex:none}
-    [data-guardian-state="listening"] .sdl-guardian-state:before{background:#8bdcff;box-shadow:0 0 12px #8bdcff}
-    [data-guardian-state="thinking"] .sdl-guardian-state:before{background:#d7c68b;box-shadow:0 0 12px #d7c68b}
-    [data-guardian-state="speaking"] .sdl-guardian-state:before{background:#cfefff;box-shadow:0 0 13px #8bdcff}
-    @keyframes sdlGuardianOrbit{to{transform:rotate(360deg)}}
-    @keyframes sdlGuardianHalo{50%{transform:scale(1.07);opacity:.45}}
-    @keyframes sdlGuardianListen{to{transform:translateY(-2px) scale(1.025)}}
-    @keyframes sdlGuardianThink{50%{filter:brightness(1.2);transform:scale(.96)}}
-    @keyframes sdlGuardianSpeak{to{transform:scale(1.035)}}
-    @keyframes sdlGuardianMic{to{transform:scale(1.06)}}
-    @media(max-width:650px){#cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{width:72px!important;height:72px!important}.sdl-guardian-mic{min-width:32px;padding:0 7px}}
-    @media(prefers-reduced-motion:reduce){#cronistaWidget.sdl-guardian-ready *,#sdlgCronista.sdl-guardian-ready *{animation:none!important}}
+    #cronistaWidget.sdl-guardian-ready,#sdlgCronista.sdl-guardian-ready{--gc:#8bd9ff}
+    #cronistaWidget.sdl-guardian-ready .cronista-avatar img,#sdlgCronista.sdl-guardian-ready .sdlg-avatar img{width:100%!important;height:100%!important;max-width:none!important;left:0!important;top:0!important;transform:none!important;object-fit:cover!important;object-position:center!important}
+    #cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{width:82px!important;height:82px!important;border:1px solid #b4e6ff99!important;border-radius:48%!important;background:radial-gradient(circle,#143b57,#03080d 72%)!important;box-shadow:0 16px 48px #000c,0 0 30px #4ab8ff33!important}
+    #cronistaWidget.sdl-guardian-ready .cronista-launch img,#sdlgCronista.sdl-guardian-ready .sdlg-launch img{position:absolute!important;inset:4px!important;width:calc(100% - 8px)!important;height:calc(100% - 8px)!important;max-width:none!important;transform:none!important;object-fit:cover!important;border-radius:46%!important}
+    ${ROOTS}.sdl-lykos-dormant .cronista-launch,${ROOTS}.sdl-lykos-dormant .sdlg-launch{filter:saturate(.72) brightness(.78)!important}
+    ${ROOTS}.sdl-lykos-armed .cronista-launch,${ROOTS}.sdl-lykos-armed .sdlg-launch{filter:saturate(.9) brightness(.94)!important;box-shadow:0 16px 48px #000c,0 0 34px #72c9ff55!important}
+    ${ROOTS}.sdl-lykos-awake .cronista-launch,${ROOTS}.sdl-lykos-awake .sdlg-launch{filter:none!important;box-shadow:0 16px 48px #000c,0 0 42px #78d8ff77!important}
+    .sdl-guardian-mic{min-width:34px;height:34px;padding:0 8px;border:1px solid #34536b;border-radius:10px;background:#08141f;color:#d7eaff;cursor:pointer;font-weight:900}.sdl-guardian-mic.listening{border-color:#8bdcff;background:#12374e}
+    .sdl-lykos-arm{position:fixed;right:18px;bottom:108px;z-index:2147483000;display:none;padding:9px 12px;border:1px solid #89d6ff70;border-radius:999px;background:#04101aee;color:#e9f8ff;font:800 12px Arial;cursor:pointer;box-shadow:0 12px 38px #0009}.sdl-lykos-arm.show{display:block}
+    .sdl-lykos-toast{position:fixed;left:50%;bottom:24px;z-index:2147483001;transform:translateX(-50%);max-width:calc(100vw - 34px);padding:10px 14px;border:1px solid #8ddcff55;border-radius:14px;background:#03101aee;color:#eefbff;font:700 13px/1.35 Arial;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}.sdl-lykos-toast.show{opacity:1}
+    @media(max-width:650px){#cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{width:70px!important;height:70px!important}.sdl-lykos-arm{right:12px;bottom:92px}.sdl-lykos-toast{bottom:16px}}
   `;
   document.head.appendChild(style);
 
-  const setWolfImage=img=>{
-    if(!img)return;
-    img.src=WOLF;
-    img.alt='Guardián lobo de Sangre de Luna';
-    img.onerror=()=>{img.onerror=null;img.src=FALLBACK};
-  };
+  const arm=document.createElement('button');arm.type='button';arm.className='sdl-lykos-arm';arm.textContent='🎙 Activar escucha de Lykos';document.body.appendChild(arm);
+  const toast=document.createElement('div');toast.className='sdl-lykos-toast';toast.setAttribute('role','status');document.body.appendChild(toast);
+  let toastTimer=0;const notify=(m,ms=2800)=>{toast.textContent=m;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),ms)};
+  const roots=()=>[...document.querySelectorAll(ROOTS)];
+  const norm=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9ñ ]+/g,' ').replace(/\s+/g,' ').trim();
+  const isWake=v=>/\b(?:lykos|lycos|likos|licos|laikos)\s+despierta\b/.test(norm(v));
+  const setWolf=img=>{if(!img)return;img.src=WOLF;img.alt='Lykos, Guardián de la Ciudadela';img.onerror=()=>{img.onerror=null;img.src=FALLBACK}};
 
-  function upgrade(root,mode){
-    if(!root||upgraded.has(root))return;
-    upgraded.add(root);
-    root.classList.add('sdl-guardian-ready');
-    root.dataset.guardianState='idle';
-    root.setAttribute('aria-label','Guardián de la Ciudadela');
-
-    const home=mode==='home';
-    const title=root.querySelector(home?'.cronista-title b':'.sdlg-title b');
-    const subtitle=root.querySelector(home?'.cronista-title span':'.sdlg-title span');
-    const tools=root.querySelector(home?'.cronista-tools':'.sdlg-tools');
-    const input=root.querySelector(home?'#cronistaInput':'#sdlgInput');
-    const form=root.querySelector(home?'#cronistaForm':'#sdlgForm');
-    const launch=root.querySelector(home?'#cronistaLaunch':'#sdlgLaunch');
-    const avatar=root.querySelector(home?'.cronista-avatar img':'.sdlg-avatar img');
-    const note=root.querySelector(home?'.cronista-note':'.sdlg-note');
-    const nudge=root.querySelector('#cronistaNudge');
-
-    if(title)title.textContent='Guardián de la Ciudadela';
-    if(subtitle){subtitle.innerHTML='';subtitle.classList.add('sdl-guardian-state');subtitle.append(document.createTextNode('Asistente lobo · Sangre de Luna'))}
-    if(note)note.textContent='Voz · Dictado · Memoria de la visita · Archivo oficial';
-    if(nudge)nudge.innerHTML='<b>El Guardián está despierto.</b>Puedo escucharte, orientarte y acompañarte por la Ciudadela.';
-    if(launch){launch.setAttribute('aria-label','Despertar al Guardián de la Ciudadela');setWolfImage(launch.querySelector('img'))}
-    setWolfImage(avatar);
-
-    const replaceVisibleName=node=>{
-      if(!node||node.nodeType!==Node.TEXT_NODE)return;
-      if(/Cronista de la Ciudadela/i.test(node.nodeValue||''))node.nodeValue=node.nodeValue.replace(/Cronista de la Ciudadela/gi,'Guardián de la Ciudadela');
-      else if(/\bCronista\b/i.test(node.nodeValue||''))node.nodeValue=node.nodeValue.replace(/\bCronista\b/gi,'Guardián');
-    };
-    root.querySelectorAll('*').forEach(el=>el.childNodes.forEach(replaceVisibleName));
-
-    let recognition=null;
-    let listening=false;
-    const mic=document.createElement('button');
-    mic.type='button';mic.className='sdl-guardian-mic';mic.textContent='🎙';mic.title=Recognition?'Hablar con el Guardián':'El dictado por voz no está disponible en este navegador';mic.setAttribute('aria-label','Hablar con el Guardián');
-    mic.disabled=!Recognition;
-    if(tools)tools.insertBefore(mic,tools.firstChild);
-
-    const setState=state=>{root.dataset.guardianState=state};
-    const stopRecognition=()=>{try{recognition?.stop()}catch{}};
-
-    if(Recognition&&input&&form){
-      recognition=new Recognition();
-      recognition.lang='es-EC';
-      recognition.interimResults=true;
-      recognition.continuous=false;
-      recognition.maxAlternatives=1;
-      recognition.onstart=()=>{listening=true;mic.classList.add('listening');mic.textContent='●';mic.title='Escuchando…';setState('listening');if(launch)launch.setAttribute('aria-label','El Guardián está escuchando')};
-      recognition.onresult=event=>{
-        let finalText='',interim='';
-        for(let i=event.resultIndex;i<event.results.length;i++){
-          const text=event.results[i][0]?.transcript||'';
-          if(event.results[i].isFinal)finalText+=text;else interim+=text;
-        }
-        input.value=(finalText||interim).trim();
-        input.dispatchEvent(new Event('input',{bubbles:true}));
-        if(finalText.trim()){
-          stopRecognition();
-          setTimeout(()=>{if(input.value.trim())form.requestSubmit()},90);
-        }
-      };
-      recognition.onerror=event=>{
-        listening=false;mic.classList.remove('listening');mic.textContent='🎙';setState('idle');
-        mic.title=event.error==='not-allowed'?'Permite el uso del micrófono en tu navegador':'No pude escuchar con claridad. Intenta nuevamente.';
-      };
-      recognition.onend=()=>{listening=false;mic.classList.remove('listening');mic.textContent='🎙';if(root.dataset.guardianState==='listening')setState('idle');mic.title='Hablar con el Guardián'};
-      mic.onclick=()=>{if(listening){stopRecognition();return}try{recognition.start()}catch{}};
-    }
-
-    const observer=new MutationObserver(()=>{
-      root.querySelectorAll('*').forEach(el=>el.childNodes.forEach(replaceVisibleName));
-      const thinking=Boolean(root.querySelector(home?'#cronistaTyping':'#sdlgTyping'));
-      if(!listening&&thinking)setState('thinking');
-      else if(!listening&&!thinking&&!('speechSynthesis'in window&&speechSynthesis.speaking))setState('idle');
-    });
-    observer.observe(root,{childList:true,subtree:true,characterData:true});
-
-    if('speechSynthesis'in window){
-      const speechWatch=setInterval(()=>{
-        if(!document.documentElement.contains(root)){clearInterval(speechWatch);return}
-        if(listening)return;
-        const thinking=Boolean(root.querySelector(home?'#cronistaTyping':'#sdlgTyping'));
-        if(thinking)setState('thinking');
-        else if(speechSynthesis.speaking)setState('speaking');
-        else setState('idle');
-      },220);
+  function syncWake(){roots().forEach(r=>{r.classList.toggle('sdl-lykos-awake',awake);r.classList.toggle('sdl-lykos-armed',!awake&&armed);r.classList.toggle('sdl-lykos-dormant',!awake&&!armed)})}
+  function upgrade(root,home){
+    if(!root||root.dataset.guardianLite==='1')return;root.dataset.guardianLite='1';root.classList.add('sdl-guardian-ready');
+    const title=root.querySelector(home?'.cronista-title b':'.sdlg-title b');if(title)title.textContent='Guardián de la Ciudadela';
+    const sub=root.querySelector(home?'.cronista-title span':'.sdlg-title span');if(sub)sub.textContent='Asistente lobo · Sangre de Luna';
+    const launch=root.querySelector(home?'#cronistaLaunch':'#sdlgLaunch');setWolf(launch?.querySelector('img'));
+    setWolf(root.querySelector(home?'.cronista-avatar img':'.sdlg-avatar img'));
+    const input=root.querySelector(home?'#cronistaInput':'#sdlgInput'),form=root.querySelector(home?'#cronistaForm':'#sdlgForm'),tools=root.querySelector(home?'.cronista-tools':'.sdlg-tools');
+    if(Recognition&&input&&form&&tools&&!tools.querySelector('.sdl-guardian-mic')){
+      const mic=document.createElement('button');mic.type='button';mic.className='sdl-guardian-mic';mic.textContent='🎙';mic.title='Hablar con el Guardián';tools.insertBefore(mic,tools.firstChild);
+      const dict=new Recognition();dict.lang='es-EC';dict.interimResults=false;dict.continuous=false;dict.maxAlternatives=1;
+      dict.onstart=()=>mic.classList.add('listening');dict.onend=()=>mic.classList.remove('listening');dict.onerror=()=>mic.classList.remove('listening');
+      dict.onresult=e=>{const t=e.results?.[0]?.[0]?.transcript?.trim();if(t){input.value=t;input.dispatchEvent(new Event('input',{bubbles:true}));setTimeout(()=>form.requestSubmit(),80)}};
+      mic.onclick=()=>{try{dict.start()}catch{}};
     }
   }
+  function scan(){upgrade(document.getElementById('cronistaWidget'),true);upgrade(document.getElementById('sdlgCronista'),false);syncWake()}
+  scan();setTimeout(scan,700);setTimeout(scan,2200);
 
-  function scan(){
-    upgrade(document.getElementById('cronistaWidget'),'home');
-    upgrade(document.getElementById('sdlgCronista'),'global');
+  function stopWake(){clearTimeout(restartTimer);try{wakeRec?.stop()}catch{}}
+  function scheduleWake(ms=800){if(!Recognition||awake||!armed||document.hidden)return;clearTimeout(restartTimer);restartTimer=setTimeout(()=>startWake(false),ms)}
+  function buildWake(){
+    if(!Recognition||wakeRec)return;wakeRec=new Recognition();wakeRec.lang='es-EC';wakeRec.interimResults=false;wakeRec.continuous=false;wakeRec.maxAlternatives=3;
+    wakeRec.onstart=()=>{wakeRunning=true;armed=true;arm.classList.remove('show');syncWake()};
+    wakeRec.onresult=e=>{for(let i=0;i<e.results.length;i++)for(let a=0;a<e.results[i].length;a++)if(isWake(e.results[i][a]?.transcript)){awake=true;armed=false;stopWake();syncWake();roots().forEach(r=>{const p=r.querySelector(PANEL),l=r.querySelector(LAUNCH);if(l&&!(p?.classList.contains('open')||p?.getAttribute('aria-hidden')==='false'))l.click();setTimeout(()=>r.querySelector(INPUT)?.focus({preventScroll:true}),250)});notify('🐺 Lykos ha despertado. El Guardián está listo.',3400);return}};
+    wakeRec.onerror=e=>{wakeRunning=false;if(e.error==='not-allowed'||e.error==='service-not-allowed'){armed=false;syncWake();arm.classList.add('show');notify('Autoriza el micrófono una vez para usar “Lykos Despierta”.',3800)}else if(e.error!=='aborted')scheduleWake(e.error==='network'?1800:900)};
+    wakeRec.onend=()=>{wakeRunning=false;if(!awake&&armed)scheduleWake(800)};
   }
-  scan();
-  const pageObserver=new MutationObserver(scan);
-  pageObserver.observe(document.documentElement,{childList:true,subtree:true});
-  setTimeout(()=>pageObserver.disconnect(),20000);
+  function startWake(user=false){if(!Recognition||awake||wakeRunning||document.hidden)return;buildWake();armed=true;syncWake();try{wakeRec.start();if(user)notify('Escucha activada. Di “Lykos Despierta”.',2500)}catch{if(user){armed=false;syncWake();arm.classList.add('show')}else scheduleWake(1000)}}
+
+  document.addEventListener('click',e=>{const l=e.target?.closest?.(LAUNCH);if(!l||awake)return;e.preventDefault();e.stopImmediatePropagation();startWake(true)},true);
+  arm.onclick=()=>startWake(true);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){if(!awake)stopWake()}else if(!awake&&armed)scheduleWake(500)});
+  if(!Recognition){arm.disabled=true;arm.textContent='🎙 Activación por voz no disponible'}
+  else if(sessionStorage.getItem('sdl-entered'))setTimeout(()=>startWake(false),2200);
 })();
