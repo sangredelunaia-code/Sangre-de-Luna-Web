@@ -4,7 +4,7 @@ const REV='13b2bc12f6076c88c734b00b73c9aea92967d724';
 const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${REV}`;
 const ASSETS=`${CDN}/assets`;
 const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
-const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@532117388011ebcf0c8ffe7547c9ddb467d7d1ca/guardian-wolf.js?v=20260828-1';
+const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
 
 function injectBodyScript(html,src,needle){
   if(html.includes(needle))return html;
@@ -27,7 +27,7 @@ function externalizeStatic(html){
 
   const contenidoRouteFix=`<script id="sdl-contenido-route-fix">(function(){
     function placeContenidoFirst(){
-      var path=location.pathname.replace(/\\/+$/,'')||'/';
+      var path=location.pathname.replace(/\/+$/,'')||'/';
       if(path!=='/la-manada/contenidos')return;
       var main=document.getElementById('fanMain');
       var zone=document.getElementById('zona');
