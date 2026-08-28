@@ -5,6 +5,7 @@ const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${
 const ASSETS=`${CDN}/assets`;
 const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
+const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@b297c4a187db9fcb0c0173c108513f779b57bb06/lykos-ui-fix.js?v=20260828-3';
 
 function injectBodyScript(html,src,needle){
   if(html.includes(needle))return html;
@@ -22,8 +23,9 @@ function externalizeStatic(html){
   if(!html.includes('fanclub-content-ux.js')){
     html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);
   }
-  // Una sola capa ligera: guardian-wolf ya contiene la activación “Lykos Despierta”.
+  // La activación por voz permanece en guardian-wolf; el aspecto V3 se aplica después.
   html=injectBodyScript(html,GUARDIAN,'guardian-wolf.js');
+  html=injectBodyScript(html,LYKOS_UI,'lykos-ui-fix.js');
 
   const contenidoRouteFix=`<script id="sdl-contenido-route-fix">(function(){
     function placeContenidoFirst(){
