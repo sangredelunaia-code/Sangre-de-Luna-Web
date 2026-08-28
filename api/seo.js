@@ -5,6 +5,7 @@ const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@ma
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
 const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@05b0fafb641314f1ea0381ba0ea2b79c18f9eac8/lykos-ui-v6.js?v=20260828-6';
+const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@caebef54642cc011c9d24845329e66aa6b063cab/lykos-icon-v7.js?v=20260828-7';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -25,7 +26,7 @@ const pathAliases={'/':'home','/index':'home','/index.html':'home','/personajes'
 const cache=new Map();
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
 
-async function fetchText(url,timeout=2800){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.8'}});if(!r.ok)throw new Error(`source ${r.status}`);return await r.text()}finally{clearTimeout(timer)}}
+async function fetchText(url,timeout=2800){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const r=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-SEO/2.9'}});if(!r.ok)throw new Error(`source ${r.status}`);return await r.text()}finally{clearTimeout(timer)}}
 async function source(file){const hit=cache.get(file);if(hit&&Date.now()-hit.at<5*60*1000)return hit.html;let html;try{html=await fetchText(`${RAW}/${file}`,2800)}catch(err){console.warn('SEO raw fallback:',file,err?.message||err);html=await fetchText(`${FALLBACK}/${file}`,3500)}cache.set(file,{html,at:Date.now()});return html}
 function resolveKey(req){const raw=req.query?.route;const queryKey=Array.isArray(raw)?raw[0]:raw;if(queryKey&&pages[String(queryKey)])return String(queryKey);for(const value of [req.headers?.['x-vercel-original-url'],req.headers?.['x-original-url'],req.url]){if(!value)continue;try{const pathname=new URL(String(value),SITE).pathname.replace(/\/$/,'')||'/';if(pathAliases[pathname])return pathAliases[pathname]}catch{}}return'home'}
 function externalizeStatic(html){html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);html=html.replace(/src=(["'])\/desafios-admin\.js(?:\?[^"']*)?\1/gi,(_,q)=>`src=${q}${ADMIN_LOADER}${q}`);html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);return html}
@@ -50,6 +51,7 @@ function inject(html,p){
  if(p.file==='fanclub.html'&&!html.includes('fanclub-registration-email.js'))html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
  html=injectScript(html,GUARDIAN,'guardian-wolf.js');
  html=injectScript(html,LYKOS_UI,'lykos-ui-v6.js');
+ html=injectScript(html,LYKOS_ICON,'lykos-icon-v7.js');
  if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
  return html.replace(/<\/head>/i,`${meta}${structured}${focus}</head>`);
 }
