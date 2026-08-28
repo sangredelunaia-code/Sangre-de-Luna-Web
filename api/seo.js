@@ -5,7 +5,7 @@ const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@ma
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
 const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@05b0fafb641314f1ea0381ba0ea2b79c18f9eac8/lykos-ui-v6.js?v=20260828-6';
-const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@d67913007337fc14a03e48a3851e7fb7af652d25/lykos-icon-v8.js?v=20260828-8';
+const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@4164440581f962fd72fd5d500efe18019597190a/lykos-icon-v9.js?v=20260828-9';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -112,7 +112,7 @@ function inject(html,p){
   }
   html=injectScript(html,GUARDIAN,'guardian-wolf.js');
   html=injectScript(html,LYKOS_UI,'lykos-ui-v6.js');
-  html=injectScript(html,LYKOS_ICON,'lykos-icon-v8.js');
+  html=injectScript(html,LYKOS_ICON,'lykos-icon-v9.js');
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
