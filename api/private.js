@@ -1,11 +1,10 @@
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main/fanclub.html';
+const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@532117388011ebcf0c8ffe7547c9ddb467d7d1ca/fanclub.html';
 const REV='13b2bc12f6076c88c734b00b73c9aea92967d724';
 const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${REV}`;
-const LIVE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ASSETS=`${CDN}/assets`;
 const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
-const GUARDIAN=`${LIVE}/guardian-wolf.js?v=20260827-3`;
-const LYKOS_WAKE='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@3317acb5db25b1057b41d9355a7e3ff5e0133b8c/guardian-wake.js';
+const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@532117388011ebcf0c8ffe7547c9ddb467d7d1ca/guardian-wolf.js?v=20260828-1';
 
 function injectBodyScript(html,src,needle){
   if(html.includes(needle))return html;
@@ -14,8 +13,6 @@ function injectBodyScript(html,src,needle){
 }
 
 function externalizeStatic(html){
-  // El gateway de Vercel no publica los archivos estáticos del repositorio.
-  // Convertimos todos los recursos locales del Fan Club a URLs públicas del CDN.
   html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
   html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
   html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
@@ -25,12 +22,9 @@ function externalizeStatic(html){
   if(!html.includes('fanclub-content-ux.js')){
     html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);
   }
-
+  // Una sola capa ligera: guardian-wolf ya contiene la activación “Lykos Despierta”.
   html=injectBodyScript(html,GUARDIAN,'guardian-wolf.js');
-  html=injectBodyScript(html,LYKOS_WAKE,'guardian-wake.js');
 
-  // Failsafe de producción: la ruta de Contenido debe mostrar #zona al principio,
-  // incluso si una revisión antigua del JS quedó cacheada en el CDN.
   const contenidoRouteFix=`<script id="sdl-contenido-route-fix">(function(){
     function placeContenidoFirst(){
       var path=location.pathname.replace(/\\/+$/,'')||'/';
@@ -42,33 +36,35 @@ function externalizeStatic(html){
       if(hero)hero.hidden=true;
       if(head)head.hidden=true;
       if(main&&zone&&main.firstElementChild!==zone)main.insertBefore(zone,main.firstElementChild);
-      if(zone){
-        zone.hidden=false;
-        zone.removeAttribute('aria-hidden');
-      }
+      if(zone){zone.hidden=false;zone.removeAttribute('aria-hidden')}
       window.scrollTo({top:0,left:0,behavior:'auto'});
     }
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeContenidoFirst,{once:true});
     else placeContenidoFirst();
   })();</script>`;
-  if(!html.includes('sdl-contenido-route-fix')){
-    html=html.replace(/<\/body>/i,`${contenidoRouteFix}</body>`);
-  }
+  if(!html.includes('sdl-contenido-route-fix'))html=html.replace(/<\/body>/i,`${contenidoRouteFix}</body>`);
   return html;
+}
+
+async function fetchHtml(url,timeout){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const response=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.7'}});
+    if(!response.ok)throw new Error(`source ${response.status}`);
+    return await response.text();
+  }finally{clearTimeout(timer)}
 }
 
 module.exports=async(req,res)=>{
   try{
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),8000);
-    let response;
-    try{
-      response=await fetch(RAW,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.6'}});
-    }finally{
-      clearTimeout(timer);
+    let source;
+    try{source=await fetchHtml(RAW,2800)}
+    catch(err){
+      console.warn('La Manada raw fallback:',err?.message||err);
+      source=await fetchHtml(FALLBACK,3500);
     }
-    if(!response.ok)throw new Error(`source ${response.status}`);
-    const html=externalizeStatic(await response.text());
+    const html=externalizeStatic(source);
     res.setHeader('Content-Type','text/html; charset=utf-8');
     res.setHeader('Cache-Control','no-store, no-cache, must-revalidate');
     res.setHeader('X-Robots-Tag','noindex, nofollow, nosnippet');
