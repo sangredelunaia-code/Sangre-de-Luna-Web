@@ -4,6 +4,7 @@ const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-W
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@2f2e53ebcf2ab1f491e5f0c795876faa21d55cd2/desafios-admin.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
+const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@b297c4a187db9fcb0c0173c108513f779b57bb06/lykos-ui-fix.js?v=20260828-3';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
@@ -110,9 +111,9 @@ function inject(html,p){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
 
-  // Lykos incluye la activación "Lykos Despierta" dentro de una sola capa ligera.
-  // No se vuelve a inyectar guardian-wake.js para evitar observadores y escucha duplicados.
+  // Lykos mantiene la activación por voz en guardian-wolf.js y aplica el aspecto V3 después.
   html=injectScript(html,GUARDIAN,'guardian-wolf.js');
+  html=injectScript(html,LYKOS_UI,'lykos-ui-fix.js');
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
