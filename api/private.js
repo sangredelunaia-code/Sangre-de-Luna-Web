@@ -5,78 +5,8 @@ const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${
 const ASSETS=`${CDN}/assets`;
 const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
-const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@06fe74f4254b75220981a444334f49f3edafd626/lykos-ui-v4.js?v=20260828-4';
-
-function injectBodyScript(html,src,needle){
-  if(html.includes(needle))return html;
-  const tag=`<script src="${src}" defer></script>`;
-  return /<\/body>/i.test(html)?html.replace(/<\/body>/i,`${tag}</body>`):html.replace(/<\/html>/i,`${tag}</html>`);
-}
-
-function externalizeStatic(html){
-  html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
-  html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
-  html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
-  if(!html.includes('fanclub-registration-email.js')){
-    html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
-  }
-  if(!html.includes('fanclub-content-ux.js')){
-    html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);
-  }
-  html=injectBodyScript(html,GUARDIAN,'guardian-wolf.js');
-  html=injectBodyScript(html,LYKOS_UI,'lykos-ui-v4.js');
-
-  const contenidoRouteFix=`<script id="sdl-contenido-route-fix">(function(){
-    function placeContenidoFirst(){
-      var path=location.pathname.replace(/\/+$/,'')||'/';
-      if(path!=='/la-manada/contenidos')return;
-      var main=document.getElementById('fanMain');
-      var zone=document.getElementById('zona');
-      var hero=document.getElementById('fcbHero');
-      var head=document.getElementById('fanHead');
-      if(hero)hero.hidden=true;
-      if(head)head.hidden=true;
-      if(main&&zone&&main.firstElementChild!==zone)main.insertBefore(zone,main.firstElementChild);
-      if(zone){zone.hidden=false;zone.removeAttribute('aria-hidden')}
-      window.scrollTo({top:0,left:0,behavior:'auto'});
-    }
-    if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeContenidoFirst,{once:true});
-    else placeContenidoFirst();
-  })();</script>`;
-  if(!html.includes('sdl-contenido-route-fix'))html=html.replace(/<\/body>/i,`${contenidoRouteFix}</body>`);
-  return html;
-}
-
-async function fetchHtml(url,timeout){
-  const controller=new AbortController();
-  const timer=setTimeout(()=>controller.abort(),timeout);
-  try{
-    const response=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.8'}});
-    if(!response.ok)throw new Error(`source ${response.status}`);
-    return await response.text();
-  }finally{clearTimeout(timer)}
-}
-
-module.exports=async(req,res)=>{
-  try{
-    let source;
-    try{source=await fetchHtml(RAW,2800)}
-    catch(err){
-      console.warn('La Manada raw fallback:',err?.message||err);
-      source=await fetchHtml(FALLBACK,3500);
-    }
-    const html=externalizeStatic(source);
-    res.setHeader('Content-Type','text/html; charset=utf-8');
-    res.setHeader('Cache-Control','no-store, no-cache, must-revalidate');
-    res.setHeader('X-Robots-Tag','noindex, nofollow, nosnippet');
-    res.setHeader('Vary','Accept-Encoding');
-    res.statusCode=200;
-    return res.end(html);
-  }catch(err){
-    console.error('La Manada gateway:',err?.message||err);
-    res.statusCode=502;
-    res.setHeader('Content-Type','text/plain; charset=utf-8');
-    res.setHeader('Cache-Control','no-store');
-    return res.end('La Manada está actualizándose. Inténtalo nuevamente en unos instantes.');
-  }
-};
+const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@3fe69f49e026b1a908381f76a1960e3544142165/lykos-ui-v5.js?v=20260828-5';
+function injectBodyScript(html,src,needle){if(html.includes(needle))return html;const tag=`<script src="${src}" defer></script>`;return /<\/body>/i.test(html)?html.replace(/<\/body>/i,`${tag}</body>`):html.replace(/<\/html>/i,`${tag}</html>`)}
+function externalizeStatic(html){html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);if(!html.includes('fanclub-registration-email.js'))html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);if(!html.includes('fanclub-content-ux.js'))html=html.replace(/<\/body>/i,`<script src="${CONTENT_UX}?v=20260817-1" defer></script></body>`);html=injectBodyScript(html,GUARDIAN,'guardian-wolf.js');html=injectBodyScript(html,LYKOS_UI,'lykos-ui-v5.js');const contenidoRouteFix=`<script id="sdl-contenido-route-fix">(function(){function placeContenidoFirst(){var path=location.pathname.replace(/\/+$/,'')||'/';if(path!=='/la-manada/contenidos')return;var main=document.getElementById('fanMain');var zone=document.getElementById('zona');var hero=document.getElementById('fcbHero');var head=document.getElementById('fanHead');if(hero)hero.hidden=true;if(head)head.hidden=true;if(main&&zone&&main.firstElementChild!==zone)main.insertBefore(zone,main.firstElementChild);if(zone){zone.hidden=false;zone.removeAttribute('aria-hidden')}window.scrollTo({top:0,left:0,behavior:'auto'})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeContenidoFirst,{once:true});else placeContenidoFirst()})();</script>`;if(!html.includes('sdl-contenido-route-fix'))html=html.replace(/<\/body>/i,`${contenidoRouteFix}</body>`);return html}
+async function fetchHtml(url,timeout){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),timeout);try{const response=await fetch(url,{signal:controller.signal,headers:{'User-Agent':'Sangre-de-Luna-Manada/1.9'}});if(!response.ok)throw new Error(`source ${response.status}`);return await response.text()}finally{clearTimeout(timer)}}
+module.exports=async(req,res)=>{try{let source;try{source=await fetchHtml(RAW,2800)}catch(err){console.warn('La Manada raw fallback:',err?.message||err);source=await fetchHtml(FALLBACK,3500)}const html=externalizeStatic(source);res.setHeader('Content-Type','text/html; charset=utf-8');res.setHeader('Cache-Control','no-store, no-cache, must-revalidate');res.setHeader('X-Robots-Tag','noindex, nofollow, nosnippet');res.setHeader('Vary','Accept-Encoding');res.statusCode=200;return res.end(html)}catch(err){console.error('La Manada gateway:',err?.message||err);res.statusCode=502;res.setHeader('Content-Type','text/plain; charset=utf-8');res.setHeader('Cache-Control','no-store');return res.end('La Manada está actualizándose. Inténtalo nuevamente en unos instantes.')}};
