@@ -5,36 +5,55 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Sangre de Luna — Ecos de la Ciudadela v0.3</title>
 <style>
-html,body{margin:0;min-height:100%;background:#03070d;color:#dfe6ea;font-family:Inter,system-ui,Segoe UI,sans-serif}body{display:grid;place-items:center}.boot{width:min(560px,88vw);text-align:center}.crest{width:150px;max-width:40vw;filter:drop-shadow(0 12px 32px #0008)}h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(28px,6vw,52px);margin:16px 0 8px}p{color:#aeb9c0;line-height:1.55}.bar{height:4px;background:#18212a;border-radius:999px;overflow:hidden;margin:24px auto;width:min(360px,80vw)}.bar:after{content:"";display:block;height:100%;width:38%;background:#b99a61;animation:load 1.1s ease-in-out infinite alternate}@keyframes load{to{transform:translateX(165%)}}.error{display:none;border:1px solid #5e3434;background:#201214;padding:16px;border-radius:14px;margin-top:18px;color:#ffd7d7}</style>
+html,body{margin:0;min-height:100%;background:#03070d;color:#dfe6ea;font-family:Inter,system-ui,Segoe UI,sans-serif}body{display:grid;place-items:center}.boot{width:min(600px,90vw);text-align:center}.crest{width:160px;max-width:42vw;filter:drop-shadow(0 12px 32px #0008)}h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(28px,6vw,54px);margin:16px 0 8px}p{color:#aeb9c0;line-height:1.55}.bar{height:4px;background:#18212a;border-radius:999px;overflow:hidden;margin:24px auto;width:min(380px,82vw)}.bar:after{content:"";display:block;height:100%;width:38%;background:#b99a61;animation:load 1.05s ease-in-out infinite alternate}@keyframes load{to{transform:translateX(165%)}}.error{display:none;border:1px solid #75433f;background:#251416;padding:16px;border-radius:14px;margin-top:18px;color:#ffd7d7;line-height:1.45}.small{font-size:12px;color:#71808b;margin-top:10px}</style>
 </head>
 <body>
 <main class="boot">
-<img id="crest" class="crest" alt="Sangre de Luna">
+<img class="crest" src="https://sangre-de-luna-public.vercel.app/assets/logo.webp" alt="Sangre de Luna">
 <h1>Ecos de la Ciudadela</h1>
-<p>Cargando la versión 3D v0.3…</p>
+<p id="state">Cargando la versión 3D v0.3…</p>
 <div class="bar" aria-label="Cargando"></div>
 <div id="err" class="error"></div>
+<div class="small">Build independiente · Sangre de Luna</div>
 </main>
 <script type="module">
 const err=document.getElementById('err');
-const GH_ROOT='https://raw.githack.com/sangredelunaia-code/Sangre-de-Luna-Web/game-aaa-prototype/';
-const onGitHack=location.hostname.includes('githack.com');
-const assetBase=onGitHack?GH_ROOT+'assets/':'/assets/';
-document.getElementById('crest').src=assetBase+'logo.webp';
+const state=document.getElementById('state');
+const payloadSources=[
+  'https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/game-aaa-prototype/game-v03/payload.b64',
+  'https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@game-aaa-prototype/game-v03/payload.b64'
+];
+async function getPayload(){
+  let last='';
+  for(const url of payloadSources){
+    try{
+      const r=await fetch(url,{cache:'no-store',mode:'cors'});
+      if(r.ok){const text=(await r.text()).trim();if(text.length>1000)return text;}
+      last=`HTTP ${r.status}`;
+    }catch(e){last=e?.message||String(e)}
+  }
+  throw new Error('No se pudo descargar el paquete 3D. '+last);
+}
 try{
-  if(!('DecompressionStream' in window)) throw new Error('Tu navegador necesita una versión reciente de Chrome o Edge.');
-  const r=await fetch('./payload.b64',{cache:'no-store'});
-  if(!r.ok) throw new Error('No se pudo cargar el paquete del juego.');
-  const b64=(await r.text()).trim();
-  const raw=atob(b64); const bytes=new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
+  if(!('DecompressionStream' in window)) throw new Error('Actualiza Chrome o Edge: este navegador no admite descompresión web moderna.');
+  state.textContent='Descargando escenario 3D…';
+  const b64=await getPayload();
+  state.textContent='Preparando Ciudadela…';
+  const raw=atob(b64.replace(/\s+/g,''));
+  const bytes=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
   const ds=new DecompressionStream('gzip');
-  const html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
-  const fixed=html.replaceAll('../assets/',assetBase);
-  const blob=new Blob([fixed],{type:'text/html'});
-  location.replace(URL.createObjectURL(blob));
+  let html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
+  const assetRoot='https://sangre-de-luna-public.vercel.app/assets/';
+  html=html.replaceAll('../assets/',assetRoot);
+  document.open();
+  document.write(html);
+  document.close();
 }catch(e){
-  err.style.display='block';err.textContent='No se pudo iniciar el juego: '+(e?.message||e);
+  console.error(e);
+  err.style.display='block';
+  err.innerHTML='<strong>No se pudo iniciar el juego.</strong><br>'+(e?.message||e)+'<br><br>Recarga esta página con Ctrl+F5.';
+  state.textContent='Error de carga';
 }
 </script>
 </body>
