@@ -9,7 +9,7 @@ html,body{margin:0;min-height:100%;background:#03070d;color:#dfe6ea;font-family:
 </head>
 <body>
 <main class="boot">
-<img class="crest" src="/assets/logo.webp" alt="Sangre de Luna">
+<img id="crest" class="crest" alt="Sangre de Luna">
 <h1>Ecos de la Ciudadela</h1>
 <p>Cargando la versión 3D v0.3…</p>
 <div class="bar" aria-label="Cargando"></div>
@@ -17,6 +17,10 @@ html,body{margin:0;min-height:100%;background:#03070d;color:#dfe6ea;font-family:
 </main>
 <script type="module">
 const err=document.getElementById('err');
+const GH_ROOT='https://raw.githack.com/sangredelunaia-code/Sangre-de-Luna-Web/game-aaa-prototype/';
+const onGitHack=location.hostname.includes('githack.com');
+const assetBase=onGitHack?GH_ROOT+'assets/':'/assets/';
+document.getElementById('crest').src=assetBase+'logo.webp';
 try{
   if(!('DecompressionStream' in window)) throw new Error('Tu navegador necesita una versión reciente de Chrome o Edge.');
   const r=await fetch('./payload.b64',{cache:'no-store'});
@@ -26,7 +30,7 @@ try{
   for(let i=0;i<raw.length;i++) bytes[i]=raw.charCodeAt(i);
   const ds=new DecompressionStream('gzip');
   const html=await new Response(new Blob([bytes]).stream().pipeThrough(ds)).text();
-  const fixed=html.replaceAll('../assets/','/assets/');
+  const fixed=html.replaceAll('../assets/',assetBase);
   const blob=new Blob([fixed],{type:'text/html'});
   location.replace(URL.createObjectURL(blob));
 }catch(e){
