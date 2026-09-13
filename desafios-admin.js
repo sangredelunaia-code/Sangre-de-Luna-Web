@@ -7,6 +7,7 @@
   const PASSWORD_RECOVERY='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@bcf92b7c3b24cb07e08b8392bc506146d26833fd/fanclub-password-recovery.js';
   const ADMIN_WELCOME='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@4e4489428bc7988f21065a912dc707ab16f0ca92/fanclub-admin-welcome.js';
   const CFG_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
+  const GAME_URL='https://sangre-de-luna-ecos-ciudadela.vercel.app';
 
   const resetEntryExperience=()=>{
     try{
@@ -50,6 +51,20 @@
       signOutAndGoPublic();
     }
   },true);
+
+  const ensureGameMenuLink=()=>{
+    const nav=document.querySelector('.nav');
+    if(!nav||nav.querySelector('[data-sdl-game-link]'))return;
+    const gameLink=document.createElement('a');
+    gameLink.href=GAME_URL;
+    gameLink.textContent='Juego';
+    gameLink.target='_blank';
+    gameLink.rel='noopener';
+    gameLink.dataset.sdlGameLink='1';
+    gameLink.setAttribute('aria-label','Abrir juego Ecos de la Ciudadela');
+    const exploreLink=nav.querySelector('a[href="/tour.html"]');
+    if(exploreLink)nav.insertBefore(gameLink,exploreLink);else nav.appendChild(gameLink);
+  };
 
   const ensureFanclubButton=()=>{
     const nav=document.getElementById('adminNav');
@@ -101,11 +116,13 @@
   };
 
   const afterLegacy=()=>{
+    ensureGameMenuLink();
     ensureFanclubAdmin();
     loadTourManager();loadPasswordRecovery();loadAdminWelcome();loadAchievements();loadExpeditions();loadProgress();loadGuardian();
     setTimeout(loadMissionPath,120);setTimeout(loadSharing,260);
   };
 
+  ensureGameMenuLink();
   const legacy=document.createElement('script');legacy.src=LEGACY;legacy.async=false;legacy.onload=afterLegacy;legacy.onerror=afterLegacy;document.head.appendChild(legacy);
 
   document.addEventListener('click',event=>{if(event.target.closest?.('.admin-entry'))setTimeout(ensureFanclubAdmin,120)},true);
@@ -113,13 +130,15 @@
     let wasAdmin=false;try{wasAdmin=sessionStorage.getItem('sdl-admin-active')==='1'}catch{}
     const stillAdmin=new URLSearchParams(location.search).get('admin')==='1';
     if(wasAdmin&&!stillAdmin){goFreshPublic();return}
+    ensureGameMenuLink();
     ensureFanclubAdmin();
   });
   const watchdog=setInterval(()=>{
+    ensureGameMenuLink();
     const adminVisible=new URLSearchParams(location.search).get('admin')==='1'||!document.getElementById('adminApp')?.classList.contains('hidden');
     if(adminVisible&&!document.querySelector('[data-page="fanclub"]'))loadFanclubAdmin();
     else if(adminVisible)ensureFanclubButton();
   },2000);
   setTimeout(()=>clearInterval(watchdog),30000);
-  setTimeout(ensureFanclubAdmin,900);
+  setTimeout(()=>{ensureGameMenuLink();ensureFanclubAdmin()},900);
 })();
