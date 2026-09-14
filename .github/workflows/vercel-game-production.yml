@@ -1,0 +1,91 @@
+name: Deploy Sangre de Luna Game to Vercel
+
+on:
+  push:
+    branches:
+      - game-card-online
+    paths:
+      - '.github/workflows/vercel-game-production.yml'
+      - 'game-deploy/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sangre-de-luna-game-production
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: team_USwuTxCjOXo8HKndCZqkUn24
+  VERCEL_PROJECT_ID: prj_VXEIZvn8s0qq57aAbPS7UnR1DrzG
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout game branch
+        uses: actions/checkout@v4
+        with:
+          ref: game-card-online
+
+      - name: Check Vercel credential
+        id: auth
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          test -n "$VERCEL_TOKEN"
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Assemble stable game build
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .game-prod
+          mkdir -p .game-prod
+          BASE='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/87436f1352f7693a7660a3fe5b222be7ff1509c8/game-runtime/v2'
+          for n in 0 1 2 3 4; do
+            curl --fail --location --retry 3 --retry-delay 2 "$BASE/part${n}.txt" -o ".game-prod/part${n}.txt"
+          done
+          cat .game-prod/part0.txt .game-prod/part1.txt .game-prod/part2.txt .game-prod/part3.txt .game-prod/part4.txt > .game-prod/index.html
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('.game-prod/index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace("const tut=[['Bienvenido'", "const tut=[['ETAPA CERO · Bienvenido'")
+          s=s.replace('Cada ronda empieza con un evento.', 'Cada ronda empieza con un interrogante.')
+          s=s.replace('Primero debes tomar una decisión.', 'Lee la situación y toma una decisión.')
+          s=s.replace('1. Responde al evento.', '1. Responde al interrogante.')
+          s=s.replace('Nueva ronda. Primero responde al evento.', 'Nueva ronda. Primero responde al interrogante.')
+          s=s.replace('<small>EVENTO</small>', '<small>INTERROGANTE</small>')
+          s=s.replace('¿Cómo responderás al evento?', '¿Cuál es tu respuesta?')
+          marker='<meta name="sdl-online-fix" content="2026-09-14-stage0-direct-v1">'
+          s=s.replace('</head>', marker+'</head>',1)
+          p.write_text(s,encoding='utf-8')
+          PY
+          grep -q 'ETAPA CERO' .game-prod/index.html
+          grep -q 'Lykos' .game-prod/index.html
+          grep -q 'sdl-online-fix' .game-prod/index.html
+          if grep -q 'rla5schlt.vercel.app' .game-prod/index.html; then
+            echo 'ERROR: protected child deployment reference still present'
+            exit 1
+          fi
+          rm -f .game-prod/part*.txt
+          printf '{"cleanUrls":true,"trailingSlash":false,"headers":[{"source":"/(.*)","headers":[{"key":"Cache-Control","value":"public, max-age=0, must-revalidate"}]}]}' > .game-prod/vercel.json
+
+      - name: Pull game project settings
+        working-directory: .game-prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Deploy game to production
+        working-directory: .game-prod
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
