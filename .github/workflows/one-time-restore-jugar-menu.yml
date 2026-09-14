@@ -50,14 +50,14 @@ jobs:
               html = html.replace(fanclub, mobile + fanclub, 1)
 
           if 'id="sdl-game-menu-static"' not in html:
-              style = '''
-<style id="sdl-game-menu-static">
-.nav [data-sdl-game-link]{color:#9edcff!important;font-weight:900;letter-spacing:.04em}
-.nav [data-sdl-game-link]:hover{color:#dff5ff!important;text-shadow:0 0 14px #6bc6ff88}
-.game-head-btn{display:none!important;border-color:#5aaee4!important;color:#bfe8ff!important}
-@media(max-width:900px){.game-head-btn{display:inline-flex!important}}
-</style>
-'''
+              style = (
+                  '<style id="sdl-game-menu-static">\n'
+                  '.nav [data-sdl-game-link]{color:#9edcff!important;font-weight:900;letter-spacing:.04em}\n'
+                  '.nav [data-sdl-game-link]:hover{color:#dff5ff!important;text-shadow:0 0 14px #6bc6ff88}\n'
+                  '.game-head-btn{display:none!important;border-color:#5aaee4!important;color:#bfe8ff!important}\n'
+                  '@media(max-width:900px){.game-head-btn{display:inline-flex!important}}\n'
+                  '</style>\n'
+              )
               pos = html.lower().rfind('</head>')
               if pos < 0:
                   raise SystemExit('No se encontró </head> en index.html')
