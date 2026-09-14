@@ -1,0 +1,43 @@
+name: Mobile responsive patch runner
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/mobile-patch-trigger"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Execute responsive patch source
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import textwrap
+          source = Path('.github/workflows/one-time-mobile-responsive-game.yml').read_text(encoding='utf-8')
+          token = "python - <<'PY'\n"
+          start = source.index(token) + len(token)
+          end = source.index("\n          PY", start)
+          code = textwrap.dedent(source[start:end])
+          exec(compile(code, 'mobile-responsive-patch', 'exec'))
+          PY
+
+      - name: Commit responsive game patch
+        shell: bash
+        run: |
+          git config user.name "sangre-de-luna-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git rm -f .github/workflows/one-time-mobile-responsive-game.yml .github/workflows/mobile-responsive-runner.yml .github/mobile-patch-trigger
+          git add game-runtime/live-loader.js
+          git commit -m "Make game automatically responsive on mobile screens"
+          git push origin HEAD:main
