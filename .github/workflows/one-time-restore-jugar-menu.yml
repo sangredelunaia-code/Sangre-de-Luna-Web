@@ -1,0 +1,81 @@
+name: One-time restore JUGAR menu link
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/one-time-restore-jugar-menu.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore JUGAR in desktop and mobile header
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('index.html')
+          html = path.read_text(encoding='utf-8')
+          game_url = 'https://sangre-de-luna-ecos-ciudadela.vercel.app/'
+
+          if 'data-sdl-game-link' not in html:
+              needle = '<a href="/tour.html">Explorar</a></nav>'
+              replacement = (
+                  f'<a href="{game_url}" data-sdl-game-link="1" '
+                  'aria-label="Jugar Sangre de Luna: Crónicas de la Ciudadela">JUGAR</a>'
+                  + needle
+              )
+              if needle not in html:
+                  raise SystemExit('No se encontró el enlace Explorar del menú principal')
+              html = html.replace(needle, replacement, 1)
+
+          if 'data-sdl-game-mobile' not in html:
+              fanclub = '<a class="btn ghost fanclub-head-btn" href="/fanclub.html" aria-label="Abrir Fan Club">Fan Club</a>'
+              mobile = (
+                  f'<a class="btn ghost game-head-btn" href="{game_url}" data-sdl-game-mobile="1" '
+                  'aria-label="Jugar Sangre de Luna: Crónicas de la Ciudadela">JUGAR</a>'
+              )
+              if fanclub not in html:
+                  raise SystemExit('No se encontró el botón Fan Club del encabezado')
+              html = html.replace(fanclub, mobile + fanclub, 1)
+
+          if 'id="sdl-game-menu-static"' not in html:
+              style = '''
+<style id="sdl-game-menu-static">
+.nav [data-sdl-game-link]{color:#9edcff!important;font-weight:900;letter-spacing:.04em}
+.nav [data-sdl-game-link]:hover{color:#dff5ff!important;text-shadow:0 0 14px #6bc6ff88}
+.game-head-btn{display:none!important;border-color:#5aaee4!important;color:#bfe8ff!important}
+@media(max-width:900px){.game-head-btn{display:inline-flex!important}}
+</style>
+'''
+              pos = html.lower().rfind('</head>')
+              if pos < 0:
+                  raise SystemExit('No se encontró </head> en index.html')
+              html = html[:pos] + style + html[pos:]
+
+          path.write_text(html, encoding='utf-8')
+          PY
+
+      - name: Commit one-time menu fix
+        shell: bash
+        run: |
+          git config user.name "sangre-de-luna-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git rm .github/workflows/one-time-restore-jugar-menu.yml
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No changes required"
+            exit 0
+          fi
+          git commit -m "Restore JUGAR link in main menu"
+          git push origin HEAD:main
