@@ -185,3 +185,52 @@
 
   [80,250,700,1500].forEach(ms=>setTimeout(schedule,ms));
 })();
+
+/* SANGRE DE LUNA · ACCESO AL JUEGO DESDE EL MENÚ PRINCIPAL */
+(()=>{
+  if(window.__SDL_GAME_MENU_LINK__)return;
+  window.__SDL_GAME_MENU_LINK__=true;
+
+  const GAME_URL='https://sangre-de-luna-ecos-ciudadela.vercel.app/';
+
+  function installGameLinks(){
+    const nav=document.querySelector('.nav');
+    if(nav&&!nav.querySelector('[data-sdl-game-link]')){
+      const link=document.createElement('a');
+      link.href=GAME_URL;
+      link.textContent='JUGAR';
+      link.dataset.sdlGameLink='1';
+      link.setAttribute('aria-label','Jugar Sangre de Luna: Crónicas de la Ciudadela');
+      const tour=nav.querySelector('a[href="/tour.html"]');
+      nav.insertBefore(link,tour||null);
+    }
+
+    const actions=document.querySelector('.head-actions');
+    if(actions&&!actions.querySelector('[data-sdl-game-mobile]')){
+      const mobile=document.createElement('a');
+      mobile.href=GAME_URL;
+      mobile.textContent='JUGAR';
+      mobile.className='btn ghost sdl-game-mobile';
+      mobile.dataset.sdlGameMobile='1';
+      mobile.setAttribute('aria-label','Jugar Sangre de Luna: Crónicas de la Ciudadela');
+      const fanclub=actions.querySelector('.fanclub-head-btn');
+      actions.insertBefore(mobile,fanclub||actions.firstChild);
+    }
+
+    if(!document.getElementById('sdl-game-menu-style')){
+      const css=document.createElement('style');
+      css.id='sdl-game-menu-style';
+      css.textContent=`
+        .nav [data-sdl-game-link]{color:#9edcff;font-weight:900;letter-spacing:.04em}
+        .nav [data-sdl-game-link]:hover{color:#dff5ff;text-shadow:0 0 14px #6bc6ff88}
+        .sdl-game-mobile{display:none!important}
+        @media(max-width:900px){.sdl-game-mobile{display:inline-flex!important}}
+      `;
+      document.head.appendChild(css);
+    }
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',installGameLinks,{once:true});
+  else installGameLinks();
+  window.addEventListener('pageshow',installGameLinks,{passive:true});
+})();
