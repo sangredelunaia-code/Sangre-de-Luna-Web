@@ -108,7 +108,7 @@ dossier=m=>{
   `;
   document.head.appendChild(st);
   function grid(){
-    return `<div class="sdlLegendaryGrid">${cards.map(([id,name],i)=>`<div class="sdlLegendaryCard"><div class="sdlLegendaryArt" style="background-position:${-(i%5)*100}% ${-Math.floor(i/5)*100}%"></div><span class="sdlLegendaryTag">ASCENSO III</span><div class="sdlLegendaryName">Legendaria ${name}</div></div>`).join('')}</div>`;
+    return `<div class="sdlLegendaryGrid">${cards.map(([id,name],i)=>`<div class="sdlLegendaryCard"><div class="sdlLegendaryArt" style="background-position:${(i%5)*25}% ${Math.floor(i/5)*100}%"></div><span class="sdlLegendaryTag">ASCENSO III</span><div class="sdlLegendaryName">Legendaria ${name}</div></div>`).join('')}</div>`;
   }
   function patch(){
     const mb=document.querySelector('#mb'); if(!mb)return;
