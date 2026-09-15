@@ -5,7 +5,13 @@ const BADGES=[
 ];
 const BMAP=Object.fromEntries(BADGES.map((x,i)=>[x[0],{id:x[0],name:x[1],i}]));
 const SELF=document.currentScript?.src||'';
-const SPRITE=SELF?SELF.replace(/player-identity\.js(?:\?.*)?$/,'insignias-sprite.webp'):'game-restored/insignias-sprite.webp';
+const SPRITE=(()=>{
+  if(!SELF)return 'game-restored/insignias-sprite.webp';
+  if(SELF.includes('cdn.jsdelivr.net/gh/')){
+    return SELF.replace('https://cdn.jsdelivr.net/gh/','https://raw.githubusercontent.com/').replace(/@([^/]+)\//,'/$1/').replace(/player-identity\.js(?:\?.*)?$/,'insignias-sprite.webp');
+  }
+  return SELF.replace(/player-identity\.js(?:\?.*)?$/,'insignias-sprite.webp');
+})();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const read=()=>{try{const v=JSON.parse(localStorage.getItem(ID_KEY)||'null');return v&&BMAP[v.badge_id]?v:null}catch{return null}};
 const store=v=>localStorage.setItem(ID_KEY,JSON.stringify(v));
