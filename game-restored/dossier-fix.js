@@ -23,3 +23,39 @@ dossier=m=>{
 };
 // Load the player identity layer (name + one of the 10 official insignias) from this exact game revision.
 (()=>{const here=document.currentScript?.src||'';if(!here)return;const s=document.createElement('script');s.src=here.replace(/dossier-fix\.js(?:\?.*)?$/,'player-identity.js');s.async=false;document.head.appendChild(s)})();
+
+// Badge renderer hotfix: serve the official 5x2 sprite through the project's public Supabase edge endpoint.
+(()=>{
+  const BADGE_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/game-badges';
+  const ids=['mensajero-lunar','cartografo-ciudadela','centinela-torre','guardian-llaves','explorador-valle','cronista-luna','forjador-reino','sanador-manada','lobo-ciudadela','torre-sangre-luna'];
+  const css=[`.sdlBadgeIcon{background-image:url("${BADGE_URL}")!important;background-size:400px 160px!important;background-repeat:no-repeat!important}`];
+  ids.forEach((id,i)=>{
+    const x=(i%5)*80,y=Math.floor(i/5)*80;
+    css.push(`#sdlBadgeGrid [data-badge="${id}"] .sdlBadgeIcon{background-position:-${x}px -${y}px!important}`);
+    css.push(`#mpRoom [data-badged="${id}"] .sdlMiniBadge{background-image:url("${BADGE_URL}")!important}`);
+  });
+  const st=document.createElement('style');st.id='sdlBadgeRenderFix';st.textContent=css.join('\n');document.head.appendChild(st);
+  const readIdentity=()=>{try{return JSON.parse(localStorage.getItem('sdl_player_identity_v1')||'null')}catch{return null}};
+  function paintMini(el,id){
+    const i=ids.indexOf(id);if(i<0||!el)return;
+    const size=Math.max(1,Math.round(el.getBoundingClientRect().width||34));
+    const k=size/80;
+    el.style.setProperty('background-image',`url("${BADGE_URL}")`,'important');
+    el.style.setProperty('background-size',`${400*k}px ${160*k}px`,'important');
+    el.style.setProperty('background-position',`-${(i%5)*80*k}px -${Math.floor(i/5)*80*k}px`,'important');
+    el.style.setProperty('background-repeat','no-repeat','important');
+  }
+  function repaint(){
+    const identity=readIdentity();
+    if(identity?.badge_id){
+      document.querySelectorAll('.sdlPlayerChip .sdlMiniBadge,.sdlMPIdentity .sdlMiniBadge').forEach(el=>paintMini(el,identity.badge_id));
+    }
+    document.querySelectorAll('#mpRoom [data-badged]').forEach(row=>{
+      const id=row.dataset.badged;row.querySelectorAll('.sdlMiniBadge').forEach(el=>paintMini(el,id));
+    });
+  }
+  const obs=new MutationObserver(()=>{requestAnimationFrame(repaint);setTimeout(repaint,80)});
+  obs.observe(document.documentElement,{subtree:true,childList:true});
+  window.addEventListener('load',()=>setTimeout(repaint,100));
+  setTimeout(repaint,500);
+})();
