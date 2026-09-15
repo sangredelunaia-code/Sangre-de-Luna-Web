@@ -1,9 +1,9 @@
 // Keeps the restored single-player dossier progression on the original save system.
 const restoredDossierText={
   5:['La ruta fue manipulada mediante señales y registros falsos.','Los aliados del Este organizaron el sabotaje.','Todo fue un error casual sin coordinación.'],
-  10:['La provocación buscaba enfrentar a la Ciudadela con sus aliados del Este.','La Guardia del Norte actuó sola por interés propio.','Los incidentes fueron independientes.'],
-  15:['La red combina mensajes interceptados, rutas alteradas y colaboradores internos.','El problema se limita a un mapa mal copiado.','La amenaza procede únicamente de una patrulla extranjera.'],
-  20:['El Umbral era una operación coordinada para abrir una ruta interna hacia la Ciudadela.','El Umbral era solo una leyenda.','La ruta verdadera no guarda relación con las señales.']
+  10:['La provocación buscaba enfrentar a la Ciudadela con sus aliados del Este.','La Guardia del Norte actuó sin autorización por interés propio.','Los incidentes fueron independientes y no tenían relación.'],
+  15:['La red combina mensajes interceptados, rutas alteradas y colaboradores dentro del perímetro.','El problema se limita a un mapa mal copiado en el Archivo.','La amenaza procede únicamente de una patrulla extranjera.'],
+  20:['El Umbral era una operación coordinada para abrir una ruta interna hacia la Ciudadela.','El Umbral era solo una leyenda usada para asustar a los guardias.','La ruta verdadera no guarda relación con las señales reunidas.']
 };
 dossier=m=>{
   const xs=restoredDossierText[m.id]||restoredDossierText[5];
@@ -21,3 +21,5 @@ dossier=m=>{
     }else guide('Esa conclusión no coincide con las pistas. Inténtalo otra vez.');
   }),0);
 };
+// Load the player identity layer (name + one of the 10 official insignias) from this exact game revision.
+(()=>{const here=document.currentScript?.src||'';if(!here)return;const s=document.createElement('script');s.src=here.replace(/dossier-fix\.js(?:\?.*)?$/,'player-identity.js');s.async=false;document.head.appendChild(s)})();
