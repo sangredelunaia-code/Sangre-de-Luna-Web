@@ -59,3 +59,35 @@ dossier=m=>{
   window.addEventListener('load',()=>setTimeout(repaint,100));
   setTimeout(repaint,500);
 })();
+
+// Top-bar layout hotfix: reserve a dedicated area for Music/Lykos and keep action buttons separated.
+(()=>{
+  const st=document.createElement('style');
+  st.id='sdlTopBarLayoutFix';
+  st.textContent=`
+  @media (min-width:981px){
+    .top{padding-right:160px!important;gap:10px!important}
+    .top>.actions{display:flex!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:nowrap!important;gap:6px!important;margin:0 0 0 auto!important;min-width:0!important}
+    .top>.actions>.btn,.top>.actions>.sdlPlayerChip{position:relative!important;flex:0 0 auto!important;white-space:nowrap!important;margin:0!important}
+    #campaign .top>.actions>.btn,#mp .top>.actions>.btn{padding:6px 8px!important;font-size:10px!important}
+    .audio{position:fixed!important;top:8px!important;right:8px!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;width:145px!important;max-width:145px!important;z-index:30!important}
+    .audio button{position:relative!important;flex:0 0 auto!important;margin:0!important;padding:6px 8px!important;font-size:10px!important;white-space:nowrap!important}
+  }
+  @media (max-width:1180px) and (min-width:981px){
+    .top{padding-left:12px!important}
+    .brand{min-width:0!important;gap:7px!important}
+    .brand img{width:34px!important}
+    .brand b{font-size:12px!important;white-space:nowrap!important}
+    .top>.actions{gap:5px!important}
+    #campaign .top>.actions>.btn,#mp .top>.actions>.btn{padding:5px 7px!important;font-size:9px!important}
+    .sdlPlayerChip{padding:4px 6px!important;gap:5px!important;font-size:9px!important}
+    .sdlPlayerChip .sdlMiniBadge{width:26px!important;height:26px!important}
+  }
+  @media (max-width:980px){
+    .top>.actions{display:flex!important;flex-wrap:wrap!important;align-items:center!important;gap:7px!important;width:100%!important;margin:0!important}
+    .top>.actions>.btn,.top>.actions>.sdlPlayerChip{position:relative!important;margin:0!important;white-space:nowrap!important}
+    .audio{gap:6px!important}
+    .audio button{margin:0!important;white-space:nowrap!important}
+  }`;
+  document.head.appendChild(st);
+})();
