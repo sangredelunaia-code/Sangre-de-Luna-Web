@@ -91,3 +91,34 @@ dossier=m=>{
   }`;
   document.head.appendChild(st);
 })();
+
+// Legendarias · Ascenso III — official 10-card reward collection, unlocked after mission 16.
+(()=>{
+  const SPRITE='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main/game-restored/legendarias-ascenso3.webp';
+  const cards=[['peter','Peter'],['tyren','Tyren'],['ethan','Ethan'],['chris','Chris'],['darien','Darien'],['nine','Nine'],['varkos','Varkos'],['gabriel','Gabriel'],['sehan','Sehan'],['ella','Ella']];
+  const st=document.createElement('style');
+  st.id='sdlLegendaryCardsStyle';
+  st.textContent=`
+    .sdlLegendaryGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:8px 0 14px}
+    .sdlLegendaryCard{position:relative;aspect-ratio:2/3;border:1px solid #d7b66f88;border-radius:14px;overflow:hidden;background:#070b10;box-shadow:0 14px 35px #0007}
+    .sdlLegendaryArt{position:absolute;inset:0;background-image:url("${SPRITE}");background-size:500% 200%;background-repeat:no-repeat}
+    .sdlLegendaryCard:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 54%,#02050af2 92%);pointer-events:none}
+    .sdlLegendaryName{position:absolute;z-index:2;left:8px;right:8px;bottom:8px;text-align:center;font:600 16px Georgia;color:#ffe7ad;text-shadow:0 2px 8px #000}
+    .sdlLegendaryTag{position:absolute;z-index:2;top:7px;left:7px;padding:4px 6px;border-radius:999px;background:#05090ddd;border:1px solid #d7b66f66;font-size:8px;letter-spacing:.12em;color:#f4dca7}
+  `;
+  document.head.appendChild(st);
+  function grid(){
+    return `<div class="sdlLegendaryGrid">${cards.map(([id,name],i)=>`<div class="sdlLegendaryCard"><div class="sdlLegendaryArt" style="background-position:${-(i%5)*100}% ${-Math.floor(i/5)*100}%"></div><span class="sdlLegendaryTag">ASCENSO III</span><div class="sdlLegendaryName">Legendaria ${name}</div></div>`).join('')}</div>`;
+  }
+  function patch(){
+    const mb=document.querySelector('#mb'); if(!mb)return;
+    const title=[...mb.querySelectorAll('.rTier')].find(x=>/LEGENDARIA/i.test(x.textContent||'')); if(!title)return;
+    const next=title.nextElementSibling; if(!next||next.classList.contains('sdlLegendaryGrid'))return;
+    if(/MISIÓN 16/i.test(next.textContent||''))return;
+    if(/arte adicional pendiente/i.test(next.textContent||'')||next.classList.contains('goal'))next.outerHTML=grid();
+  }
+  const obs=new MutationObserver(()=>setTimeout(patch,0));
+  obs.observe(document.documentElement,{subtree:true,childList:true});
+  window.addEventListener('load',patch);
+  setTimeout(patch,500);
+})();
