@@ -1,11 +1,6 @@
-/* Conteo aproximado de visitas: una por pestaña/sesión, sin guardar datos personales. */
+/* Conteo de visitas públicas: incrementa en cada carga o recarga de página. */
 (()=>{
   if(new URLSearchParams(location.search).has('admin'))return;
-  const sessionKey='sdl-site-visit-counted-v1';
-  try{
-    if(sessionStorage.getItem(sessionKey))return;
-    sessionStorage.setItem(sessionKey,'1');
-  }catch(_){}
   const configUrl='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
   (async()=>{
     try{
@@ -19,8 +14,6 @@
         body:'{}'
       });
       if(!r.ok)throw new Error('visit');
-    }catch(_){
-      try{sessionStorage.removeItem(sessionKey)}catch(__){}
-    }
+    }catch(_){}
   })();
 })();
