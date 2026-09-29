@@ -68,6 +68,31 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
 /* Fondo local estable: evita que la portada dependa de una URL versionada externa. */
 .hero-bg{background-image:url('/assets/hero.webp')!important}
 .splash:after{z-index:1}.splash-atmosphere{z-index:2}.splash .sin{z-index:3}.splash-atmosphere .hero-cloud{opacity:.25}.splash-atmosphere .cloud-b{opacity:.18}.splash-atmosphere .cloud-c{opacity:.14}
+
+/* REVELACIÓN CINEMATOGRÁFICA DE LA PORTADA */
+.splash{isolation:isolate}
+.splash>img.bg{transform:scale(1.08);filter:brightness(.24) saturate(.78);animation:sdl-splash-landscape 4.8s cubic-bezier(.2,.65,.25,1) both}
+.splash:before{content:"";position:absolute;inset:-12%;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 39%,rgba(182,220,255,.25),transparent 12%),radial-gradient(ellipse at 50% 39%,rgba(88,164,220,.18),transparent 34%);opacity:0;animation:sdl-splash-moonlight 4.8s ease-out both}
+.splash-atmosphere:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background-image:radial-gradient(1.5px 1.5px at 16% 24%,#e7f5ffb8 50%,transparent 100%),radial-gradient(1px 1px at 76% 19%,#e7f5ff9c 50%,transparent 100%),radial-gradient(1.5px 1.5px at 87% 62%,#e7f5ffad 50%,transparent 100%),radial-gradient(1px 1px at 23% 74%,#e7f5ff8c 50%,transparent 100%),radial-gradient(1px 1px at 66% 82%,#e7f5ff9c 50%,transparent 100%);opacity:0;animation:sdl-splash-stars 1.8s 1s ease-out both}
+.splash-atmosphere .hero-cloud{animation-duration:48s}
+.splash .sin{animation:sdl-splash-copy 1s .65s cubic-bezier(.2,.7,.2,1) both}
+.splash .logo-reveal{position:relative;display:inline-block;max-width:100%;line-height:0;isolation:isolate}
+.splash .logo-reveal>img{display:block;width:min(620px,86vw);filter:drop-shadow(0 0 30px #40a6ff6b);animation:sdl-splash-logo 1.45s .45s cubic-bezier(.2,.7,.2,1) both}
+.splash .logo-reveal:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(108deg,transparent 34%,rgba(225,247,255,.9) 49%,transparent 64%);mix-blend-mode:screen;-webkit-mask:url("/assets/logo-oficial.png") center / contain no-repeat;mask:url("/assets/logo-oficial.png") center / contain no-repeat;opacity:0;transform:translateX(-115%);animation:sdl-splash-sheen 1.35s 1.45s ease-in-out both}
+.splash .sin p{animation:sdl-splash-tagline .8s 2.25s ease-out both}
+.splash .sin .toolbar{animation:sdl-splash-button .8s 3.05s cubic-bezier(.2,.7,.2,1) both}
+.splash .enter{box-shadow:0 0 0 1px #d6f2ff45,0 0 26px #65bfff42;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.splash .enter:hover{transform:translateY(-2px);background:#b0e2ff;box-shadow:0 0 0 1px #e8f8ff78,0 0 34px #65bfff78}
+.splash .enter:focus-visible{outline:3px solid #e5f5ff;outline-offset:4px}
+@keyframes sdl-splash-landscape{0%{transform:scale(1.08);filter:brightness(.24) saturate(.78)}100%{transform:scale(1);filter:brightness(.46) saturate(1)}}
+@keyframes sdl-splash-moonlight{0%,20%{opacity:0;transform:scale(.88)}70%{opacity:.9}100%{opacity:.48;transform:scale(1.05)}}
+@keyframes sdl-splash-stars{0%{opacity:0}100%{opacity:.62}}
+@keyframes sdl-splash-copy{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes sdl-splash-logo{0%{opacity:0;transform:translateY(12px) scale(.975)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes sdl-splash-sheen{0%{opacity:0;transform:translateX(-115%)}24%{opacity:.82}78%{opacity:.72}100%{opacity:0;transform:translateX(115%)}}
+@keyframes sdl-splash-tagline{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes sdl-splash-button{0%{opacity:0;transform:translateY(12px) scale(.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.splash,.splash *{animation:none!important;transition:none!important}.splash>img.bg{transform:none!important;filter:brightness(.42) saturate(1)}.splash:before{opacity:.48}.splash-atmosphere:before{opacity:.3}.splash .sin,.splash .logo-reveal>img,.splash .sin p,.splash .sin .toolbar{opacity:1!important;transform:none!important}.splash .logo-reveal:after{display:none}.splash .enter{transform:none}}
 </style>
 <!-- SDL SEO START -->
 <meta name="description" content="Sitio oficial de Sangre de Luna: personajes, historias, episodios, música, recorridos virtuales, mapas y Fan Club de la Manada.">
@@ -135,7 +160,7 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
   </section>
   <button id="cronistaLaunch" class="cronista-launch" type="button" aria-label="Abrir al Cronista de la Ciudadela" aria-expanded="false"><img src="/assets/logo-oficial.png" alt=""></button>
 </aside>
-<div id="splash" class="splash"><img class="bg" src="/assets/hero.webp" alt="Paisaje nocturno de Sangre de Luna"><div class="hero-atmosphere splash-atmosphere" aria-hidden="true"><div class="hero-cloud cloud-a"></div><div class="hero-cloud cloud-b"></div><div class="hero-cloud cloud-c"></div></div><div class="sin"><img src="/assets/logo-oficial.png" alt="Sangre de Luna"><p>CUANDO LA LUNA RECUERDA LA SANGRE, LOS REINOS DESPIERTAN.</p><div class="toolbar" style="justify-content:center;margin-top:16px"><button class="enter" id="enterSite">ENTRAR AL UNIVERSO</button></div></div></div>
+<div id="splash" class="splash"><img class="bg" src="/assets/hero.webp" alt="Paisaje nocturno de Sangre de Luna"><div class="hero-atmosphere splash-atmosphere" aria-hidden="true"><div class="hero-cloud cloud-a"></div><div class="hero-cloud cloud-b"></div><div class="hero-cloud cloud-c"></div></div><div class="sin"><div class="logo-reveal"><img src="/assets/logo-oficial.png" alt="Sangre de Luna"></div><p>CUANDO LA LUNA RECUERDA LA SANGRE, LOS REINOS DESPIERTAN.</p><div class="toolbar" style="justify-content:center;margin-top:16px"><button class="enter" id="enterSite">ENTRAR AL UNIVERSO</button></div></div></div>
 </div>
 
 <div id="adminApp" class="hidden">
