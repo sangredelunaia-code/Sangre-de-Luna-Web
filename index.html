@@ -93,6 +93,13 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
 @keyframes sdl-splash-tagline{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes sdl-splash-button{0%{opacity:0;transform:translateY(12px) scale(.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.splash,.splash *{animation:none!important;transition:none!important}.splash>img.bg{transform:none!important;filter:brightness(.42) saturate(1)}.splash:before{opacity:.48}.splash-atmosphere:before{opacity:.3}.splash .sin,.splash .logo-reveal>img,.splash .sin p,.splash .sin .toolbar{opacity:1!important;transform:none!important}.splash .logo-reveal:after{display:none}.splash .enter{transform:none}}
+
+/* Ajuste del acabado del logo: halo lunar suave, sin barrido sobre la marca */
+.splash .logo-reveal:after{content:none!important;animation:none!important}
+.splash .logo-reveal:before{content:"";position:absolute;inset:8% -10%;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at center,rgba(160,211,250,.2) 0%,rgba(130,190,230,.1) 42%,transparent 72%);opacity:0;transform:scale(.9);animation:sdl-splash-aura 2.2s .9s ease-out both}
+.splash .logo-reveal>img{filter:drop-shadow(0 0 16px rgba(165,210,245,.27))}
+@keyframes sdl-splash-aura{0%{opacity:0;transform:scale(.9)}65%{opacity:.58;transform:scale(1.04)}100%{opacity:.34;transform:scale(1.08)}}
+@media(prefers-reduced-motion:reduce){.splash .logo-reveal:before{opacity:.34!important;transform:none!important}}
 </style>
 <!-- SDL SEO START -->
 <meta name="description" content="Sitio oficial de Sangre de Luna: personajes, historias, episodios, música, recorridos virtuales, mapas y Fan Club de la Manada.">
