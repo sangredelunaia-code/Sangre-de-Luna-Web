@@ -102,6 +102,7 @@ if(!document.querySelector(".top nav.nav")){
  .sdl-has-shared-header:has(#tour){height:auto;overflow:auto}
  .sdl-has-shared-header #tour{height:calc(100svh - var(--sdl-header-height));min-height:650px}
  .sdl-has-shared-header #world .legend,.sdl-has-shared-header #world .panel{top:calc(var(--sdl-header-height) + 86px);max-height:calc(100svh - var(--sdl-header-height) - 150px)}
+ .sdl-game-header #mode .modeBrand>img,.sdl-game-header #menu .hero>div>img[src$="/logo.webp"]{display:none!important}
  .sdl-game-header{height:100dvh!important;overflow:hidden!important}
  .sdl-game-header>.screen{height:calc(100dvh - var(--sdl-header-height))!important;min-height:0!important;overflow-x:hidden!important;overflow-y:scroll!important;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:#a5bdce #0b1622;overscroll-behavior-y:contain;padding-bottom:80px;box-sizing:border-box}
  .sdl-game-header>.screen::-webkit-scrollbar{width:12px}
