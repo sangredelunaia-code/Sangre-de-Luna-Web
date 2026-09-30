@@ -441,7 +441,15 @@
     if(!awake&&micState!=='granted')setTimeout(()=>arm.classList.add('show'),120);
   },true);
 
-  document.addEventListener('click',e=>{if(e.target?.closest?.(LAUNCH))schedulePanelFit()},true);\n  window.addEventListener('resize',schedulePanelFit,{passive:true});\n  window.visualViewport?.addEventListener('resize',schedulePanelFit,{passive:true});\n  window.visualViewport?.addEventListener('scroll',schedulePanelFit,{passive:true});\n  document.addEventListener('focusin',e=>{if(e.target?.matches?.(INPUT))schedulePanelFit()},true);\n  const panelFitObserver=new MutationObserver(records=>{if(records.some(m=>m.target?.matches?.(PANEL)||m.target?.matches?.(ROOTS)))schedulePanelFit()});\n  panelFitObserver.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','aria-hidden']});\n\n  document.addEventListener('visibilitychange',()=>{
+  document.addEventListener('click',e=>{if(e.target?.closest?.(LAUNCH))schedulePanelFit()},true);
+  window.addEventListener('resize',schedulePanelFit,{passive:true});
+  window.visualViewport?.addEventListener('resize',schedulePanelFit,{passive:true});
+  window.visualViewport?.addEventListener('scroll',schedulePanelFit,{passive:true});
+  document.addEventListener('focusin',e=>{if(e.target?.matches?.(INPUT))schedulePanelFit()},true);
+  const panelFitObserver=new MutationObserver(records=>{if(records.some(m=>m.target?.matches?.(PANEL)||m.target?.matches?.(ROOTS)))schedulePanelFit()});
+  panelFitObserver.observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','aria-hidden']});
+
+  document.addEventListener('visibilitychange',()=>{
     if(document.hidden){if(!awake)stopWake();}
     else if(!awake&&micState==='granted'){armed=true;scheduleWake(350);}
   });
