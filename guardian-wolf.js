@@ -5,8 +5,46 @@
    - Sin observadores globales ni trabajo pesado durante el splash
 */
 (()=>{
-  if(window.__SDL_GUARDIAN_WOLF__)return;
+  if(window.__SDL_GUARDIAN_WOLF__){
+    if(!window.__SDL_LYKOS_VIEWPORT_FIT__){
+      window.__SDL_LYKOS_VIEWPORT_FIT__=true;
+      const fit=()=>{
+        const vv=window.visualViewport;
+        const width=vv?.width||window.innerWidth,height=vv?.height||window.innerHeight;
+        const left=vv?.offsetLeft||0,top=vv?.offsetTop||0;
+        const rightInset=Math.max(0,window.innerWidth-(left+width));
+        const bottomInset=Math.max(0,window.innerHeight-(top+height));
+        const gap=width<=650?12:18;
+        const player=document.querySelector('.playerbar.show');
+        const playerOffset=player?Math.max(108,Math.ceil(player.getBoundingClientRect().height+28)):0;
+        for(const [rootId,panelId,bodySelector] of [['cronistaWidget','cronistaPanel','#cronistaBody'],['sdlgCronista','sdlgPanel','.sdlg-body']]){
+          const root=document.getElementById(rootId),panel=document.getElementById(panelId);
+          if(!root||!panel||!(panel.classList.contains('open')||panel.getAttribute('aria-hidden')==='false'))continue;
+          const maxWidth=Math.max(0,Math.min(width-gap*2,width<=650?430:405));
+          const maxHeight=Math.max(160,height-gap*2-playerOffset);
+          const set=(name,value)=>panel.style.setProperty(name,value,'important');
+          set('position','fixed');set('left','auto');set('top','auto');
+          set('right',Math.round(rightInset+gap)+'px');set('bottom',Math.round(bottomInset+gap+playerOffset)+'px');
+          set('width',Math.round(maxWidth)+'px');set('max-width',Math.round(maxWidth)+'px');
+          set('height',`min(650px, ${Math.round(maxHeight)}px)`);set('max-height',Math.round(maxHeight)+'px');
+          set('margin','0');set('transform','none');set('overflow','hidden');set('grid-template-rows','auto minmax(0,1fr) auto');
+          const body=panel.querySelector(bodySelector);
+          if(body){body.style.setProperty('min-height','0','important');body.style.setProperty('overflow-y','auto','important');body.style.setProperty('overscroll-behavior','contain','important')}
+        }
+      };
+      let timer=0;const schedule=()=>{clearTimeout(timer);timer=setTimeout(fit,60)};
+      window.addEventListener('resize',schedule,{passive:true});
+      window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+      window.visualViewport?.addEventListener('scroll',schedule,{passive:true});
+      document.addEventListener('click',e=>{if(e.target?.closest?.('#cronistaLaunch,#sdlgLaunch'))schedule()},true);
+      document.addEventListener('focusin',e=>{if(e.target?.matches?.('#cronistaInput,#sdlgInput'))schedule()},true);
+      if(document.body)new MutationObserver(schedule).observe(document.body,{subtree:true,attributes:true,attributeFilter:['class','aria-hidden']});
+      schedule();
+    }
+    return;
+  }
   window.__SDL_GUARDIAN_WOLF__=true;
+  window.__SDL_LYKOS_VIEWPORT_FIT__=true;
   // Evita que una versión antigua de guardian-wake.js se active en paralelo.
   window.__SDL_LYKOS_WAKE__=true;
 
