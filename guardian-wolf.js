@@ -1,7 +1,7 @@
 /* SANGRE DE LUNA · LYKOS / GUARDIÁN V2
    - Wake word fiable: "Lykos Despierta"
    - Permiso de micrófono ligado a una acción real del usuario
-   - Emblema de lobo vectorial sin imagen cuadrada
+   - Emblema visual con la imagen aprobada de Lykos
    - Sin observadores globales ni trabajo pesado durante el splash
 */
 (()=>{
@@ -69,8 +69,8 @@
       transition:filter .25s,box-shadow .25s,transform .25s!important
     }
     #cronistaWidget.sdl-guardian-ready .cronista-launch:hover,#sdlgCronista.sdl-guardian-ready .sdlg-launch:hover{transform:translateY(-2px) scale(1.03)}
-    #cronistaWidget.sdl-guardian-ready .cronista-launch>img,#sdlgCronista.sdl-guardian-ready .sdlg-launch>img{display:none!important}
-    .sdl-wolf-core{position:absolute;inset:3px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at 50% 32%,#163a54,#06101a 64%,#02060a);pointer-events:none}
+    #cronistaWidget.sdl-guardian-ready .cronista-launch>img,#sdlgCronista.sdl-guardian-ready .sdlg-launch>img{display:none!important}\n    #cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{background-image:url('/assets/lykos-guardian-approved.webp')!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+    .sdl-wolf-core{display:none!important;position:absolute;inset:3px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at 50% 32%,#163a54,#06101a 64%,#02060a);pointer-events:none}
     .sdl-wolf-core:before{content:'';position:absolute;inset:1px;border-radius:50%;border:1px solid #d7f4ff55;box-shadow:inset 0 0 24px #56c8ff1f}
     .sdl-wolf-svg{width:92%;height:92%;overflow:visible;filter:drop-shadow(0 0 7px #65ceff3a)}
     .sdl-wolf-moon{fill:#9bdfff12;stroke:#9bdfff55;stroke-width:1.5}
