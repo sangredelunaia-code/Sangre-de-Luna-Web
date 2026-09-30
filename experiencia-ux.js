@@ -68,7 +68,7 @@ dock.querySelector("[data-sdl-open-menu]").addEventListener("click",openMenu);
 menu.querySelector("[data-sdl-close-menu]").addEventListener("click",closeMenu);
 menu.addEventListener("click",e=>{if(e.target===menu)closeMenu()});
 menu.querySelectorAll("a[href]").forEach(a=>a.addEventListener("click",()=>closeMenu()));
-if(path==="/"||path==="/index.html"){
+if(document.querySelector(".top nav.nav")){
  const nav=document.querySelector(".top nav.nav");
  if(nav){
   nav.classList.add("sdl-site-nav");nav.setAttribute("aria-label","Navegación principal");nav.replaceChildren();
