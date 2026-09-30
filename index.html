@@ -122,6 +122,36 @@ body:has(.playerbar.show) .cronista-widget{bottom:100px}@media(max-width:650px){
 .book-cover-fallback small{color:#d2ad75;letter-spacing:.24em;font-weight:900}
 .book-copy{max-width:650px}.book-copy h2{font:700 clamp(2.2rem,5vw,4.1rem)/1.02 Georgia,serif;margin:9px 0 16px}.book-copy p{max-width:560px;color:#bdcad8;font-size:1.05rem;margin:0 0 24px}.book-buy{padding:13px 20px}.book-note{display:block;margin-top:13px;color:#91a5b9;font-size:.78rem}
 @media(max-width:640px){.book-promo{grid-template-columns:1fr;gap:24px;text-align:center;padding:22px}.book-cover{width:min(230px,70vw)}.book-copy p{margin-inline:auto}.book-buy{width:100%}}
+
+/* Banda sonora lunar */
+#musicGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.lunar-track{min-width:0;overflow:hidden;border:1px solid #405768;border-radius:20px;background:linear-gradient(145deg,#142230,#071019);box-shadow:0 14px 38px #0004;transition:border-color .2s,box-shadow .2s}
+.lunar-track:hover,.lunar-track.is-playing{border-color:#b3cede;box-shadow:0 14px 38px #0004,0 0 24px #88b7d314}
+.lunar-art{height:190px;position:relative;overflow:hidden;background:#0b1722}
+.lunar-art>img:first-child{width:100%;height:100%;object-fit:cover;object-position:center 42%;filter:brightness(.6) saturate(.65)}
+.lunar-art:after{content:'';position:absolute;inset:0;background:linear-gradient(0deg,#09131e,transparent 80%);pointer-events:none}
+.lunar-art .lunar-art-logo{position:absolute;z-index:1;inset:15px auto auto 22px;width:130px;height:130px;object-fit:contain}
+.lunar-art>span{position:absolute;z-index:2;bottom:17px;left:24px;color:#d2e3ed;font:700 10px Arial;letter-spacing:.2em}
+.lunar-track-content{padding:22px 24px 24px}
+.lunar-track-heading{display:flex;flex-direction:column;gap:8px}
+.lunar-track h3{font:700 clamp(1.4rem,3vw,1.9rem)/1.2 Georgia;margin:0;color:#eef4f7}
+.lunar-status{font:700 10px Arial;letter-spacing:.15em;color:#8fadc1}
+.is-playing .lunar-status{color:#d8f0ff}
+.lunar-description{color:#adc0cf;font-size:.88rem;line-height:1.6;margin:14px 0;min-height:2.8em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.lunar-version{display:flex;align-items:center;gap:14px;font:700 10px Arial;letter-spacing:.13em;color:#acc4d5;margin-bottom:18px}
+.lunar-version select{flex:1;min-width:0;min-height:44px;padding:8px 12px;background:#0b1824;color:#e6eff5;border:1px solid #456276;border-radius:9px;font:14px Arial;letter-spacing:normal}
+.lunar-controls{display:flex;gap:16px;align-items:center}
+.lunar-play{width:54px;height:54px;flex:0 0 54px;border-radius:50%;border:1px solid #d5e7f3;background:linear-gradient(135deg,#e1edf5,#90afc6);color:#091827;cursor:pointer;font-size:21px;box-shadow:0 3px 15px #0005}
+.lunar-timeline{flex:1;min-width:0}
+.lunar-timeline input{display:block;appearance:none;width:100%;height:6px;padding:0;margin:9px 0 12px;border:0;border-radius:99px;background:linear-gradient(to right,#bfd9ea var(--music-progress,0%),#314858 var(--music-progress,0%));cursor:pointer}
+.lunar-timeline input::-webkit-slider-thumb{appearance:none;width:14px;height:14px;border-radius:50%;background:#dcecf6;border:2px solid #718da3}
+.lunar-timeline input::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:#dcecf6;border:2px solid #718da3}
+.lunar-timeline input:disabled{cursor:default;opacity:.55}
+.lunar-time{display:flex;justify-content:space-between;color:#a4bbcd;font:12px Arial;font-variant-numeric:tabular-nums}
+.lunar-track :focus-visible{outline:3px solid #c7e5f8;outline-offset:4px}
+@media(max-width:700px){#musicGrid{grid-template-columns:1fr;gap:18px}.lunar-art{height:160px}.lunar-track-content{padding:20px}.lunar-art .lunar-art-logo{height:105px;width:105px}.lunar-description{min-height:0}}
+@media(prefers-reduced-motion:reduce){.lunar-track{transition:none}}
+
 </style>
 <!-- SDL SEO START -->
 <meta name="description" content="Sitio oficial de Sangre de Luna: personajes, historias, episodios, música, recorridos virtuales, mapas y Fan Club de la Manada.">
@@ -518,7 +548,37 @@ $('#storyReaderTopBtn').onclick=()=>{
 let selectedSeason=null;
 function renderEpisodes(){const tabs=$('#seasonTabs'),list=$('#episodeList');if(!cache.episodes.length){tabs.innerHTML='';list.innerHTML='<div class="empty">No hay episodios publicados.</div>';return}const seasons=[...new Set(cache.episodes.map(x=>x.season))];if(!selectedSeason||!seasons.includes(selectedSeason))selectedSeason=seasons[0];tabs.innerHTML=seasons.map(se=>`<button class="tabbtn ${se===selectedSeason?'on':''}" data-season="${se}">Temporada ${se}</button>`).join('');tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedSeason=+b.dataset.season;renderEpisodes()});const rows=cache.episodes.filter(x=>x.season===selectedSeason);list.innerHTML=rows.map((x,i)=>`<div class="erow"><span class="ech">${esc(x.chapter_label)}</span>${x.youtube_id?`<div class="sdl-episode-entry"><h3>${esc(x.title)}</h3><div class="sdl-episode-actions"><button class="btn pri" data-episode="${i}" aria-label="Ver episodio: ${esc(x.title)}">▶ VER EPISODIO</button><a class="btn ghost" href="https://www.youtube.com/watch?v=${encodeURIComponent(x.youtube_id)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir en YouTube: ${esc(x.title)}">ABRIR EN YOUTUBE ↗</a></div></div>`:`<span class="etitle off">${esc(x.title)} <span class="pending">PENDIENTE</span></span>`}</div>`).join('');list.querySelectorAll('[data-episode]').forEach(b=>b.onclick=()=>openVideo(rows[+b.dataset.episode]))}
 function openVideo(e){pauseAmbientForMedia();$('#videoFrame').src=`https://www.youtube.com/embed/${encodeURIComponent(e.youtube_id)}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;$('#videoMeta').textContent=`TEMPORADA ${e.season} · ${e.chapter_label}`.toUpperCase();$('#videoTitle').textContent=e.title;$('#videoModal').classList.add('open');document.body.style.overflow='hidden'}
-function renderMusic(){const r=$('#musicGrid');if(!cache.tracks.length){r.innerHTML='<div class="empty span2">La biblioteca musical está preparada. Las canciones aparecerán aquí al terminar su carga privada desde el panel de administración.</div>';return}r.innerHTML=cache.tracks.map((t,i)=>`<article class="track"><button class="play" data-track="${i}">▶</button><div><h3>${esc(t.title)}</h3><small>${esc(t.version||'Original')}</small></div><span class="dur">${fmt(t.duration_seconds)}</span></article>`).join('');r.querySelectorAll('[data-track]').forEach(b=>b.onclick=()=>playTrack(cache.tracks[+b.dataset.track]))}
+
+let musicCurrentId=null,musicRequest=0;
+const musicSelections=new Map();
+function musicGroups(){const groups=new Map();cache.tracks.forEach(t=>{const key=t.title.trim().toLocaleLowerCase('es');if(!groups.has(key))groups.set(key,[]);groups.get(key).push(t)});return [...groups.values()]}
+function selectedMusic(group){return group.find(t=>t.id===musicSelections.get(group[0].title.trim().toLocaleLowerCase('es')))||group[0]}
+function renderMusic(){
+ const r=$('#musicGrid');if(!cache.tracks.length){r.innerHTML='<div class="empty span2">Las canciones aparecerán aquí al publicarlas desde el administrador.</div>';return}
+ const groups=musicGroups();
+ r.innerHTML=groups.map((group,i)=>{const t=selectedMusic(group);return `<article class="lunar-track" data-music-group="${i}">
+ <div class="lunar-art"><img src="/assets/hero.webp" alt="" loading="lazy"><img class="lunar-art-logo" src="/assets/logo-oficial.png" alt=""><span>BANDA SONORA ORIGINAL</span></div>
+ <div class="lunar-track-content"><div class="lunar-track-heading"><h3>${esc(t.title)}</h3><span class="lunar-status" aria-live="polite">LISTA PARA ESCUCHAR</span></div>
+ <p class="lunar-description">${esc(t.description||'Una canción del universo de Sangre de Luna.')}</p>
+ <label class="lunar-version">VERSIÓN<select aria-label="Versión de ${esc(t.title)}" data-music-version="${i}">${group.map(x=>`<option value="${esc(x.id)}" ${x.id===t.id?'selected':''}>${esc(x.version||'Original')}</option>`).join('')}</select></label>
+ <div class="lunar-controls"><button type="button" class="lunar-play" data-music-play="${i}" aria-label="Reproducir ${esc(t.title)}">▶</button><div class="lunar-timeline"><input type="range" min="0" max="100" step=".1" value="0" data-music-seek="${i}" aria-label="Avance de ${esc(t.title)}" disabled><div class="lunar-time"><span data-elapsed>0:00</span><span data-duration>${fmt(t.duration_seconds)}</span></div></div></div></div></article>`}).join('');
+ r.querySelectorAll('[data-music-play]').forEach(b=>b.onclick=()=>{const t=selectedMusic(groups[+b.dataset.musicPlay]),a=$('#audio');if(t.id===musicCurrentId&&a.src){if(a.paused){pauseAmbientForMedia();a.play().catch(()=>{})}else{a.pause();resumeAmbientAfterMedia()}}else playTrack(t)});
+ r.querySelectorAll('[data-music-version]').forEach(el=>el.onchange=()=>{const g=groups[+el.dataset.musicVersion];musicSelections.set(g[0].title.trim().toLocaleLowerCase('es'),el.value);const card=el.closest('.lunar-track'),t=selectedMusic(g);card.querySelector('.lunar-description').textContent=t.description||'Una canción del universo de Sangre de Luna.';updateMusicPlayers()});
+ r.querySelectorAll('[data-music-seek]').forEach(el=>el.oninput=()=>{const t=selectedMusic(groups[+el.dataset.musicSeek]),a=$('#audio');if(t.id===musicCurrentId&&Number.isFinite(a.duration))a.currentTime=a.duration*Number(el.value)/100});
+ updateMusicPlayers();
+}
+function updateMusicPlayers(){
+ const a=$('#audio'),groups=musicGroups();
+ document.querySelectorAll('[data-music-group]').forEach(card=>{const group=groups[+card.dataset.musicGroup];if(!group)return;const t=selectedMusic(group),active=t.id===musicCurrentId,playing=active&&!a.paused&&!a.ended,button=card.querySelector('.lunar-play'),seek=card.querySelector('[data-music-seek]'),status=card.querySelector('.lunar-status');
+ card.classList.toggle('is-playing',playing);button.textContent=playing?'Ⅱ':'▶';button.setAttribute('aria-label',(playing?'Pausar ':'Reproducir ')+t.title);button.setAttribute('aria-pressed',String(playing));
+ const duration=active&&Number.isFinite(a.duration)?a.duration:Number(t.duration_seconds)||0,elapsed=active?a.currentTime:0;
+ seek.disabled=!active||!Number.isFinite(a.duration);seek.value=duration?elapsed/duration*100:0;seek.style.setProperty('--music-progress',seek.value+'%');
+ card.querySelector('[data-elapsed]').textContent=fmt(elapsed);card.querySelector('[data-duration]').textContent=fmt(duration);
+ status.textContent=active?(a.ended?'FINALIZADA':playing?'REPRODUCIENDO':'EN PAUSA'):'LISTA PARA ESCUCHAR';
+ });
+}
+['timeupdate','loadedmetadata','play','pause','ended','emptied'].forEach(event=>$('#audio').addEventListener(event,updateMusicPlayers));
+
 const galleryUrl=path=>path?sb.storage.from('gallery-media').getPublicUrl(path).data.publicUrl:'';
 function renderGallery(){const r=$('#galleryGrid');const items=galleryFilter==='all'?cache.gallery:cache.gallery.filter(x=>x.format===galleryFilter);if(!items.length){r.innerHTML='<div class="empty span2">No hay artes publicados en esta categoría.</div>';return}r.innerHTML=items.map((x,i)=>`<button class="gallery-card" data-gallery-item="${i}" data-format="${esc(x.format)}"><img src="${esc(galleryUrl(x.image_path))}" loading="lazy" alt="${esc(x.title)}"><span class="gallery-meta"><small>${esc(x.format)}</small><b>${esc(x.title)}</b></span></button>`).join('');r.querySelectorAll('[data-gallery-item]').forEach(b=>b.onclick=()=>openGallery(items[+b.dataset.galleryItem]))}
 $$('[data-gallery-filter]').forEach(b=>b.onclick=()=>{galleryFilter=b.dataset.galleryFilter;$$('[data-gallery-filter]').forEach(x=>x.classList.toggle('on',x===b));renderGallery()});
@@ -533,9 +593,13 @@ function promoEligible(p){if(!p?.is_active||!p.image_path)return false;const now
 function maybeShowPromo(){const p=cache.popup;if(adminMode||!promoEligible(p)||!sessionStorage.getItem('sdl-entered'))return;const seenKey='sdl-promo:'+String(p.updated_at||'1');if(p.display_mode==='once_per_session'&&sessionStorage.getItem(seenKey))return;const box=$('#promoBox');box.classList.remove('r11','r169','r916');box.classList.add(p.image_format==='1:1'?'r11':p.image_format==='9:16'?'r916':'r169');$('#promoImg').src=galleryUrl(p.image_path);$('#promoTitle').textContent=p.title||'';$('#promoInfo').classList.toggle('hidden',!p.title&&!p.button_text);const btn=$('#promoButton'),u=String(p.button_url||'').trim();let allowed=false;try{const parsed=new URL(u,location.origin);allowed=parsed.protocol==='http:'||parsed.protocol==='https:'}catch{}if(p.button_text&&u&&allowed){btn.textContent=p.button_text;btn.href=u;btn.target='_blank';btn.rel='noopener';btn.classList.remove('hidden')}else btn.classList.add('hidden');$('#promoModal').dataset.seenKey=seenKey;$('#promoModal').classList.add('open');$('#promoModal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
 function closePromo(){const m=$('#promoModal'),p=cache.popup;if(p?.display_mode==='once_per_session'&&m.dataset.seenKey)sessionStorage.setItem(m.dataset.seenKey,'1');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.style.overflow=''}
 $('#promoClose').onclick=closePromo;$('#promoModal').onclick=e=>{if(e.target===$('#promoModal'))closePromo()};
-async function playTrack(t){pauseAmbientForMedia();const b=$('#playerbar');$('#nowTitle').textContent=t.title;$('#nowVersion').textContent=t.version||'Original';b.classList.add('show');try{const {data,error}=await sb.functions.invoke('public-audio-url',{body:{id:t.id}});if(error||!data?.url)throw error||new Error('Audio no disponible');const a=$('#audio');a.src=data.url;a.oncontextmenu=e=>e.preventDefault();a.onended=resumeAmbientAfterMedia;await a.play()}catch(e){resumeAmbientAfterMedia();alert('No se pudo iniciar el audio. Intenta nuevamente.')}}
+async function playTrack(t){
+ const request=++musicRequest,a=$('#audio');a.pause();a.removeAttribute('src');a.load();musicCurrentId=null;pauseAmbientForMedia();
+ const b=$('#playerbar');$('#nowTitle').textContent=t.title;$('#nowVersion').textContent=t.version||'Original';b.classList.add('show');
+ try{const {data,error}=await sb.functions.invoke('public-audio-url',{body:{id:t.id}});if(request!==musicRequest)return;if(error||!data?.url)throw error||new Error('Audio no disponible');musicCurrentId=t.id;a.src=data.url;a.oncontextmenu=e=>e.preventDefault();a.onended=resumeAmbientAfterMedia;await a.play();updateMusicPlayers()}catch(e){if(request!==musicRequest)return;musicCurrentId=null;b.classList.remove('show');updateMusicPlayers();resumeAmbientAfterMedia();alert('No se pudo iniciar el audio. Intenta nuevamente.')}
+}
 function closeModal(m){m.classList.remove('open');document.body.style.overflow='';if(m.id==='videoModal'){$('#videoFrame').src='';resumeAmbientAfterMedia()}if(m.id==='premiereModal'){$('#premiereFrame').src='';resumeAmbientAfterMedia()}}
-$$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.closest('.modal')));$$('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m)});addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal.open').forEach(closeModal)});$('#closePlayer').onclick=()=>{$('#audio').pause();$('#audio').src='';$('#playerbar').classList.remove('show');resumeAmbientAfterMedia()};
+$$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.closest('.modal')));$$('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m)});addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal.open').forEach(closeModal)});$('#closePlayer').onclick=()=>{musicRequest++;musicCurrentId=null;$('#audio').pause();$('#audio').src='';$('#playerbar').classList.remove('show');resumeAmbientAfterMedia()};
 $('#enterSite').onclick=()=>{$('#splash').classList.add('hide');sessionStorage.setItem('sdl-entered','1');startAmbient();setTimeout(maybeShowPromo,450);setTimeout(showCronistaNudge,1100)};if(sessionStorage.getItem('sdl-entered')){$('#splash').classList.add('hide');addEventListener('pointerdown',startAmbient,{once:true});setTimeout(showCronistaNudge,900)}
 
 // ADMIN
