@@ -111,7 +111,7 @@
       const panelGap=mobile?12:14;
       const width=Math.min(mobile?430:405,Math.max(260,m.width-(gap*2)));
       const launchHeight=launch?.getBoundingClientRect().height||78;
-      const maxH=Math.max(280,m.height-bottom-launchHeight-panelGap-gap);
+      const maxH=Math.max(160,m.height-playerOffset()-launchHeight-panelGap-gap);
 
       important(panel,'position','fixed');
       important(panel,'left','auto');
