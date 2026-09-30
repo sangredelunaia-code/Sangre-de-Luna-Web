@@ -4,7 +4,7 @@ const REV='13b2bc12f6076c88c734b00b73c9aea92967d724';
 const CDN=`https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@${REV}`;
 const ASSETS=`${CDN}/assets`;
 const CONTENT_UX='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@47e120e875e5330d28661476611406add0da03e3/fanclub-content-ux.js';
-const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/guardian-wolf.js?v=20260930-4';
+const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/guardian-wolf.js?v=20260930-5';
 const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-ui-v6.js?v=20260930-2';
 const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-icon-v9.js?v=20260930-2';
 const LYKOS_POSITION='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-position-v10.js?v=20260930-3';
