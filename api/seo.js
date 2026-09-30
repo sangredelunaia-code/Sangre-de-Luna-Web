@@ -2,6 +2,7 @@ const SITE='https://sangre-de-luna-public.vercel.app';
 const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/main';
 const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@023846677b3a03f60109e50695e2e605cc671976';
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
+const LYKOS_VIEWPORT_FIT='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-viewport-fit.js?v=20260930-6';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@07e0f912ae50088e1c8034d56991d925c2b57096/desafios-admin.js?v=game-link-20260913';
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/guardian-wolf.js?v=20260930-5';
 const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-ui-v6.js?v=20260930-1';
@@ -115,6 +116,7 @@ function inject(html,p){
   html=injectScript(html,LYKOS_UI,'lykos-ui-v6.js');
   html=injectScript(html,LYKOS_ICON,'lykos-icon-v9.js');
   html=injectScript(html,LYKOS_POSITION,'lykos-position-v10.js');
+  html=injectScript(html,LYKOS_VIEWPORT_FIT,'lykos-viewport-fit.js');
 
   if(/<title>[\s\S]*?<\/title>/i.test(html))html=html.replace(/<title>[\s\S]*?<\/title>/i,`<title>${esc(p.title)}</title>`);
   else html=html.replace(/<head([^>]*)>/i,`<head$1>\n<title>${esc(p.title)}</title>`);
