@@ -96,6 +96,9 @@ if(!document.querySelector(".top nav.nav")){
  .sdl-local-header .brand img{display:none}
  .sdl-local-header .brand{justify-self:auto}
  .sdl-has-shared-header .top-actions{display:flex;flex-wrap:wrap;gap:8px}
+ .sdl-has-shared-header #intro,.sdl-has-shared-header .portal{top:var(--sdl-header-height)!important;max-height:calc(100svh - var(--sdl-header-height));overflow:auto!important;align-items:start;padding-top:24px;padding-bottom:24px}
+ .sdl-has-shared-header .portal{z-index:80}
+ .sdl-has-shared-header #intro>div{margin:auto}
  .sdl-has-shared-header:has(#tour){height:auto;overflow:auto}
  .sdl-has-shared-header #tour{height:calc(100svh - var(--sdl-header-height));min-height:650px}
  .sdl-has-shared-header #world .legend,.sdl-has-shared-header #world .panel{top:calc(var(--sdl-header-height) + 86px);max-height:calc(100svh - var(--sdl-header-height) - 150px)}
