@@ -6,7 +6,7 @@ const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Lu
 const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/guardian-wolf.js?v=20260930-3';
 const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-ui-v6.js?v=20260930-1';
 const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-icon-v9.js?v=20260930-1';
-const LYKOS_POSITION='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-position-v10.js?v=20260930-1';
+const LYKOS_POSITION='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-position-v10.js?v=20260930-2';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
