@@ -47,7 +47,7 @@ async function fetchText(url,timeout=2800){
 
 async function source(file){
   const hit=cache.get(file);
-  if(hit&&Date.now()-hit.at<5*60*1000)return hit.html;
+  if(hit&&Date.now()-hit.at<30*1000)return hit.html;
   let html;
   try{html=await fetchText(`${RAW}/${file}`,2800)}
   catch(err){console.warn('SEO raw fallback:',file,err?.message||err);html=await fetchText(`${FALLBACK}/${file}`,3500)}
