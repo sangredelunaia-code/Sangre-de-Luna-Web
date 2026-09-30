@@ -29,26 +29,12 @@ main{padding:clamp(40px,8vw,94px) 0}.book{display:grid;grid-template-columns:min
 </main>
 <footer class="wrap footer">© 2026 Sangre de Luna · <a href="/">Regresar al universo</a></footer>
 
-<aside id="cronistaWidget" class="cronista-widget" aria-label="Lykos, Guardián de la Ciudadela">
-  <div id="cronistaNudge" class="cronista-nudge"><b>¿Primera vez en la Ciudadela?</b> Lykos puede acompañarte.</div>
-  <section id="cronistaPanel" class="cronista-panel" aria-hidden="true">
-    <header class="cronista-head"><div class="cronista-avatar"><img src="/assets/lykos-guardian-approved.webp" alt="Lykos, Guardián de la Ciudadela"></div><div class="cronista-title"><b>LYKOS</b><span>Guardián de la Ciudadela</span></div><div class="cronista-tools"><button id="cronistaClose" class="cronista-tool" type="button" aria-label="Minimizar">—</button></div></header>
-    <div id="cronistaBody" class="cronista-body"><div class="cronista-quick"><button type="button" data-cronista-ask="¿Dónde puedo comprar el libro?">Comprar el libro</button><button type="button" data-cronista-ask="Quiero conocer el mundo de Sangre de Luna">Explorar el mundo</button></div><div id="cronistaMessages" class="cronista-messages" aria-live="polite"></div></div>
-    <form id="cronistaForm" class="cronista-form"><div class="cronista-inputrow"><textarea id="cronistaInput" class="cronista-input" maxlength="600" rows="1" placeholder="Escribe tu pregunta…" aria-label="Pregunta para Lykos"></textarea><button id="cronistaSend" class="cronista-send" type="submit" aria-label="Enviar">➤</button></div></form>
-  </section>
-  <button id="cronistaLaunch" class="cronista-launch" type="button" aria-label="Abrir a Lykos, Guardián de la Ciudadela"><img src="/assets/lykos-guardian-approved.webp" alt=""></button>
-</aside>
-<style>
-#cronistaWidget{position:fixed;right:20px;bottom:20px;z-index:2147482500}
-#cronistaLaunch{width:82px;height:82px;padding:0;border:1px solid #9edfff;border-radius:50%;overflow:hidden;background:#02080d url('/assets/lykos-guardian-approved.webp') center/cover no-repeat;box-shadow:0 12px 36px #000b;cursor:pointer}
-#cronistaLaunch>img{display:none!important}
-</style>
-
 <script src="/site-editor-controls.js" defer></script>
+<script src="/lykos-book.js?v=1" defer></script>
 <script src="/cronista-global.js?v=20260930-1" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/guardian-wolf.js?v=20260930-5" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-icon-v9.js?v=20260930-1" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-position-v10.js?v=20260930-3" defer></script>
+<script src="/guardian-wolf.js?v=20260930-5" defer></script>
+<script src="/lykos-icon-v9.js?v=20260930-1" defer></script>
+<script src="/lykos-position-v10.js?v=20260930-3" defer></script>
 <script>
 /* SANGRE DE LUNA · LYKOS VIEWPORT FIT
    Keeps the open assistant panel inside the visible viewport, including mobile keyboards.
