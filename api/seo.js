@@ -3,10 +3,10 @@ const RAW='https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-
 const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@023846677b3a03f60109e50695e2e605cc671976';
 const CDN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main';
 const ADMIN_LOADER='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@07e0f912ae50088e1c8034d56991d925c2b57096/desafios-admin.js?v=game-link-20260913';
-const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@0affa5390a92e2ec9d686f93bac6f253203a1538/guardian-wolf.js?v=20260828-2';
-const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@05b0fafb641314f1ea0381ba0ea2b79c18f9eac8/lykos-ui-v6.js?v=20260828-6';
-const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@4164440581f962fd72fd5d500efe18019597190a/lykos-icon-v9.js?v=20260828-9';
-const LYKOS_POSITION='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@43b786f9bdf16add379d76a061945c193f10355f/lykos-position-v10.js?v=20260828-10';
+const GUARDIAN='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/guardian-wolf.js?v=20260930-1';
+const LYKOS_UI='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-ui-v6.js?v=20260930-1';
+const LYKOS_ICON='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-icon-v9.js?v=20260930-1';
+const LYKOS_POSITION='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/lykos-position-v10.js?v=20260930-1';
 const ASSETS=`${CDN}/assets`;
 const IMAGE=`${ASSETS}/logo-oficial.png`;
 
