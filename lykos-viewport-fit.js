@@ -2,7 +2,7 @@
    Keeps the open assistant panel inside the visible viewport, including mobile keyboards.
 */
 (()=> {
-  if(window.__SDL_LYKOS_VIEWPORT_FIT_V3__)return;
+  if(window.__SDL_LYKOS_VIEWPORT_FIT_V4__)return;
   window.__SDL_LYKOS_VIEWPORT_FIT_V3__=true;
 
   const set=(el,name,value)=>el&&el.style.setProperty(name,value,'important');
@@ -43,6 +43,58 @@
     set(form,'background','#07111b');
     set(form,'background-color','#07111b');
   }
+  function fitHeader(panel){
+    const head=panel?.querySelector('.sdlg-head,.cronista-head');
+    const avatar=head?.querySelector('.sdlg-avatar,.cronista-avatar');
+    const title=head?.querySelector('.sdlg-title,.cronista-title');
+    const tools=head?.querySelector('.sdlg-tools,.cronista-tools');
+    if(!head)return;
+    set(head,'display','grid');
+    set(head,'grid-template-columns','46px minmax(0,1fr)');
+    set(head,'grid-template-rows','auto auto');
+    set(head,'align-items','center');
+    set(head,'gap','8px');
+    set(head,'padding','10px 12px');
+    if(avatar){
+      set(avatar,'grid-column','1');
+      set(avatar,'grid-row','1');
+      set(avatar,'width','46px');
+      set(avatar,'height','46px');
+      set(avatar,'min-width','46px');
+    }
+    if(title){
+      set(title,'grid-column','2');
+      set(title,'grid-row','1');
+      set(title,'min-width','0');
+      set(title,'width','100%');
+      set(title,'overflow','hidden');
+      set(title,'text-align','left');
+      for(const line of title.children){
+        set(line,'display','block');
+        set(line,'white-space','nowrap');
+        set(line,'overflow','hidden');
+        set(line,'text-overflow','ellipsis');
+        set(line,'max-width','100%');
+      }
+    }
+    if(tools){
+      set(tools,'grid-column','1 / -1');
+      set(tools,'grid-row','2');
+      set(tools,'display','flex');
+      set(tools,'width','100%');
+      set(tools,'min-width','0');
+      set(tools,'justify-content','flex-start');
+      set(tools,'overflow-x','auto');
+      set(tools,'overflow-y','hidden');
+      set(tools,'flex-wrap','nowrap');
+      set(tools,'gap','6px');
+      set(tools,'scrollbar-width','none');
+      set(tools,'padding-top','2px');
+      for(const button of tools.children){
+        set(button,'flex','0 0 auto');
+      }
+    }
+  }
   function fit(){
     const vv=window.visualViewport;
     const width=vv?.width||window.innerWidth;
@@ -63,6 +115,7 @@
       const panel=document.getElementById(panelId);
       if(!root||!panel)continue;
       makeOpaque(root,panel);
+      fitHeader(panel);
       if(!(panel.classList.contains('open')||panel.getAttribute('aria-hidden')==='false'))continue;
 
       const panelWidth=Math.max(0,Math.min(width-gap*2,width<=650?430:405));
