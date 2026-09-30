@@ -563,7 +563,7 @@ function renderMusic(){
  <label class="lunar-version">VERSIÓN<select aria-label="Versión de ${esc(t.title)}" data-music-version="${i}">${group.map(x=>`<option value="${esc(x.id)}" ${x.id===t.id?'selected':''}>${esc(x.version||'Original')}</option>`).join('')}</select></label>
  <div class="lunar-controls"><button type="button" class="lunar-play" data-music-play="${i}" aria-label="Reproducir ${esc(t.title)}">▶</button><div class="lunar-timeline"><input type="range" min="0" max="100" step=".1" value="0" data-music-seek="${i}" aria-label="Avance de ${esc(t.title)}" disabled><div class="lunar-time"><span data-elapsed>0:00</span><span data-duration>${fmt(t.duration_seconds)}</span></div></div></div></div></article>`}).join('');
  r.querySelectorAll('[data-music-play]').forEach(b=>b.onclick=()=>{const t=selectedMusic(groups[+b.dataset.musicPlay]),a=$('#audio');if(t.id===musicCurrentId&&a.src){if(a.paused){pauseAmbientForMedia();a.play().catch(()=>{})}else{a.pause();resumeAmbientAfterMedia()}}else playTrack(t)});
- r.querySelectorAll('[data-music-version]').forEach(el=>el.onchange=()=>{const g=groups[+el.dataset.musicVersion];musicSelections.set(g[0].title.trim().toLocaleLowerCase('es'),el.value);const card=el.closest('.lunar-track'),t=selectedMusic(g);card.querySelector('.lunar-description').textContent=t.description||'Una canción del universo de Sangre de Luna.';updateMusicPlayers()});
+ r.querySelectorAll('[data-music-version]').forEach(el=>el.onchange=()=>{const g=groups[+el.dataset.musicVersion];if(g.some(t=>t.id===musicCurrentId)){musicRequest++;musicCurrentId=null;$('#audio').pause();$('#audio').removeAttribute('src');$('#audio').load();$('#playerbar').classList.remove('show');resumeAmbientAfterMedia()}musicSelections.set(g[0].title.trim().toLocaleLowerCase('es'),el.value);const card=el.closest('.lunar-track'),t=selectedMusic(g);card.querySelector('.lunar-description').textContent=t.description||'Una canción del universo de Sangre de Luna.';updateMusicPlayers()});
  r.querySelectorAll('[data-music-seek]').forEach(el=>el.oninput=()=>{const t=selectedMusic(groups[+el.dataset.musicSeek]),a=$('#audio');if(t.id===musicCurrentId&&Number.isFinite(a.duration))a.currentTime=a.duration*Number(el.value)/100});
  updateMusicPlayers();
 }
@@ -573,7 +573,7 @@ function updateMusicPlayers(){
  card.classList.toggle('is-playing',playing);button.textContent=playing?'Ⅱ':'▶';button.setAttribute('aria-label',(playing?'Pausar ':'Reproducir ')+t.title);button.setAttribute('aria-pressed',String(playing));
  const duration=active&&Number.isFinite(a.duration)?a.duration:Number(t.duration_seconds)||0,elapsed=active?a.currentTime:0;
  seek.disabled=!active||!Number.isFinite(a.duration);seek.value=duration?elapsed/duration*100:0;seek.style.setProperty('--music-progress',seek.value+'%');
- card.querySelector('[data-elapsed]').textContent=fmt(elapsed);card.querySelector('[data-duration]').textContent=fmt(duration);
+ card.querySelector('[data-elapsed]').textContent=fmt(elapsed)||'0:00';card.querySelector('[data-duration]').textContent=fmt(duration)||'—:—';
  status.textContent=active?(a.ended?'FINALIZADA':playing?'REPRODUCIENDO':'EN PAUSA'):'LISTA PARA ESCUCHAR';
  });
 }
