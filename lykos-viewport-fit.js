@@ -2,14 +2,23 @@
    Keeps the open assistant panel inside the visible viewport, including mobile keyboards.
 */
 (()=> {
-  if(window.__SDL_LYKOS_VIEWPORT_FIT_V2__)return;
-  window.__SDL_LYKOS_VIEWPORT_FIT_V2__=true;
+  if(window.__SDL_LYKOS_VIEWPORT_FIT_V3__)return;
+  window.__SDL_LYKOS_VIEWPORT_FIT_V3__=true;
 
   const set=(el,name,value)=>el&&el.style.setProperty(name,value,'important');
-  function makeOpaque(panel){
+  function makeOpaque(root,panel){
+    if(root){
+      set(root,'contain','none');
+      set(root,'isolation','isolate');
+      set(root,'z-index','2147483000');
+      set(root,'opacity','1');
+      set(root,'filter','none');
+    }
     if(!panel)return;
     set(panel,'background','#07111b');
     set(panel,'background-color','#07111b');
+    set(panel,'background-image','none');
+    set(panel,'z-index','2147483001');
     set(panel,'opacity','1');
     set(panel,'filter','none');
     set(panel,'backdrop-filter','none');
@@ -17,10 +26,20 @@
     const head=panel.querySelector('.sdlg-head,.cronista-head');
     const body=panel.querySelector('.sdlg-body,.cronista-body');
     const form=panel.querySelector('.sdlg-form,.cronista-form');
+    const messages=panel.querySelectorAll('.sdlg-message,.cronista-message,.sdlg-quick,.cronista-quick');
     set(head,'background','#0b1a27');
     set(head,'background-color','#0b1a27');
     set(body,'background','#050d14');
     set(body,'background-color','#050d14');
+    set(body,'background-image','none');
+    for(const el of messages){
+      set(el,'opacity','1');
+      if(el.matches('.sdlg-message.assistant,.cronista-message.assistant')){
+        set(el,'background','#0d2232');
+        set(el,'background-color','#0d2232');
+        set(el,'background-image','none');
+      }
+    }
     set(form,'background','#07111b');
     set(form,'background-color','#07111b');
   }
@@ -43,7 +62,7 @@
       const root=document.getElementById(rootId);
       const panel=document.getElementById(panelId);
       if(!root||!panel)continue;
-      makeOpaque(panel);
+      makeOpaque(root,panel);
       if(!(panel.classList.contains('open')||panel.getAttribute('aria-hidden')==='false'))continue;
 
       const panelWidth=Math.max(0,Math.min(width-gap*2,width<=650?430:405));
