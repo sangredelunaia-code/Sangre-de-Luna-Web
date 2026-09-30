@@ -2,18 +2,18 @@
 if(window.__SDL_EXPERIENCIA_V2__)return;window.__SDL_EXPERIENCIA_V2__=true;
 const body=document.body,root=document.documentElement,path=location.pathname,KEY="sdl-ux-last-place",FONT="sdl-ux-font-scale";const getItem=k=>{try{return localStorage.getItem(k)}catch{return null}},setItem=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
 const catalog=[
-["Inicio de la Ciudadela","Regresa a la portada y conoce el universo.","/#inicio","inicio ciudadela portada"],
+["Inicio de la Ciudadela","Regresa a la portada y conoce el universo.","/","inicio ciudadela portada"],
 ["El libro · El origen de la manada","Conoce el primer libro y cómo adquirirlo.","/libro.html","libro amazon leer comprar origen"],
-["Personajes","Explora las fichas de los personajes.","/#personajes","personajes protagonistas"],
-["Historias","Lee relatos y contenido narrativo.","/#historias","historias relatos lectura"],
-["Episodios","Encuentra temporadas y videos.","/#episodios","episodios capítulos temporadas"],
-["Música","Escucha los sonidos de Sangre de Luna.","/#musica","música canciones audio"],
-["Galería","Explora artes e imágenes oficiales.","/#galeria","galería arte imágenes"],
-["Mapa de las Tierras","Descubre lugares y territorios.","/mapa.html","mapa tierras territorios"],
-["Recorrido por la Ciudadela","Explora el tour interactivo.","/tour.html","tour recorrido ciudadela 360"],
-["Mi viaje · Test y misiones","Encuentra tu lugar y continúa tus misiones.","/viaje.html","test quiz preguntas viaje misiones insignias"],
-["Fan Club · La Manada","Únete, elige facción y participa.","/fanclub.html","fan club miembros comunidad facciones"],
-["Desafíos de la Manada","Consulta retos y logros.","/fanclub.html#desafios","desafíos retos insignias logros"]
+["Personajes","Explora las fichas de los personajes.","/personajes","personajes protagonistas"],
+["Historias","Lee relatos y contenido narrativo.","/historias","historias relatos lectura"],
+["Episodios","Encuentra temporadas y videos.","/episodios","episodios capítulos temporadas"],
+["Música","Escucha los sonidos de Sangre de Luna.","/musica","música canciones audio"],
+["Galería","Explora artes e imágenes oficiales.","/galeria","galería arte imágenes"],
+["Mapa de las Tierras","Descubre lugares y territorios.","/mapa","mapa tierras territorios"],
+["Recorrido por la Ciudadela","Explora el tour interactivo.","/tour","tour recorrido ciudadela 360"],
+["Mi viaje · Test y misiones","Encuentra tu lugar y continúa tus misiones.","/viaje","test quiz preguntas viaje misiones insignias"],
+["Fan Club · La Manada","Únete, elige facción y participa.","/fanclub","fan club miembros comunidad facciones"],
+["Desafíos de la Manada","Consulta retos y logros.","/desafios","desafíos retos insignias logros"]
 ];
 const css='body{font-size:calc(16px * var(--sdl-ux-scale,1))}.sdl-ux-dock{position:fixed;left:14px;bottom:14px;z-index:1200;display:flex;align-items:center;gap:4px;padding:6px;border:1px solid rgba(158,199,226,.28);border-radius:16px;background:rgba(4,12,20,.92);box-shadow:0 8px 30px rgba(0,0,0,.3);backdrop-filter:blur(14px);color:#eef6ff;font:600 13px/1.2 Arial,sans-serif}'+
 '.sdl-ux-dock a,.sdl-ux-dock button{min-height:42px;min-width:42px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 11px;border:0;border-radius:11px;background:transparent;color:inherit;font:inherit;text-decoration:none;cursor:pointer}'+
@@ -104,5 +104,5 @@ const last=(()=>{try{return JSON.parse(localStorage.getItem(KEY)||"null")}catch{
 function remember(url,title){try{setItem(KEY,JSON.stringify({url,title}))}catch{}}
 if(path!=="/"&&path!=="/index.html")remember(location.pathname+location.search+location.hash,document.title.replace(/\s*\|\s*Sangre de Luna.*/i,""));
 document.addEventListener("click",e=>{const a=e.target.closest("a[href]");if(!a)return;try{const u=new URL(a.href,location.href);if(u.origin===location.origin&&u.pathname!=="/"&&u.pathname!=="/index.html")remember(u.pathname+u.search+u.hash,(a.innerText||a.getAttribute("aria-label")||document.title).replace(/\s+/g," ").trim())}catch{}});
-if(path==="/"||path==="/index.html"){const hero=document.querySelector("#inicio.hero");if(hero&&!document.querySelector(".sdl-ux-start")){const section=document.createElement("section");section.className="sdl-ux-start";section.setAttribute("aria-labelledby","sdlStartTitle");section.innerHTML='<div class="sdl-ux-start-inner"><h2 id="sdlStartTitle">¿Qué quieres descubrir?</h2><p>Elige cómo comenzar tu recorrido por Sangre de Luna.</p><div class="sdl-ux-start-grid"><a href="/libro.html"><b>Leer el libro</b><span>Conoce el origen de la Manada.</span></a><a href="/mapa.html"><b>Explorar las Tierras</b><span>Descubre lugares y territorios.</span></a><a href="/viaje.html"><b>Hacer el test</b><span>Encuentra tu lugar y empieza tus misiones.</span></a><a href="/fanclub.html"><b>Unirme a la Manada</b><span>Participa en el Fan Club oficial.</span></a></div></div>';hero.after(section)}if(last&&last.url&&last.url!=="/"){const start=document.querySelector(".sdl-ux-start");if(start){const box=document.createElement("div");box.className="sdl-ux-resume";const label=document.createElement("b");label.textContent="¿Quieres continuar? ";const a=document.createElement("a");a.href=last.url;a.textContent="Retomar: "+(last.title||"tu última visita")+" →";box.append(label,a);start.querySelector(".sdl-ux-start-inner").appendChild(box)}}}
+if(path==="/"||path==="/index.html"){const hero=document.querySelector("#inicio.hero");if(hero&&!document.querySelector(".sdl-ux-start")){const section=document.createElement("section");section.className="sdl-ux-start";section.setAttribute("aria-labelledby","sdlStartTitle");section.innerHTML='<div class="sdl-ux-start-inner"><h2 id="sdlStartTitle">¿Qué quieres descubrir?</h2><p>Elige cómo comenzar tu recorrido por Sangre de Luna.</p><div class="sdl-ux-start-grid"><a href="/libro.html"><b>Leer el libro</b><span>Conoce el origen de la Manada.</span></a><a href="/mapa"><b>Explorar las Tierras</b><span>Descubre lugares y territorios.</span></a><a href="/viaje"><b>Hacer el test</b><span>Encuentra tu lugar y empieza tus misiones.</span></a><a href="/fanclub"><b>Unirme a la Manada</b><span>Participa en el Fan Club oficial.</span></a></div></div>';hero.after(section)}if(last&&last.url&&last.url!=="/"){const start=document.querySelector(".sdl-ux-start");if(start){const box=document.createElement("div");box.className="sdl-ux-resume";const label=document.createElement("b");label.textContent="¿Quieres continuar? ";const a=document.createElement("a");a.href=last.url;a.textContent="Retomar: "+(last.title||"tu última visita")+" →";box.append(label,a);start.querySelector(".sdl-ux-start-inner").appendChild(box)}}}
 })();
