@@ -102,8 +102,38 @@ if(!document.querySelector(".top nav.nav")){
  .sdl-has-shared-header:has(#tour){height:auto;overflow:auto}
  .sdl-has-shared-header #tour{height:calc(100svh - var(--sdl-header-height));min-height:650px}
  .sdl-has-shared-header #world .legend,.sdl-has-shared-header #world .panel{top:calc(var(--sdl-header-height) + 86px);max-height:calc(100svh - var(--sdl-header-height) - 150px)}
- .sdl-game-header{height:auto!important;overflow:auto!important}
- .sdl-game-header>.screen{height:calc(100dvh - var(--sdl-header-height))!important;min-height:650px!important;overflow:auto!important}
+ .sdl-game-header{height:100dvh!important;overflow:hidden!important}
+ .sdl-game-header>.screen{height:calc(100dvh - var(--sdl-header-height))!important;min-height:0!important;overflow-x:hidden!important;overflow-y:scroll!important;scrollbar-gutter:stable;scrollbar-width:auto;scrollbar-color:#a5bdce #0b1622;overscroll-behavior-y:contain;padding-bottom:80px;box-sizing:border-box}
+ .sdl-game-header>.screen::-webkit-scrollbar{width:12px}
+ .sdl-game-header>.screen::-webkit-scrollbar-track{background:#0b1622}
+ .sdl-game-header>.screen::-webkit-scrollbar-thumb{background:#a5bdce;border:3px solid #0b1622;border-radius:12px}
+ .sdl-game-header .screen .hero,.sdl-game-header .screen .campaign,.sdl-game-header .screen .game{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+ .sdl-game-header .screen .hero{padding:30px clamp(16px,3vw,40px)!important}
+ .sdl-game-header .screen .campaign{padding:18px!important;grid-template-columns:245px minmax(0,1fr)!important}
+ .sdl-game-header .campaign>div:last-child{grid-template-rows:auto auto auto!important;overflow:visible!important}
+ .sdl-game-header .screen .side{height:auto!important;max-height:none!important;overflow:visible!important}
+ .sdl-game-header .campaign .mission{height:380px!important;min-height:300px!important}
+ .sdl-game-header .screen .game{padding:18px!important;grid-template-rows:auto auto!important}
+ .sdl-game-header .screen .board{height:auto!important;min-height:0!important;overflow:visible!important;align-items:start;grid-template-columns:225px minmax(0,1fr) 250px!important}
+ .sdl-game-header .board>.panel,.sdl-game-header .board>div:nth-child(2),.sdl-game-header .board>div:nth-child(2)>.panel{height:auto!important;min-height:0!important;overflow:visible!important}
+ .sdl-game-header .board>div:nth-child(2){grid-template-rows:auto auto auto!important}
+ .sdl-game-header .screen .event{max-height:none!important;min-height:140px!important}
+ .sdl-game-header .screen .event p,.sdl-game-header .screen .guide p,.sdl-game-header .screen .goal,.sdl-game-header .screen .threat,.sdl-game-header .screen .choice{font-size:12px!important;line-height:1.5!important}
+ .sdl-game-header .screen .play{max-height:none!important;min-height:110px!important;overflow:visible!important;flex-wrap:wrap}
+ .sdl-game-header .screen .hand{max-height:none!important;overflow:visible!important;flex-wrap:wrap;justify-content:flex-start!important;gap:8px!important;padding:12px 0!important}
+ .sdl-game-header .screen .card{flex:0 0 125px!important;width:125px!important;min-width:0!important;max-width:none!important}
+ .sdl-game-header .screen .card .copy b{font-size:13px!important}
+ .sdl-game-header .screen .card .copy p,.sdl-game-header .screen .card .copy small{font-size:10px!important;line-height:1.35!important}
+ .sdl-game-header #log{max-height:none!important;overflow:visible!important;font-size:12px!important;line-height:1.5!important}
+ .sdl-game-header .screen .btn{min-height:44px;font-size:13px!important;padding:10px 14px!important}
+ .sdl-game-header .screen .top{height:auto!important;min-height:60px!important;flex-wrap:wrap}
+ .sdl-game-header .screen .actions{flex-wrap:wrap}
+ .sdl-game-header .modal,.sdl-game-header .tutorial{z-index:200}
+ .sdl-game-header .tutorial{overflow-y:auto!important}
+ @media(max-width:1100px){.sdl-game-header .screen .board{grid-template-columns:210px minmax(0,1fr)!important}.sdl-game-header .board>div:last-child{grid-column:1/-1}}
+ @media(max-width:900px){.sdl-game-header .screen .campaign{grid-template-columns:1fr!important}}
+ @media(max-width:760px){.sdl-game-header .screen .board{grid-template-columns:minmax(0,1fr)!important}.sdl-game-header .board>div:last-child{grid-column:auto}.sdl-game-header .screen .game,.sdl-game-header .screen .campaign{padding:12px!important}.sdl-game-header .screen .card{flex-basis:calc((100% - 16px)/3)!important;width:auto!important}.sdl-game-header .screen .event{grid-template-columns:90px minmax(0,1fr)!important}.sdl-game-header .screen .cardHero{width:min(250px,70vw)!important}}
+ @media(max-width:430px){.sdl-game-header .screen .card{flex-basis:calc((100% - 8px)/2)!important}}
  @media(max-width:900px){.sdl-common-header .head-actions{padding:0!important;min-height:0}.sdl-local-header{font-size:13px}.sdl-has-shared-header #world .legend{position:relative;top:auto;left:auto;margin:12px}.sdl-has-shared-header #world .panel{top:12px;max-height:calc(100svh - 24px);z-index:150}}
  `;document.head.appendChild(base);
 }
