@@ -112,6 +112,9 @@ function inject(html,p){
   if(p.file==='fanclub.html'&&!html.includes('fanclub-registration-email.js')){
     html=html.replace(/<\/body>/i,`<script src="${CDN}/fanclub-registration-email.js?v=20260817" defer></script></body>`);
   }
+  // Serve navigation from the deployment so route fixes are not held in CDN caches.
+  html=html.replace(/<script\\s+src=["'][^"']*\\/experiencia-ux\\.js[^"']*["']\\s+defer><\\/script>/gi,'');
+  html=injectScript(html,'/experiencia-ux.js?v=4','experiencia-ux.js');
   html=injectScript(html,GUARDIAN,'guardian-wolf.js');
   html=injectScript(html,LYKOS_UI,'lykos-ui-v6.js');
   html=injectScript(html,LYKOS_ICON,'lykos-icon-v9.js');
