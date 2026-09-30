@@ -1,4 +1,4 @@
-/* SANGRE DE LUNA · LYKOS / GUARDIÁN V2
+/* SANGRE DE LUNA · LYKOS / GUARDIÁN V3
    - Wake word fiable: "Lykos Despierta"
    - Permiso de micrófono ligado a una acción real del usuario
    - Emblema visual con la imagen aprobada de Lykos
@@ -69,7 +69,7 @@
       transition:filter .25s,box-shadow .25s,transform .25s!important
     }
     #cronistaWidget.sdl-guardian-ready .cronista-launch:hover,#sdlgCronista.sdl-guardian-ready .sdlg-launch:hover{transform:translateY(-2px) scale(1.03)}
-    #cronistaWidget.sdl-guardian-ready .cronista-launch>img,#sdlgCronista.sdl-guardian-ready .sdlg-launch>img{display:none!important}\n    #cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{background-image:url('/assets/lykos-guardian-approved.webp')!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
+    #cronistaWidget.sdl-guardian-ready .cronista-launch>img,#sdlgCronista.sdl-guardian-ready .sdlg-launch>img{display:none!important}\n    #cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{background-image:url('/assets/lykos-guardian-approved.webp')!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}\n    #cronistaWidget.sdl-guardian-ready .cronista-launch,#sdlgCronista.sdl-guardian-ready .sdlg-launch{background-image:url('/assets/lykos-guardian-approved.webp')!important;background-position:center!important;background-size:cover!important;background-repeat:no-repeat!important}
     .sdl-wolf-core{display:none!important;position:absolute;inset:3px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:radial-gradient(circle at 50% 32%,#163a54,#06101a 64%,#02060a);pointer-events:none}
     .sdl-wolf-core:before{content:'';position:absolute;inset:1px;border-radius:50%;border:1px solid #d7f4ff55;box-shadow:inset 0 0 24px #56c8ff1f}
     .sdl-wolf-svg{width:92%;height:92%;overflow:visible;filter:drop-shadow(0 0 7px #65ceff3a)}
@@ -155,15 +155,14 @@
   }
 
   function mountWolf(target,avatar=false){
-    if(!target||target.dataset.lykosWolf==='1')return;
+    if(!target)return;
     target.dataset.lykosWolf='1';
-    target.querySelectorAll(':scope > img').forEach(img=>img.style.display='none');
-    if(avatar){
-      const wrap=document.createElement('span');
-      wrap.className='sdl-guardian-avatar';
-      wrap.innerHTML=wolfMarkup().replace('class="sdl-wolf-core"','class="sdl-wolf-core sdl-guardian-avatar-core"');
-      target.appendChild(wrap);
-    }else target.insertAdjacentHTML('beforeend',wolfMarkup());
+    target.querySelectorAll(':scope > img').forEach(img=>img.style.setProperty('display','none','important'));
+    target.querySelectorAll('.sdl-wolf-core,.sdl-guardian-avatar').forEach(el=>el.remove());
+    target.style.setProperty('background-image',"url('/assets/lykos-guardian-approved.webp')",'important');
+    target.style.setProperty('background-position','center','important');
+    target.style.setProperty('background-size','cover','important');
+    target.style.setProperty('background-repeat','no-repeat','important');
   }
 
   function upgrade(root,home){
