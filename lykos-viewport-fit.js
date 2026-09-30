@@ -2,10 +2,28 @@
    Keeps the open assistant panel inside the visible viewport, including mobile keyboards.
 */
 (()=> {
-  if(window.__SDL_LYKOS_VIEWPORT_FIT_V1__)return;
-  window.__SDL_LYKOS_VIEWPORT_FIT_V1__=true;
+  if(window.__SDL_LYKOS_VIEWPORT_FIT_V2__)return;
+  window.__SDL_LYKOS_VIEWPORT_FIT_V2__=true;
 
   const set=(el,name,value)=>el&&el.style.setProperty(name,value,'important');
+  function makeOpaque(panel){
+    if(!panel)return;
+    set(panel,'background','#07111b');
+    set(panel,'background-color','#07111b');
+    set(panel,'opacity','1');
+    set(panel,'filter','none');
+    set(panel,'backdrop-filter','none');
+    set(panel,'-webkit-backdrop-filter','none');
+    const head=panel.querySelector('.sdlg-head,.cronista-head');
+    const body=panel.querySelector('.sdlg-body,.cronista-body');
+    const form=panel.querySelector('.sdlg-form,.cronista-form');
+    set(head,'background','#0b1a27');
+    set(head,'background-color','#0b1a27');
+    set(body,'background','#050d14');
+    set(body,'background-color','#050d14');
+    set(form,'background','#07111b');
+    set(form,'background-color','#07111b');
+  }
   function fit(){
     const vv=window.visualViewport;
     const width=vv?.width||window.innerWidth;
@@ -24,7 +42,9 @@
     ]){
       const root=document.getElementById(rootId);
       const panel=document.getElementById(panelId);
-      if(!root||!panel||!(panel.classList.contains('open')||panel.getAttribute('aria-hidden')==='false'))continue;
+      if(!root||!panel)continue;
+      makeOpaque(panel);
+      if(!(panel.classList.contains('open')||panel.getAttribute('aria-hidden')==='false'))continue;
 
       const panelWidth=Math.max(0,Math.min(width-gap*2,width<=650?430:405));
       const maxHeight=Math.max(160,height-gap*2-playerOffset);
