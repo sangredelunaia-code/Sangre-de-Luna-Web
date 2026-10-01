@@ -316,3 +316,165 @@ document.head.appendChild(compactPortalStyle);
 
   syncSeasonTimeline();
 })();
+
+/* SDL: tipografía y controles unificados para el encabezado */
+(() => {
+  if (document.getElementById("sdl-unified-header-style")) return;
+  const style = document.createElement("style");
+  style.id = "sdl-unified-header-style";
+  style.textContent = `
+    .top nav.sdl-site-nav .sdl-nav-link,
+    .top nav.sdl-site-nav .sdl-nav-toggle {
+      font: 700 .78rem/1.15 Arial, Helvetica, sans-serif !important;
+      letter-spacing: .055em !important;
+    }
+    .top .head-actions .fanclub-head-btn,
+    .top .head-actions .admin-entry {
+      min-height: 42px !important;
+      padding: 9px 15px !important;
+      border: 1px solid rgba(163, 194, 215, .34) !important;
+      border-radius: 999px !important;
+      background: linear-gradient(145deg, #102333, #091521) !important;
+      color: #e5eff6 !important;
+      font: 700 .78rem/1.15 Arial, Helvetica, sans-serif !important;
+      letter-spacing: .045em !important;
+      box-shadow: inset 0 1px rgba(235, 245, 251, .045) !important;
+    }
+    .top .head-actions .fanclub-head-btn:hover,
+    .top .head-actions .admin-entry:hover {
+      border-color: #a9c8df !important;
+      background: linear-gradient(145deg, #172f42, #0b1a27) !important;
+      color: #f4f8fb !important;
+    }
+    .top .socials .social {
+      width: 38px !important;
+      height: 38px !important;
+      border: 1px solid rgba(145, 178, 201, .25) !important;
+      border-radius: 50% !important;
+      background: linear-gradient(145deg, #102333, #091521) !important;
+      color: #c6d9e7 !important;
+    }
+    .top .socials .social:hover {
+      border-color: #9fc5df !important;
+      color: #f0f7fc !important;
+    }
+    .top .sdl-header-search {
+      display: flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      width: min(310px, 28vw) !important;
+      min-height: 42px !important;
+      padding: 3px !important;
+      border: 1px solid #405a70 !important;
+      border-radius: 999px !important;
+      background: linear-gradient(145deg, #0d1d2b, #07111b) !important;
+      box-shadow: inset 0 1px rgba(235, 245, 251, .04) !important;
+    }
+    .top .sdl-header-search input[type="search"] {
+      flex: 1 1 auto !important;
+      width: auto !important;
+      min-width: 0 !important;
+      height: 34px !important;
+      padding: 0 11px !important;
+      border: 0 !important;
+      outline: 0 !important;
+      border-radius: 999px !important;
+      background: transparent !important;
+      color: #edf5fa !important;
+      font: 400 .86rem/1.2 Arial, Helvetica, sans-serif !important;
+      letter-spacing: 0 !important;
+      box-shadow: none !important;
+    }
+    .top .sdl-header-search input[type="search"]::placeholder {
+      color: #a8bac8 !important;
+      opacity: 1 !important;
+    }
+    .top .sdl-header-search input[type="search"]:focus-visible {
+      outline: 2px solid #9fc5df !important;
+      outline-offset: 1px !important;
+    }
+    .top .sdl-header-search button[type="submit"] {
+      flex: 0 0 34px !important;
+      width: 34px !important;
+      height: 34px !important;
+      min-height: 34px !important;
+      padding: 0 !important;
+      border: 1px solid rgba(225, 238, 247, .55) !important;
+      border-radius: 50% !important;
+      background: #c8dbe8 !important;
+      color: #102332 !important;
+    }
+    .top .sdl-header-search button[type="submit"]:hover {
+      background: #e6f1f8 !important;
+    }
+    #sdlFavoritePanel {
+      box-sizing: border-box !important;
+      width: min(1160px, calc(100% - 48px)) !important;
+      margin: 28px auto 32px !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border: 1px solid #344e63 !important;
+      border-radius: 16px !important;
+      background: linear-gradient(145deg, rgba(14, 29, 43, .96), rgba(5, 13, 21, .97)) !important;
+      color: #e5eff6 !important;
+      box-shadow: inset 0 1px rgba(235, 245, 251, .035), 0 12px 32px rgba(0, 0, 0, .16) !important;
+    }
+    #sdlFavoritePanel > summary {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+      min-height: 52px !important;
+      padding: 12px 18px !important;
+      list-style: none !important;
+      color: #dceaf3 !important;
+      font: 700 .78rem/1.2 Arial, Helvetica, sans-serif !important;
+      letter-spacing: .055em !important;
+      cursor: pointer !important;
+    }
+    #sdlFavoritePanel > summary::-webkit-details-marker { display: none !important; }
+    #sdlFavoritePanel > summary::after {
+      content: "⌄";
+      color: #a9c7dc;
+      font-size: 1rem;
+      line-height: 1;
+      transition: transform .18s ease;
+    }
+    #sdlFavoritePanel[open] > summary {
+      border-bottom: 1px solid rgba(145, 178, 201, .2) !important;
+    }
+    #sdlFavoritePanel[open] > summary::after { transform: rotate(180deg); }
+    #sdlFavoriteList {
+      padding: 14px 18px 18px !important;
+      color: #b8c9d5 !important;
+      font: 400 .9rem/1.55 Arial, Helvetica, sans-serif !important;
+      letter-spacing: 0 !important;
+    }
+    #sdlFavoritesShortcut {
+      min-height: 40px !important;
+      padding: 9px 14px !important;
+      border: 1px solid #405a70 !important;
+      border-radius: 999px !important;
+      background: linear-gradient(145deg, #102333, #091521) !important;
+      color: #dceaf3 !important;
+      font: 700 .78rem/1.2 Arial, Helvetica, sans-serif !important;
+      letter-spacing: .045em !important;
+    }
+    #sdlFavoritesShortcut:hover {
+      border-color: #a9c8df !important;
+      color: #f4f8fb !important;
+    }
+    @media (max-width: 760px) {
+      .top .sdl-header-search { width: min(100%, 290px) !important; }
+      .top .head-actions .fanclub-head-btn,
+      .top .head-actions .admin-entry { min-height: 40px !important; padding-inline: 12px !important; }
+      #sdlFavoritePanel { width: calc(100% - 28px) !important; margin: 22px auto 26px !important; }
+      #sdlFavoritePanel > summary { min-height: 48px !important; padding: 11px 14px !important; }
+      #sdlFavoriteList { padding: 12px 14px 15px !important; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #sdlFavoritePanel > summary::after { transition: none !important; }
+    }
+  `;
+  document.head.appendChild(style);
+})();
