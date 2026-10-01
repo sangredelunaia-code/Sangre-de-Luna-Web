@@ -286,6 +286,9 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 .sdl-episode-archive-list .sdl-episode-intro{margin:12px 0}
 #episodeFeatureAdminPreviewFrame{width:100%;height:330px;max-height:65vh;overflow:hidden;border:1px solid #496276;border-radius:14px;background:#02070c}
 #episodeFeatureAdminPreviewFrame img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+#episodePageHeaderPreviewFrame{width:100%;aspect-ratio:4.08/1;max-height:42vh;overflow:hidden;border:1px solid #496276;border-radius:14px;background:#02070c}
+#episodePageHeaderPreviewFrame img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 30%}
+.portal-section-hero::before{background-position:var(--episode-page-image-position,center 30%)!important;background-size:var(--episode-page-image-fit,cover)!important;background-repeat:no-repeat}
 @media(max-width:700px){.sdl-episode-archive-head{align-items:flex-start;flex-direction:column;gap:16px}.sdl-archive-season-row{align-items:flex-start;flex-direction:column}.sdl-archive-season-row .tabs{width:100%}.sdl-episode-feature{height:var(--episode-cover-mobile-height,420px);min-height:var(--episode-cover-mobile-height,420px)}.sdl-episode-feature-shade{background:linear-gradient(90deg,#02070ce8,#030a1299 74%,#030a1240),linear-gradient(0deg,#03070ccf,transparent 60%)}.sdl-episode-feature-copy{width:100%;padding:22px 18px}.sdl-episode-feature-copy h3{font-size:clamp(1.7rem,8vw,2.25rem)}.sdl-episode-feature-summary{font-size:12px}.sdl-episode-feature-actions{display:grid;grid-template-columns:1fr}.sdl-episode-feature-actions .btn{width:100%}}
 @media(max-width:480px){.sdl-episode-feature{border-radius:16px}.sdl-episode-feature-copy{padding:20px 15px}.sdl-archive-crumb{font-size:9px}}
 </style>
@@ -382,7 +385,18 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 <div class="fld"><label>ALTO EN ESCRITORIO (px)</label><input id="episodeFeatureDesktopHeight" type="number" min="240" max="600" step="10" value="330"></div>
 <div class="fld"><label>ALTO EN MÓVIL (px)</label><input id="episodeFeatureMobileHeight" type="number" min="240" max="700" step="10" value="420"></div>
 <div class="fld span2"><label>VISTA PREVIA</label><div id="episodeFeatureAdminPreviewFrame"><img id="episodeFeatureAdminPreviewImg" alt="Vista previa de portada" hidden></div><small id="episodeFeatureDims">Marco de referencia: 1240 × 330 px · proporción 3.76:1. En móvil se adapta al ancho disponible.</small></div>
-</div><div class="toolbar"><button class="btn pri" type="submit">GUARDAR PORTADA Y AJUSTES</button></div></form></section>
+</div><div class="toolbar"><button class="btn pri" type="submit">GUARDAR PORTADA Y AJUSTES</button></div></form>
+<hr style="border:0;border-top:1px solid #26384a;margin:28px 0">
+<div class="sdl-header-image-admin"><span class="ey">IMAGEN DE CABECERA</span><h3>Fondo superior de la página Episodios</h3><p class="sub">Este control cambia únicamente la imagen detrás del título “Episodios”. La portada panorámica del capítulo destacado se ajusta arriba, por separado.</p><div id="episodePageHeaderAdminMsg"></div>
+<form id="episodePageHeaderForm"><div class="formgrid">
+<div class="fld"><label>ORIGEN DE LA IMAGEN</label><select id="episodePageHeaderSource"><option value="auto">Imagen actual del sitio</option><option value="upload">Subir una imagen</option><option value="url">Usar una dirección web</option></select></div>
+<div class="fld" id="episodePageHeaderUploadField"><label>SUBIR IMAGEN</label><input id="episodePageHeaderFile" type="file" accept="image/jpeg,image/png,image/webp"><small>Recomendado: 2560 × 630 px (proporción aproximada 4:1). En móviles la imagen se recorta para adaptarse al ancho.</small><small id="episodePageHeaderFileInfo"></small></div>
+<div class="fld span2 hidden" id="episodePageHeaderUrlField"><label>DIRECCIÓN DE IMAGEN</label><input id="episodePageHeaderUrl" type="url" placeholder="https://…"></div>
+<div class="fld"><label>AJUSTE</label><select id="episodePageHeaderFit"><option value="cover">Cubrir el marco (recorta los bordes)</option><option value="contain">Mostrar la imagen completa</option></select></div>
+<div class="fld"><label>FOCO HORIZONTAL <span id="episodePageHeaderXValue">50%</span></label><input id="episodePageHeaderX" type="range" min="0" max="100" value="50"></div>
+<div class="fld"><label>FOCO VERTICAL <span id="episodePageHeaderYValue">30%</span></label><input id="episodePageHeaderY" type="range" min="0" max="100" value="30"></div>
+<div class="fld span2"><label>VISTA PREVIA · PROPORCIÓN DE ESCRITORIO</label><div id="episodePageHeaderPreviewFrame"><img id="episodePageHeaderPreviewImg" alt="Vista previa del fondo de cabecera" hidden></div><small>Marco aproximado: 1348 × 330 px en escritorio. Mantén los rostros y elementos importantes hacia el centro para que también se vean en móvil.</small></div>
+</div><div class="toolbar"><button class="btn pri" type="submit">GUARDAR FONDO DE CABECERA</button></div></form></div></section>
 <section class="panel hidden" data-page="users"><span class="ey">SUPERADMIN</span><h2>Usuarios colaboradores</h2><p class="sub">Solo el Superadministrador puede crear o desactivar colaboradores.</p><div id="userMsg"></div><form id="userForm"><div class="formgrid"><div class="fld"><label>NOMBRE</label><input id="uName" required></div><div class="fld"><label>USUARIO</label><input id="uUsername" required></div><div class="fld"><label>CORREO</label><input id="uEmail" type="email" required></div><div class="fld"><label>CONTRASEÑA TEMPORAL</label><input id="uPassword" type="password" minlength="12" required></div><div class="fld span2"><label>PERMISOS</label><div class="perm"><label><input type="checkbox" id="pTracks" checked>Música</label><label><input type="checkbox" id="pEpisodes" checked>Episodios</label><label><input type="checkbox" id="pStories" checked>Historias</label><label><input type="checkbox" id="pCharacters" checked>Personajes</label><label><input type="checkbox" id="pGallery" checked>Galería</label><label><input type="checkbox" id="pFanclub" checked>Fan Club y desafíos</label></div></div></div><div class="toolbar"><button class="btn pri" type="submit">CREAR COLABORADOR</button></div></form><div class="notice">Los colaboradores nunca pueden convertirse en Superadministrador. Para retirar su acceso, desactiva la cuenta.</div><div id="userTable"></div></section>
 <section class="panel hidden" data-page="settings"><span class="ey">SEGURIDAD</span><h2>Cuenta y sesión</h2><p class="sub">Actualiza tu contraseña o cierra la sesión administrativa.</p><div id="securityMsg"></div><div class="formgrid"><div class="fld"><label>NUEVA CONTRASEÑA</label><input id="secPass1" type="password"></div><div class="fld"><label>REPETIR CONTRASEÑA</label><input id="secPass2" type="password"></div></div><div class="toolbar"><button class="btn" id="changePassBtn">CAMBIAR CONTRASEÑA</button><button class="btn danger" id="signOutBtn2">CERRAR SESIÓN</button></div><div class="notice">Correo de recuperación del Superadministrador: <b>sangredelunaia@gmail.com</b></div></section>
 </main></div></div></div>
@@ -735,11 +749,19 @@ $('#storyReaderTopBtn').onclick=()=>{
 };
 let selectedSeason=null;
 function renderEpisodes(){const tabs=$('#seasonTabs'),list=$('#episodeList');if(!cache.episodes.length){tabs.innerHTML='';list.innerHTML='<div class="empty">No hay episodios publicados.</div>';renderEpisodeFeature();return}const seasons=[...new Set(cache.episodes.map(x=>x.season))];if(!selectedSeason||!seasons.includes(selectedSeason))selectedSeason=seasons[0];tabs.innerHTML=seasons.map(se=>`<button class="tabbtn ${se===selectedSeason?'on':''}" data-season="${se}">Temporada ${se}</button>`).join('');tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedSeason=+b.dataset.season;renderEpisodes()});const rows=cache.episodes.filter(x=>x.season===selectedSeason);list.innerHTML=rows.map((x,i)=>`<div class="erow"><span class="ech">${esc(x.chapter_label)}</span>${x.youtube_id?`<div class="sdl-episode-entry"><h3>${esc(x.title)}</h3><div class="sdl-episode-actions"><button class="btn pri" data-episode="${i}" aria-label="Ver episodio: ${esc(x.title)}">▶ VER EPISODIO</button><a class="btn ghost" href="https://www.youtube.com/watch?v=${encodeURIComponent(x.youtube_id)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir en YouTube: ${esc(x.title)}">ABRIR EN YOUTUBE ↗</a></div></div>`:`<span class="etitle off">${esc(x.title)} <span class="pending">PENDIENTE</span></span>`}</div>`).join('');list.querySelectorAll('[data-episode]').forEach(b=>b.onclick=()=>openVideo(rows[+b.dataset.episode]));renderEpisodeFeature()}
+function applyEpisodePageHeader(cfg){
+ if(location.pathname.replace(/\/$/,'')!=='/episodios')return;
+ const section=document.querySelector('.portal-section-hero');if(!section)return;
+ const url=cfg?.page_header_image_url||(cfg?.page_header_image_path?galleryUrl(cfg.page_header_image_path):'');
+ section.style.setProperty('--section-image',url?'url('+JSON.stringify(url)+')':"url('/assets/chris.webp')");
+ if(cfg?.page_header_image_path||cfg?.page_header_image_url){section.style.setProperty('--episode-page-image-position',(Number(cfg.page_header_image_position_x??50))+'% '+(Number(cfg.page_header_image_position_y??30))+'%');section.style.setProperty('--episode-page-image-fit',cfg.page_header_image_fit==='contain'?'contain':'cover')}
+ else{section.style.removeProperty('--episode-page-image-position');section.style.removeProperty('--episode-page-image-fit')}
+}
 function renderEpisodeFeature(){
  const card=$('#episodeFeature');if(!card)return;
  const rows=cache.episodes.filter(x=>/^[\w-]{11}$/.test(x.youtube_id||'')).slice().sort((a,b)=>Number(b.season)-Number(a.season)||Number(b.sort_order)-Number(a.sort_order));
  const ep=rows[0];if(!ep){card.hidden=true;return}
- const cfg=cache.episodeFeature||{},art=cache.gallery.find(g=>String(g.title||'').toLowerCase().includes(String(ep.title||'').toLowerCase()));
+ const cfg=cache.episodeFeature||{},art=cache.gallery.find(g=>String(g.title||'').toLowerCase().includes(String(ep.title||'').toLowerCase()));applyEpisodePageHeader(cfg);
  const url=cfg.image_url|| (cfg.image_path?galleryUrl(cfg.image_path):'') || (art?galleryUrl(art.image_path):'https://i.ytimg.com/vi/'+encodeURIComponent(ep.youtube_id)+'/hqdefault.jpg');
  const img=$('#episodeFeatureImg');img.onerror=()=>{img.onerror=null;img.src=art?galleryUrl(art.image_path):'https://i.ytimg.com/vi/'+encodeURIComponent(ep.youtube_id)+'/hqdefault.jpg'};
  img.src=url;img.alt=ep.title;card.style.setProperty('--episode-cover-fit',cfg.image_fit==='contain'?'contain':'cover');card.style.setProperty('--episode-cover-x',(Number(cfg.image_position_x)||0)+'%');card.style.setProperty('--episode-cover-y',(Number(cfg.image_position_y)||0)+'%');card.style.setProperty('--episode-cover-height',Math.max(240,Math.min(600,Number(cfg.desktop_height)||330))+'px');card.style.setProperty('--episode-cover-mobile-height',Math.max(240,Math.min(700,Number(cfg.mobile_height)||420))+'px');
@@ -863,11 +885,47 @@ function updateEpisodeFeaturePreview(){
 async function loadAdminEpisodeFeature(){
  const {data,error}=await sb.from('site_episode_feature_settings').select('*').eq('id',1).single();
  if(error){msg($('#episodeFeatureAdminMsg'),'No se pudieron cargar los ajustes: '+error.message,'err');return}
- adminEpisodeFeature=data;$('#episodeFeatureSource').value=data.image_path?'upload':data.image_url?'url':'auto';$('#episodeFeatureUrl').value=data.image_url||'';$('#episodeFeatureFit').value=data.image_fit||'cover';$('#episodeFeatureX').value=data.image_position_x??50;$('#episodeFeatureY').value=data.image_position_y??50;$('#episodeFeatureDesktopHeight').value=data.desktop_height||330;$('#episodeFeatureMobileHeight').value=data.mobile_height||420;$('#episodeFeatureFile').value='';$('#episodeFeatureFileInfo').textContent=data.image_path?'Portada propia guardada. Puedes conservarla o elegir otra.':'';
+ adminEpisodeFeature=data;loadAdminEpisodePageHeader();$('#episodeFeatureSource').value=data.image_path?'upload':data.image_url?'url':'auto';$('#episodeFeatureUrl').value=data.image_url||'';$('#episodeFeatureFit').value=data.image_fit||'cover';$('#episodeFeatureX').value=data.image_position_x??50;$('#episodeFeatureY').value=data.image_position_y??50;$('#episodeFeatureDesktopHeight').value=data.desktop_height||330;$('#episodeFeatureMobileHeight').value=data.mobile_height||420;$('#episodeFeatureFile').value='';$('#episodeFeatureFileInfo').textContent=data.image_path?'Portada propia guardada. Puedes conservarla o elegir otra.':'';
  updateEpisodeFeaturePreview();
 }
 ['episodeFeatureSource','episodeFeatureUrl','episodeFeatureFit','episodeFeatureX','episodeFeatureY','episodeFeatureDesktopHeight'].forEach(id=>$('#'+id)?.addEventListener('input',updateEpisodeFeaturePreview));
 $('#episodeFeatureFile')?.addEventListener('change',updateEpisodeFeaturePreview);
+let episodePageHeaderPreviewObjectUrl=null,episodePageHeaderPreviewFile=null;
+function episodePageHeaderPreviewSource(){
+ const source=$('#episodePageHeaderSource')?.value||'auto',file=$('#episodePageHeaderFile')?.files?.[0];
+ if(source==='upload'&&file){if(!episodePageHeaderPreviewObjectUrl||episodePageHeaderPreviewFile!==file){if(episodePageHeaderPreviewObjectUrl)URL.revokeObjectURL(episodePageHeaderPreviewObjectUrl);episodePageHeaderPreviewObjectUrl=URL.createObjectURL(file);episodePageHeaderPreviewFile=file}return episodePageHeaderPreviewObjectUrl}
+ if(source==='url')return $('#episodePageHeaderUrl')?.value.trim()||'';
+ if(source==='upload'&&adminEpisodeFeature?.page_header_image_path)return galleryUrl(adminEpisodeFeature.page_header_image_path);
+ return '/assets/chris.webp';
+}
+function updateEpisodePageHeaderPreview(){
+ const source=$('#episodePageHeaderSource')?.value||'auto';$('#episodePageHeaderUploadField')?.classList.toggle('hidden',source!=='upload');$('#episodePageHeaderUrlField')?.classList.toggle('hidden',source!=='url');
+ const img=$('#episodePageHeaderPreviewImg');if(!img)return;const src=episodePageHeaderPreviewSource();
+ img.hidden=!src;img.style.objectFit=$('#episodePageHeaderFit').value;img.style.objectPosition=$('#episodePageHeaderX').value+'% '+$('#episodePageHeaderY').value+'%';
+ if(src&&img.src!==new URL(src,location.href).href){img.onerror=()=>{$('#episodePageHeaderFileInfo').textContent='No se pudo cargar la vista previa.'};img.onload=()=>{$('#episodePageHeaderFileInfo').textContent=img.naturalWidth+' × '+img.naturalHeight+' px'};img.src=src}
+ $('#episodePageHeaderXValue').textContent=$('#episodePageHeaderX').value+'%';$('#episodePageHeaderYValue').textContent=$('#episodePageHeaderY').value+'%';
+}
+async function loadAdminEpisodePageHeader(){
+ const d=adminEpisodeFeature||{};$('#episodePageHeaderSource').value=d.page_header_image_path?'upload':d.page_header_image_url?'url':'auto';$('#episodePageHeaderUrl').value=d.page_header_image_url||'';
+ $('#episodePageHeaderFit').value=d.page_header_image_fit||'cover';$('#episodePageHeaderX').value=d.page_header_image_position_x??50;$('#episodePageHeaderY').value=d.page_header_image_position_y??30;
+ $('#episodePageHeaderFile').value='';$('#episodePageHeaderFileInfo').textContent=d.page_header_image_path?'Fondo propio guardado. Puedes conservarlo o reemplazarlo.':'';
+ updateEpisodePageHeaderPreview();
+}
+['episodePageHeaderSource','episodePageHeaderUrl','episodePageHeaderFit','episodePageHeaderX','episodePageHeaderY'].forEach(id=>$('#'+id)?.addEventListener('input',updateEpisodePageHeaderPreview));
+$('#episodePageHeaderFile')?.addEventListener('change',updateEpisodePageHeaderPreview);
+$('#episodePageHeaderForm')?.addEventListener('submit',async event=>{
+ event.preventDefault();msg($('#episodePageHeaderAdminMsg'),'');
+ if(currentProfile?.role!=='superadmin'){msg($('#episodePageHeaderAdminMsg'),'Solo el superadministrador puede guardar estos ajustes.','err');return}
+ const source=$('#episodePageHeaderSource').value,file=$('#episodePageHeaderFile').files?.[0],external=$('#episodePageHeaderUrl').value.trim();
+ if(source==='upload'&&!file&&!adminEpisodeFeature?.page_header_image_path){msg($('#episodePageHeaderAdminMsg'),'Selecciona una imagen para subir.','err');return}
+ if(source==='upload'&&file&&(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>20*1024*1024)){msg($('#episodePageHeaderAdminMsg'),'Usa una imagen JPG, PNG o WebP de hasta 20 MB.','err');return}
+ if(source==='url'&&(!external||!/^https?:\/\//i.test(external))){msg($('#episodePageHeaderAdminMsg'),'Escribe una dirección de imagen válida que comience con http:// o https://.','err');return}
+ let path=source==='upload'?(adminEpisodeFeature?.page_header_image_path||null):null,url=source==='url'?external:null,oldPath=adminEpisodeFeature?.page_header_image_path||null;
+ if(source==='upload'&&file){const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg',slug='episode-page-header/'+Date.now()+'-'+file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-90)+'.'+ext;const {error}=await sb.storage.from('gallery-media').upload(slug,file,{upsert:false,contentType:file.type,cacheControl:'31536000'});if(error){msg($('#episodePageHeaderAdminMsg'),'No se pudo subir la imagen: '+error.message,'err');return}path=slug}
+ const payload={page_header_image_path:path,page_header_image_url:url,page_header_image_fit:$('#episodePageHeaderFit').value,page_header_image_position_x:+$('#episodePageHeaderX').value,page_header_image_position_y:+$('#episodePageHeaderY').value,updated_at:new Date().toISOString(),updated_by:currentProfile.id};
+ const {error}=await sb.from('site_episode_feature_settings').update(payload).eq('id',1);if(error){if(path&&path!==oldPath)await sb.storage.from('gallery-media').remove([path]);msg($('#episodePageHeaderAdminMsg'),'No se guardaron los ajustes: '+error.message,'err');return}
+ if(oldPath&&oldPath!==path)await sb.storage.from('gallery-media').remove([oldPath]);adminEpisodeFeature={...adminEpisodeFeature,...payload};cache.episodeFeature=adminEpisodeFeature;msg($('#episodePageHeaderAdminMsg'),source==='auto'?'Se restauró la imagen actual del sitio.':'Fondo de cabecera guardado.','ok');updateEpisodePageHeaderPreview();applyEpisodePageHeader(adminEpisodeFeature);
+});
 $('#episodeFeatureForm').onsubmit=async event=>{
  event.preventDefault();msg($('#episodeFeatureAdminMsg'),'');
  if(currentProfile?.role!=='superadmin'){msg($('#episodeFeatureAdminMsg'),'Solo el superadministrador puede guardar estos ajustes.','err');return}
