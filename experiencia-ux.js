@@ -228,4 +228,13 @@ if(motionRoot&&'IntersectionObserver'in window&&!matchMedia('(prefers-reduced-mo
  const collect=()=>{motionRoot.querySelectorAll('.sdl-highlight,.sec .head').forEach(el=>{if(seen.has(el))return;seen.add(el);el.classList.add('sdl-reveal-wait');observer.observe(el)})};
  collect();new MutationObserver(collect).observe(motionRoot,{childList:true,subtree:true});
 }
+
+const arrangeHomeHighlights=()=>{
+ const portal=document.getElementById('portalSections'),highlights=document.getElementById('homeHighlights'),ambient=document.getElementById('homeAmbientControl');
+ if(!portal||!highlights||!portal.closest('#inicio'))return;
+ if(highlights.nextElementSibling!==portal)portal.before(highlights);
+ if(ambient&&ambient.nextElementSibling!==highlights)highlights.before(ambient);
+};
+arrangeHomeHighlights();
+if(document.getElementById('inicio'))new MutationObserver(arrangeHomeHighlights).observe(document.getElementById('inicio'),{childList:true,subtree:true});
 })();
