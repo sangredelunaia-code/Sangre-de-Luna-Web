@@ -178,7 +178,20 @@ document.addEventListener("click",e=>{const a=e.target.closest("a[href]");if(!a)
 if(path==="/"||path==="/index.html"){const hero=document.querySelector("#inicio.hero");if(hero&&!document.querySelector(".sdl-ux-start")){const section=document.createElement("section");section.className="sdl-ux-start";section.setAttribute("aria-labelledby","sdlStartTitle");section.innerHTML='<div class="sdl-ux-start-inner"><h2 id="sdlStartTitle">¿Qué quieres descubrir?</h2><p>Elige cómo comenzar tu recorrido por Sangre de Luna.</p><div class="sdl-ux-start-grid"><a href="/libro.html"><b>Leer el libro</b><span>Conoce el origen de la Manada.</span></a><a href="/mapa"><b>Explorar las Tierras</b><span>Descubre lugares y territorios.</span></a><a href="/viaje"><b>Hacer el test</b><span>Encuentra tu lugar y empieza tus misiones.</span></a><a href="/fanclub"><b>Unirme a la Manada</b><span>Participa en el Fan Club oficial.</span></a></div></div>';hero.after(section)}if(last&&last.url&&last.url!=="/"){const start=document.querySelector(".sdl-ux-start");if(start){const box=document.createElement("div");box.className="sdl-ux-resume";const label=document.createElement("b");label.textContent="¿Quieres continuar? ";const a=document.createElement("a");a.href=last.url;a.textContent="Retomar: "+(last.title||"tu última visita")+" →";box.append(label,a);start.querySelector(".sdl-ux-start-inner").appendChild(box)}}}
 // Keep published videos before the optional expedition activities.
 if(path.replace(/\\.html$/,'')==='/episodios'||path.replace(/\/$/,'')==='/musica'){
- const placeEpisodesFirst=()=>{const section=document.getElementById(location.pathname.replace(/\/$/,'')==='/musica'?'musica':'episodios'),hub=document.getElementById('liveHub');if(section&&hub&&section.parentElement===hub.parentElement&&section.nextElementSibling!==hub)section.after(hub)};
+ if(path.replace(/\/$/,'')==='/musica'){
+  const musicStyle=document.createElement('style');
+  musicStyle.textContent='#musica .head{margin-bottom:24px}#musica .head p{max-width:none;margin:0;color:#b6c8d7;font:400 clamp(1rem,2vw,1.2rem)/1.65 Georgia,serif}.portal-section-hero .portal-back{display:inline-flex;margin-bottom:18px}';
+  document.head.appendChild(musicStyle);
+ }
+ const cleanMusicHeading=()=>{
+  if(path.replace(/\/$/,'')!=='/musica')return;
+  document.querySelector('.portal-section-hero .ey')?.remove();
+  const head=document.querySelector('#musica .head');
+  head?.querySelector('div')?.remove();
+  const phrase=head?.querySelector('p'),text='Melodías que acompañan cada juramento, batalla y descubrimiento de la manada.';
+  if(phrase&&phrase.textContent!==text)phrase.textContent=text;
+ };
+ const placeEpisodesFirst=()=>{cleanMusicHeading();const section=document.getElementById(location.pathname.replace(/\/$/,'')==='/musica'?'musica':'episodios'),hub=document.getElementById('liveHub');if(section&&hub&&section.parentElement===hub.parentElement&&section.nextElementSibling!==hub)section.after(hub)};
  placeEpisodesFirst();new MutationObserver(placeEpisodesFirst).observe(document.getElementById('publicApp')||body,{childList:true,subtree:true});
 }
 
