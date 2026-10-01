@@ -296,7 +296,10 @@ document.head.appendChild(compactPortalStyle);
     document.querySelectorAll('#sdlTimeline .sdl-timeline-card').forEach((card) => {
       const label = card.querySelector('.ey')?.textContent || '';
       const season = label.match(/TEMPORADA\s+(\d+)/i)?.[1] || '';
-      const hidden = Boolean(selected && season && season !== selected);\n      card.hidden = hidden;\n      card.style.display = hidden ? 'none' : '';\n      card.setAttribute('aria-hidden', String(hidden));
+      const hidden = Boolean(selected && season && season !== selected);
+      card.hidden = hidden;
+      card.style.display = hidden ? 'none' : '';
+      card.setAttribute('aria-hidden', String(hidden));
     });
   };
 
