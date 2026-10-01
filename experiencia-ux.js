@@ -295,7 +295,7 @@ document.head.appendChild(compactPortalStyle);
     const selected = document.querySelector('#seasonTabs .tabbtn.on')?.dataset.season || '';
     document.querySelectorAll('#sdlTimeline .sdl-timeline-card').forEach((card) => {
       const label = card.querySelector('.ey')?.textContent || '';
-      const season = label.match(/TEMPORADA\\s+(\\d+)/i)?.[1] || '';
+      const season = label.match(/TEMPORADA\s+(\d+)/i)?.[1] || '';
       card.hidden = Boolean(selected && season && season !== selected);
     });
   };
