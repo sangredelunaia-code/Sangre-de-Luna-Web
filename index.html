@@ -224,6 +224,7 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 </style>
 <style id="sdl-cinematic-polish">
 #inicio #portalSections a.portal-card[href="/episodios"]:before{background-image:var(--sdl-episode-portrait,var(--portal-image))!important;background-position:center top!important}
+#inicio #portalSections a.portal-card[href="/personajes"]:before{background-image:var(--sdl-personaje-portrait,var(--portal-image))!important;background-position:center 18%!important}
 
 /* Interior only: keep the entrance screen independent. */
 #publicApp .sec{position:relative;padding-block:clamp(52px,6vw,86px);background-image:radial-gradient(ellipse at 12% 0%,#1a3c5018,transparent 65%)}
@@ -621,6 +622,7 @@ addEventListener('keydown',e=>{if(!$('#galleryModal').classList.contains('open')
 function renderHomeHighlights(){
  const root=$('#homeHighlights'),character=cache.characters.find(x=>x.image_url);
  const episodePortrait=cache.characters.find(x=>String(x.name||'').trim().toLowerCase()==='chris'&&x.image_url);if(episodePortrait){$('#inicio').style.setProperty('--sdl-episode-portrait','url('+JSON.stringify(episodePortrait.image_url)+')');}
+ const ellaPortrait=cache.characters.find(x=>String(x.name||'').trim().toLowerCase()==='ella'&&x.image_url);if(ellaPortrait){$('#inicio').style.setProperty('--sdl-personaje-portrait','url('+JSON.stringify(ellaPortrait.image_url)+')');}
  let scene=$('#sdlCinematicScene');if(!scene){scene=document.createElement('article');scene.id='sdlCinematicScene';scene.className='sdl-cinematic-scene';scene.innerHTML='<img class="sdl-cinematic-image" alt="" loading="lazy"><div class="sdl-cinematic-copy"><span class="ey">EL UNIVERSO DE SANGRE DE LUNA</span><h2>Cuando la luna recuerda la sangre, los reinos despiertan.</h2><a class="btn" href="/universo">EXPLORAR EL UNIVERSO →</a></div>';root.prepend(scene);}
  const sceneArtwork=cache.gallery.find(x=>x.format==='16:9'&&/ciudadela|territorio|paisaje|bosque|reino/i.test(String(x.title||'')));const sceneImage=scene.querySelector('img');sceneImage.onerror=()=>{sceneImage.onerror=null;sceneImage.src='/assets/hero.webp'};sceneImage.src=sceneArtwork?galleryUrl(sceneArtwork.image_path):'/assets/hero.webp';sceneImage.alt=sceneArtwork?.title||'La Ciudadela de Sangre de Luna';
  const published=cache.episodes.filter(x=>/^[\w-]{11}$/.test(x.youtube_id||'')).slice().sort((a,b)=>Number(b.season)-Number(a.season)||Number(b.sort_order)-Number(a.sort_order));
