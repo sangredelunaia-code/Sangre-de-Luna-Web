@@ -220,4 +220,12 @@ const sagaNavStyle=document.createElement('style');
 sagaNavStyle.textContent='@media(min-width:901px){.top nav.sdl-site-nav{padding:0 3% 0 calc(3% + 202px)!important;justify-content:space-evenly!important}.top nav.sdl-site-nav>.sdl-nav-link{padding:14px 12px!important;min-height:50px!important}.top nav.sdl-site-nav .sdl-nav-panel{z-index:110!important}}@media(min-width:901px) and (max-width:1150px){.top nav.sdl-site-nav .sdl-nav-toggle,.top nav.sdl-site-nav>.sdl-nav-link{padding:14px 7px!important;font-size:.73rem!important;letter-spacing:.02em!important}}';
 document.head.appendChild(sagaNavStyle);
 
+
+const motionRoot=document.getElementById('publicApp');
+if(motionRoot&&'IntersectionObserver'in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+ const seen=new WeakSet();
+ const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.remove('sdl-reveal-wait');entry.target.classList.add('sdl-reveal-ready');observer.unobserve(entry.target)}})},{threshold:.08});
+ const collect=()=>{motionRoot.querySelectorAll('.sdl-highlight,.sec .head').forEach(el=>{if(seen.has(el))return;seen.add(el);el.classList.add('sdl-reveal-wait');observer.observe(el)})};
+ collect();new MutationObserver(collect).observe(motionRoot,{childList:true,subtree:true});
+}
 })();
