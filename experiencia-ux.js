@@ -115,7 +115,12 @@ if(!document.querySelector(".top nav.nav")){
  .sdl-has-shared-header .portal{z-index:80}
  .sdl-has-shared-header #intro>div{margin:auto}
  .sdl-has-shared-header:has(#tour){height:auto;overflow:auto}
- .sdl-has-shared-header #tour{height:calc(100svh - var(--sdl-header-height));min-height:650px}
+ .sdl-has-shared-header:has(#tour) .sdl-common-header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:100!important}
+ .sdl-has-shared-header #tour,.sdl-has-shared-header #sdl360App{position:fixed!important;top:var(--sdl-header-height,179px)!important;bottom:0!important;left:0!important;right:0!important;height:calc(100dvh - var(--sdl-header-height,179px))!important;min-height:0!important;z-index:80!important}
+ .sdl-has-shared-header #sdl360App .s360-overlay{max-height:100%;overflow-y:auto!important;overscroll-behavior:contain}
+ .sdl-has-shared-header #sdl360App .s360-panel{margin:auto}
+ @media(max-height:800px){.sdl-has-shared-header #sdl360App .s360-panel h2{font-size:clamp(2rem,4.3vw,3.5rem)}.sdl-has-shared-header #sdl360App .s360-panel>img{width:95px}.sdl-has-shared-header #sdl360App .s360-territory{min-height:125px}}
+
  .sdl-has-shared-header #world .legend,.sdl-has-shared-header #world .panel{top:calc(var(--sdl-header-height) + 86px);max-height:calc(100svh - var(--sdl-header-height) - 150px)}
  .sdl-game-header #mode .modeBrand>img,.sdl-game-header #menu .hero>div>img[src$="/logo.webp"]{display:none!important}
  .sdl-game-header{height:100dvh!important;overflow:hidden!important}
