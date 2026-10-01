@@ -202,4 +202,9 @@ if(path.replace(/\\.html$/,'')==='/episodios'||path.replace(/\/$/,'')==='/musica
  placeEpisodesFirst();new MutationObserver(placeEpisodesFirst).observe(document.getElementById('publicApp')||body,{childList:true,subtree:true});
 }
 
+// Keep seven navigation entries clear of the large logo.
+const sagaNavStyle=document.createElement('style');
+sagaNavStyle.textContent='@media(min-width:901px){.top nav.sdl-site-nav{padding:0 3% 0 calc(3% + 202px)!important;justify-content:space-evenly!important}.top nav.sdl-site-nav>.sdl-nav-link{padding:14px 12px!important;min-height:50px!important}.top nav.sdl-site-nav .sdl-nav-panel{z-index:110!important}}@media(min-width:901px) and (max-width:1150px){.top nav.sdl-site-nav .sdl-nav-toggle,.top nav.sdl-site-nav>.sdl-nav-link{padding:14px 7px!important;font-size:.73rem!important;letter-spacing:.02em!important}}';
+document.head.appendChild(sagaNavStyle);
+
 })();
