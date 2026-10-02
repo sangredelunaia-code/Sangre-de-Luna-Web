@@ -1001,6 +1001,51 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
   #dashboard main{width:min(100% - 20px,900px)!important;margin-top:14px!important}
 }
 </style>
+<style id="sdl-admin-city-bg">
+#dashboard{
+  position:relative!important;
+  isolation:isolate;
+  background:#03070c!important;
+}
+#dashboard:before{
+  content:''!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:-2!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(180deg,rgba(3,7,12,.58),rgba(3,7,12,.82)),
+    url('/assets/admin-ciudadela-bg.webp') center 34% / cover no-repeat!important;
+  filter:saturate(.84) contrast(1.02);
+}
+#dashboard:after{
+  content:''!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:-1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 22% 14%,rgba(176,210,244,.12),transparent 26%),
+    linear-gradient(180deg,rgba(4,15,25,.08),rgba(2,7,12,.26) 52%,rgba(2,7,12,.48));
+}
+#dashboard .panel,
+#sdlAdminWorkspace{
+  background:rgba(5,13,21,.90)!important;
+  backdrop-filter:blur(10px)!important;
+}
+#dashboard .fld,
+#dashboard .stat{
+  background:rgba(7,17,26,.90)!important;
+  backdrop-filter:blur(6px)!important;
+}
+@media(max-width:900px){
+  #dashboard:before{
+    background:
+      linear-gradient(180deg,rgba(3,7,12,.68),rgba(3,7,12,.88)),
+      url('/assets/admin-ciudadela-bg.webp') center top / cover no-repeat!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="publicApp">
