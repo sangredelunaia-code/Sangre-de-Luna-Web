@@ -3,50 +3,366 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
-    "api/cronista.js": {"maxDuration": 30},
-    "api/seo.js": {"maxDuration": 10},
-    "api/private.js": {"maxDuration": 10}
+    "api/cronista.js": {
+      "maxDuration": 30
+    },
+    "api/seo.js": {
+      "maxDuration": 10
+    },
+    "api/private.js": {
+      "maxDuration": 10
+    }
   },
   "redirects": [
-    {"source":"/index.html","destination":"/","permanent":true},
-    {"source":"/index","destination":"/","permanent":true}
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index",
+      "destination": "/",
+      "permanent": true
+    }
   ],
   "headers": [
-    {"source":"/","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/>; rel=\"canonical\""}]},
-    {"source":"/personajes","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/personajes>; rel=\"canonical\""}]},
-    {"source":"/historias","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/historias>; rel=\"canonical\""}]},
-    {"source":"/episodios","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/episodios>; rel=\"canonical\""}]},
-    {"source":"/musica","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/musica>; rel=\"canonical\""}]},
-    {"source":"/galeria","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/galeria>; rel=\"canonical\""}]},
-    {"source":"/desafios","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/desafios>; rel=\"canonical\""}]},
-    {"source":"/fanclub","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/fanclub>; rel=\"canonical\""}]},
-    {"source":"/mapa","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/mapa>; rel=\"canonical\""}]},
-    {"source":"/tour","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/tour>; rel=\"canonical\""}]},
-    {"source":"/viaje","headers":[{"key":"X-Robots-Tag","value":"index, follow, max-image-preview:large, max-snippet:-1"},{"key":"Link","value":"<https://sangre-de-luna-public.vercel.app/viaje>; rel=\"canonical\""}]},
-    {"source":"/api/:path*","headers":[{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/robots.txt","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=3600, must-revalidate"},{"key":"Content-Type","value":"text/plain; charset=utf-8"}]},
-    {"source":"/sitemap.xml","headers":[{"key":"Cache-Control","value":"public, max-age=0, s-maxage=3600, must-revalidate"},{"key":"Content-Type","value":"application/xml; charset=utf-8"}]},
-    {"source":"/desafios-admin.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/la-manada","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/la-manada.html","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/la-manada/:path*","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"Content-Type","value":"text/html; charset=utf-8"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]},
-    {"source":"/fanclub-separation.js","headers":[{"key":"Cache-Control","value":"no-store, no-cache, must-revalidate"},{"key":"X-Robots-Tag","value":"noindex, nofollow, nosnippet"}]}
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/personajes",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/personajes>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/historias",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/historias>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/episodios",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/episodios>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/musica",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/musica>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/galeria",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/galeria>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/desafios",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/desafios>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/fanclub",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/fanclub>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/mapa",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/mapa>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/tour",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/tour>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/viaje",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow, max-image-preview:large, max-snippet:-1"
+        },
+        {
+          "key": "Link",
+          "value": "<https://sangre-de-luna-public.vercel.app/viaje>; rel=\"canonical\""
+        }
+      ]
+    },
+    {
+      "source": "/api/:path*",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, s-maxage=3600, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/desafios-admin.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/la-manada",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/la-manada.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/la-manada/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/fanclub-separation.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate"
+        }
+      ]
+    }
   ],
   "rewrites": [
-    {"source":"/assets/:path*","destination":"https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/:path*"},
-    {"source":"/","destination":"/api/seo?route=home"},
-    {"source":"/personajes","destination":"/api/seo?route=personajes"},
-    {"source":"/historias","destination":"/api/seo?route=historias"},
-    {"source":"/episodios","destination":"/api/seo?route=episodios"},
-    {"source":"/musica","destination":"/api/seo?route=musica"},
-    {"source":"/galeria","destination":"/api/seo?route=galeria"},
-    {"source":"/desafios","destination":"/api/seo?route=desafios"},
-    {"source":"/fanclub","destination":"/api/seo?route=fanclub"},
-    {"source":"/mapa","destination":"/api/seo?route=mapa"},
-    {"source":"/tour","destination":"/api/seo?route=tour"},
-    {"source":"/viaje","destination":"/api/seo?route=viaje"},
-    {"source":"/la-manada","destination":"/api/private"},
-    {"source":"/la-manada.html","destination":"/api/private"},
-    {"source":"/la-manada/:path*","destination":"/api/private"}
+    {
+      "source": "/assets/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/:path*"
+    },
+    {
+      "source": "/",
+      "destination": "/api/seo?route=home"
+    },
+    {
+      "source": "/personajes",
+      "destination": "/api/seo?route=personajes"
+    },
+    {
+      "source": "/historias",
+      "destination": "/api/seo?route=historias"
+    },
+    {
+      "source": "/episodios",
+      "destination": "/api/seo?route=episodios"
+    },
+    {
+      "source": "/musica",
+      "destination": "/api/seo?route=musica"
+    },
+    {
+      "source": "/galeria",
+      "destination": "/api/seo?route=galeria"
+    },
+    {
+      "source": "/desafios",
+      "destination": "/api/seo?route=desafios"
+    },
+    {
+      "source": "/fanclub",
+      "destination": "/api/seo?route=fanclub"
+    },
+    {
+      "source": "/mapa",
+      "destination": "/api/seo?route=mapa"
+    },
+    {
+      "source": "/tour",
+      "destination": "/api/seo?route=tour"
+    },
+    {
+      "source": "/viaje",
+      "destination": "/api/seo?route=viaje"
+    },
+    {
+      "source": "/la-manada",
+      "destination": "/api/private"
+    },
+    {
+      "source": "/la-manada.html",
+      "destination": "/api/private"
+    },
+    {
+      "source": "/la-manada/:path*",
+      "destination": "/api/private"
+    }
   ]
 }
