@@ -300,7 +300,7 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 </style><style id="sdl-admin-ux-v2-style">
 #dashboard{background:linear-gradient(180deg,#07111b 0,#09141f 100%);min-height:100dvh}
 #dashboard .adm-top{position:sticky;top:0;z-index:120;background:rgba(5,13,21,.94);backdrop-filter:blur(14px);border-bottom:1px solid #20384c;padding:12px clamp(16px,3vw,34px)}
-#dashboard .adm-top img{max-height:48px}
+#dashboard .adm-top img{display:block;width:190px!important;height:58px!important;max-width:32vw;max-height:none!important;object-fit:contain;object-position:left center;flex:0 0 auto;filter:drop-shadow(0 0 10px rgba(150,210,255,.18))}
 #dashboard .who{gap:10px;align-items:center}
 #dashboard .adm-shell{padding:24px clamp(14px,3vw,34px) 44px}
 #dashboard main{max-width:1320px;width:100%}
@@ -361,6 +361,7 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
  #sdlAdminWorkspace{align-items:flex-start}
 }
 @media(max-width:620px){
+ #dashboard .adm-top img{width:145px!important;height:48px!important;max-width:42vw}
  #dashboard .panel{padding:18px 14px;border-radius:16px}
  #dashboard .formgrid{grid-template-columns:1fr}
  #dashboard .fld.span2{grid-column:auto}
