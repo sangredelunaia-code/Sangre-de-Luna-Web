@@ -1030,6 +1030,38 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
   }
 }
 </style>
+<style id="sdl-admin-background-final">
+#adminApp{
+  min-height:100vh!important;
+  background:
+    radial-gradient(circle at 20% 12%,rgba(173,210,242,.12),transparent 27%),
+    linear-gradient(180deg,rgba(2,7,12,.48),rgba(2,7,12,.68) 52%,rgba(2,7,12,.82)),
+    url('/assets/admin-ciudadela-bg.webp') center 28% / cover fixed no-repeat!important;
+}
+#adminApp #dashboard{
+  min-height:100vh!important;
+  background:transparent!important;
+}
+#adminApp .adm-shell{
+  background:transparent!important;
+}
+#adminApp .panel,
+#adminApp #sdlAdminWorkspace{
+  background:rgba(5,13,21,.78)!important;
+  backdrop-filter:blur(10px)!important;
+}
+#adminApp .fld,
+#adminApp .stat{
+  background:rgba(7,17,26,.82)!important;
+}
+@media(max-width:900px){
+  #adminApp{
+    background:
+      linear-gradient(180deg,rgba(2,7,12,.62),rgba(2,7,12,.84)),
+      url('/assets/admin-ciudadela-bg.webp') center top / cover no-repeat!important;
+  }
+}
+</style>
 </head>
 <body>
 <div id="publicApp">
@@ -1582,7 +1614,10 @@ $('#enterSite').onclick=()=>{$('#splash').classList.add('hide');sessionStorage.s
 // ADMIN
 let adminInitialized=false;
 function openAdminMode(updateUrl=true){
- if(updateUrl)history.pushState({},'',location.pathname+'?admin=1');
+ if(updateUrl){
+   const target=location.pathname+'?admin=1';
+   if(location.pathname+location.search!==target){location.assign(target);return}
+ }
  $('#splash').classList.add('hide');
  $('#publicApp').classList.add('hidden');
  $('#adminApp').classList.remove('hidden');
