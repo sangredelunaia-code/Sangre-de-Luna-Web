@@ -74,7 +74,7 @@ function externalizeStatic(html){
   html=html.replace(/([("'`])\/?assets\//g,`$1${ASSETS}/`);
   html=html.replace(/href=(["'])\/(?!api\/)([^"']+\.css(?:\?[^"']*)?)\1/gi,(_,q,file)=>`href=${q}${CDN}/${file}${q}`);
   html=html.replace(/src=(["'])\/desafios-admin\.js(?:\?[^"']*)?\1/gi,(_,q)=>`src=${q}${ADMIN_LOADER}${q}`);
-  html=html.replace(/src=(['"])\\/ciudadela-vive\\.js(?:\\?[^'"]*)?\\1/gi,(_,q)=>`src=${q}${CDN}/ciudadela-vive.js?v=20261002${q}`);
+  html=html.replace(/src=(["'])\/ciudadela-vive\.js(?:\?[^"']*)?\1/gi,(_,q)=>'src='+q+CDN+'/ciudadela-vive.js?v=20261002'+q);
   html=html.replace(/src=(["'])\/(?!api\/)([^"']+\.js(?:\?[^"']*)?)\1/gi,(_,q,file)=>`src=${q}${CDN}/${file}${q}`);
   return html;
 }
