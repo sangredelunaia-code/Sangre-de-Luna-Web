@@ -1,0 +1,67 @@
+name: Deploy Restored Sangre de Luna Game
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'game-restored/**'
+      - '.github/workflows/vercel-game.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sangre-de-luna-game-production
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: team_USwuTxCjOXo8HKndCZqkUn24
+  VERCEL_PROJECT_ID: prj_VXEIZvn8s0qq57aAbPS7UnR1DrzG
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: game-restored
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Detect Vercel credential
+        id: auth
+        working-directory: .
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          if [ -n "$VERCEL_TOKEN" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "VERCEL_TOKEN is not configured; deployment skipped."
+          fi
+
+      - name: Set up Node.js
+        if: steps.auth.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Pull game project settings
+        if: steps.auth.outputs.ready == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx --yes vercel@latest pull --yes --environment=production --token="$VERCEL_TOKEN"
+
+      - name: Deploy restored game to production
+        if: steps.auth.outputs.ready == 'true'
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: npx --yes vercel@latest deploy --prod --yes --token="$VERCEL_TOKEN"
+
+      - name: Deployment status
+        if: steps.auth.outputs.ready != 'true'
+        working-directory: .
+        run: echo "No game deployment attempted because VERCEL_TOKEN is unavailable."

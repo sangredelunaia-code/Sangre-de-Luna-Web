@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#05080d">
+  <title>Recorrido 360° | Sangre de Luna</title>
+  <link rel="icon" href="/assets/Favicon.png">
+  <style>
+    :root{--ink:#f5f1e8;--muted:#b9c3ce;--silver:#a9d9f5;--line:#a8d8f342;--blue:#6ec5f7;--night:#05080d;--panel:#08111cdb;--gold:#d6ad68;--ease:cubic-bezier(.22,.8,.2,1)}
+    *{box-sizing:border-box}html,body{height:100%;margin:0;background:#05080d;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow:hidden}button,a{font:inherit}button{color:inherit}a{color:inherit}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .tour{position:relative;width:100%;height:100%;min-height:100svh;isolation:isolate;background:#03060a}.scene,.webgl{position:absolute;inset:0;z-index:0}.scene{background-position:center;background-size:cover;transition:opacity .6s var(--ease);opacity:0}.scene.active{opacity:1}.webgl{cursor:grab;opacity:0;transition:opacity .65s var(--ease);touch-action:none}.webgl.ready{opacity:1}.webgl:active{cursor:grabbing}.webgl canvas{display:block;width:100%;height:100%}.veil{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#02060c99 0%,transparent 30%,transparent 52%,#02050bd9 100%),radial-gradient(circle at 50% 45%,transparent 32%,#02050a70 100%)}.grain{position:absolute;inset:0;z-index:2;opacity:.1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E")}.scene-loading{position:absolute;z-index:5;left:50%;top:50%;transform:translate(-50%,-50%);padding:10px 14px;border:1px solid #a8ddf74f;border-radius:999px;background:#06111dcc;color:#dff4ff;font-size:.65rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;backdrop-filter:blur(10px)}.scene-loading[hidden]{display:none}
+    .topbar{position:absolute;z-index:8;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;padding:max(18px,env(safe-area-inset-top)) clamp(18px,3.2vw,52px) 16px;background:linear-gradient(#03070dbd,transparent)}.brand{justify-self:center;display:flex;align-items:center;gap:11px;text-align:center}.brand img{width:38px;height:38px;object-fit:contain;filter:drop-shadow(0 0 14px #8bd4ff55)}.brand span{display:block;font:700 clamp(.72rem,1.2vw,.9rem) Georgia,serif;letter-spacing:.22em}.brand small{display:block;margin-top:3px;color:#a2b0bf;font-size:.58rem;letter-spacing:.25em}.return,.control{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;border:1px solid var(--line);border-radius:999px;background:#06101aaa;color:#e7f4ff;text-decoration:none;cursor:pointer;backdrop-filter:blur(12px);transition:.25s var(--ease)}.return{justify-self:start;padding:0 16px}.return:hover,.control:hover,.control.on{border-color:#9bddff;background:#10283bd9;box-shadow:0 0 25px #53b9ef24}.controls{justify-self:end;display:flex;gap:8px}.control{width:42px;padding:0}.control svg,.return svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7}.control-label{display:none}
+    .progress{position:absolute;z-index:7;left:clamp(20px,4vw,64px);top:50%;transform:translateY(-50%);display:grid;gap:14px}.progress button{position:relative;width:11px;height:11px;padding:0;border:1px solid #cfeaff99;border-radius:50%;background:#08131e88;cursor:pointer}.progress button:after{content:"";position:absolute;inset:-7px;border:1px solid transparent;border-radius:50%;transition:.25s}.progress button.active{background:#ccecff;box-shadow:0 0 18px #8dd7ff}.progress button.active:after{border-color:#9edbff68}.progress:before{content:"";position:absolute;z-index:-1;top:5px;bottom:5px;left:5px;width:1px;background:#bfe9ff3b}
+    .hotspots{position:absolute;inset:0;z-index:5;pointer-events:none}.hotspot{position:absolute;width:36px;height:36px;padding:0;transform:translate(-50%,-50%);border:0;background:transparent;pointer-events:auto;cursor:pointer}.hotspot:before,.hotspot:after{content:"";position:absolute;border-radius:50%;inset:9px;background:#e7f6ff;box-shadow:0 0 9px #fff,0 0 24px #75cfff}.hotspot:after{inset:0;background:transparent;border:1px solid #d8f2ff;animation:pulse 2.2s infinite}.hotspot span{position:absolute;left:50%;top:42px;transform:translateX(-50%);width:max-content;max-width:190px;padding:7px 10px;border:1px solid #b7ddf335;border-radius:7px;background:#020812e8;color:#e9f6ff;font-size:.68rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;opacity:0;transition:.22s;pointer-events:none}.hotspot:hover span,.hotspot:focus-visible span{opacity:1}.hotspot:focus-visible{outline:2px solid #fff;outline-offset:4px;border-radius:50%}@keyframes pulse{0%{transform:scale(.35);opacity:1}75%,100%{transform:scale(1.35);opacity:0}}
+    .scene-card{position:absolute;z-index:6;left:clamp(20px,6vw,96px);right:clamp(20px,6vw,96px);bottom:max(28px,env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,680px) auto;align-items:end;justify-content:space-between;gap:28px;pointer-events:none}.copy{pointer-events:auto;text-shadow:0 2px 18px #000}.eyebrow{display:flex;align-items:center;gap:10px;margin:0 0 10px;color:var(--silver);font-size:.68rem;font-weight:800;letter-spacing:.24em}.eyebrow:before{content:"";width:34px;height:1px;background:var(--silver)}h1{max-width:800px;margin:0;font:400 clamp(2.25rem,5.6vw,5.8rem)/.88 Georgia,"Times New Roman",serif;letter-spacing:-.035em;text-transform:uppercase}h1 em{color:#c8e9fb;font-style:normal}.description{max-width:620px;margin:17px 0 0;color:#d0d9e2;font-size:clamp(.88rem,1.4vw,1.04rem);line-height:1.65}.steps{pointer-events:auto;display:flex;align-items:center;gap:10px}.nav-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 20px;border:1px solid #b9dff044;border-radius:999px;background:#07111cba;color:#ecf7ff;cursor:pointer;backdrop-filter:blur(12px);font-size:.74rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;transition:.25s}.nav-btn.primary{border-color:#b9e6ff;background:#d9f1ff;color:#07101a}.nav-btn:hover{transform:translateY(-2px);box-shadow:0 9px 28px #0008}.nav-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}.counter{min-width:58px;text-align:center;color:#b8c6d2;font:italic 1rem Georgia,serif}.counter b{color:white;font-size:1.35rem;font-style:normal}
+    .tip{position:absolute;z-index:6;right:clamp(20px,3vw,48px);top:98px;color:#b6c4d0;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;opacity:.8}.watermark{position:absolute;z-index:5;right:clamp(20px,3vw,48px);bottom:15px;color:#d9eafa70;font-size:.55rem;letter-spacing:.15em;text-transform:uppercase}
+    .overlay{position:fixed;z-index:20;inset:0;display:grid;place-items:center;padding:24px;background:#02050bd9;backdrop-filter:blur(18px);transition:opacity .55s var(--ease),visibility .55s}.overlay[hidden]{display:none}.intro{background:linear-gradient(#02060b8f,#02060bea),url('/assets/tour-360-dron.webp') center/cover}.intro-panel{width:min(900px,100%);text-align:center}.intro-logo{width:min(155px,34vw);filter:drop-shadow(0 0 30px #8dcfff45)}.intro-tag{margin:17px 0 8px;color:var(--silver);font-size:.68rem;font-weight:800;letter-spacing:.3em}.intro h2,.finale h2{margin:0;font:400 clamp(2.35rem,6vw,5rem)/.92 Georgia,serif;text-transform:uppercase}.intro p,.finale p{max-width:650px;margin:16px auto;color:#c3ced8;line-height:1.6}.territories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:24px auto 18px;text-align:left}.territory{position:relative;min-height:170px;padding:0;overflow:hidden;border:1px solid #b9ddf43d;border-radius:18px;background:#07111c;color:#fff;cursor:pointer;isolation:isolate;transition:.3s var(--ease)}.territory:before{content:"";position:absolute;inset:0;z-index:-2;background:var(--territory-image) center/cover;transition:.5s var(--ease)}.territory:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#02060b20,#02060be8)}.territory:hover,.territory:focus-visible,.territory.active{transform:translateY(-3px);border-color:#d9efff;box-shadow:0 16px 40px #000a,0 0 26px #70cfff26}.territory:hover:before,.territory.active:before{transform:scale(1.04)}.territory-copy{position:absolute;left:18px;right:18px;bottom:16px}.territory small{display:block;margin-bottom:5px;color:#b9dcf0;font-size:.57rem;font-weight:800;letter-spacing:.18em}.territory strong{display:block;font:400 1.32rem Georgia,serif;text-transform:uppercase}.territory span{display:block;margin-top:5px;color:#c3ced8;font-size:.72rem}.start{min-width:230px;min-height:56px;border:1px solid #d8efff;border-radius:999px;background:#e4f4ff;color:#07101a;font-size:.75rem;font-weight:900;letter-spacing:.17em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 42px #68c8ff25;transition:.25s}.start:hover{transform:translateY(-2px);box-shadow:0 10px 46px #68c8ff3d}.intro-note{display:block;margin-top:12px;color:#91a3b3;font-size:.64rem}.map-panel,.detail-panel{position:relative;width:min(820px,100%);max-height:90svh;overflow:auto;padding:clamp(24px,5vw,52px);border:1px solid #a8d9f23d;border-radius:24px;background:linear-gradient(145deg,#0b1926f2,#050a12f2);box-shadow:0 28px 100px #000}.close{position:absolute;right:16px;top:16px;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:#07111d;color:#e8f7ff;cursor:pointer}.panel-kicker{color:var(--silver);font-size:.65rem;font-weight:800;letter-spacing:.24em;text-transform:uppercase}.map-panel h2,.detail-panel h2{margin:8px 0 12px;font:400 clamp(2rem,4vw,3.2rem) Georgia,serif}.map-panel>p,.detail-panel>p{color:#bfcbd5;line-height:1.7}.map-territories{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0 5px}.map-territory{padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:#07111d;color:#b9c9d6;cursor:pointer;font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.map-territory.active{border-color:#d9efff;background:#d9efff;color:#07101a}.map-route{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:22px 14px;margin-top:25px}.map-node{position:relative;z-index:1;display:grid;place-items:center;gap:11px;padding:0;border:0;background:none;color:#aebdca;cursor:pointer}.map-node i{display:grid;place-items:center;width:48px;height:48px;border:1px solid #a5dbf17a;border-radius:50%;background:#07131e;font:normal 700 .72rem Georgia}.map-node.active i,.map-node:hover i{border-color:#e5f6ff;background:#c9ebfc;color:#07101a;box-shadow:0 0 26px #76ccfa55}.map-node span{font-size:.64rem;font-weight:800;letter-spacing:.12em;text-align:center;text-transform:uppercase}.detail-icon{display:grid;place-items:center;width:64px;height:64px;border:1px solid #a4dfff80;border-radius:50%;color:#cceeff;font:400 1.7rem Georgia;box-shadow:inset 0 0 24px #63c7ff16}.detail-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:26px}.detail-link[hidden]{display:none}.finale{text-align:center}.final-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:28px}.finale .start.secondary{background:transparent;color:#e7f5ff}
+    @media(max-width:840px){.topbar{grid-template-columns:1fr auto}.brand{justify-self:start}.return{display:none}.controls{grid-column:2;grid-row:1}.tip{display:none}.scene-card{grid-template-columns:1fr;gap:20px}.steps{justify-content:flex-end}.progress{left:17px}.hotspot span{display:none}h1{font-size:clamp(2.15rem,10vw,4.5rem)}.description{font-size:.84rem;max-width:90%}.control-label{display:none}}
+    @media(max-width:520px){.topbar{padding:14px}.brand img{width:34px;height:34px}.brand span{font-size:.67rem}.brand small{font-size:.48rem}.controls{gap:5px}.control{width:38px;height:38px;min-height:38px}.scene-card{left:20px;right:16px;bottom:max(19px,env(safe-area-inset-bottom));gap:14px}.eyebrow{margin-bottom:7px}.description{margin-top:11px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}.nav-btn{min-height:44px;padding:0 15px;font-size:.63rem}.counter{min-width:42px}.progress{display:none}.watermark{left:20px;right:auto;bottom:7px}.map-route{grid-template-columns:1fr}.map-node{grid-template-columns:48px 1fr;justify-items:start;text-align:left}.map-node span{text-align:left}.intro p{font-size:.82rem;margin:11px auto}.intro-logo{width:105px}.intro h2{font-size:2.15rem}.territories{grid-template-columns:1fr;gap:9px;margin:15px auto 13px}.territory{min-height:105px}.territory-copy{left:14px;bottom:12px}.territory strong{font-size:1.05rem}.territory span{font-size:.66rem}.start{min-height:48px}.overlay{padding:14px}.map-panel,.detail-panel{padding:35px 22px 25px}.hotspot{width:44px;height:44px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}.scene,.scene.active{transform:none!important}}
+  </style>
+<!-- SDL SEO START -->
+<meta name="description" content="Recorre en 360° los escenarios del universo Sangre de Luna y descubre la Ciudadela y sus espacios.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+<link rel="canonical" href="https://sangre-de-luna-public.vercel.app/tour">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Sangre de Luna">
+<meta property="og:title" content="Recorrido 360° | Sangre de Luna">
+<meta property="og:description" content="Recorre en 360° los escenarios del universo Sangre de Luna y descubre la Ciudadela y sus espacios.">
+<meta property="og:url" content="https://sangre-de-luna-public.vercel.app/tour">
+<meta property="og:image" content="https://sangre-de-luna-public.vercel.app/assets/hero.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Recorrido 360° | Sangre de Luna">
+<meta name="twitter:description" content="Recorre en 360° los escenarios del universo Sangre de Luna y descubre la Ciudadela y sus espacios.">
+<meta name="twitter:image" content="https://sangre-de-luna-public.vercel.app/assets/hero.webp">
+<!-- SDL SEO END -->
+<script src="/site-visits.js" defer></script>
+</head>
+<body>
+  <main id="tour" class="tour" aria-label="Tour virtual por las tierras de Sangre de Luna">
+    <div id="sceneBackground" class="scene active" role="img" aria-label="Vista aérea de la Ciudadela"></div>
+    <div id="webgl" class="webgl" aria-label="Panorama 360 grados; arrastra para mirar alrededor"></div>
+    <div class="veil"></div><div class="grain"></div>
+    <div id="sceneLoading" class="scene-loading">Abriendo panorama 360°…</div>
+
+    <header class="topbar">
+      <a class="return" href="/" aria-label="Volver al sitio principal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/><path d="M8 12h11"/></svg><span>Volver al sitio</span></a>
+      <div class="brand"><img src="/assets/logo-oficial.png" alt=""><div><span>SANGRE DE LUNA</span><small id="territoryBrand">TOUR DE LA CIUDADELA</small></div></div>
+      <div class="controls">
+        <button id="mapButton" class="control" type="button" aria-label="Abrir mapa" title="Mapa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 5-3 8 3 5-3v15l-5 3-8-3-5 3Z"/><path d="M8 3v15M16 6v15"/></svg></button>
+        <button id="musicButton" class="control on" type="button" aria-label="Silenciar música" title="Música ambiental"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg></button>
+        <button id="voiceButton" class="control on" type="button" aria-label="Silenciar voz del Cronista" title="Voz del Cronista"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9v6h4l5 4V5L9 9Z"/><path d="M17 9c1 1 1 5 0 6M20 6c3 3 3 9 0 12"/></svg></button>
+        <button id="fullscreenButton" class="control" type="button" aria-label="Pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg></button>
+      </div>
+    </header>
+
+    <nav id="progress" class="progress" aria-label="Escenas del recorrido"></nav>
+    <div id="hotspots" class="hotspots" aria-label="Puntos explorables"></div>
+    <p class="tip">Arrastra para mirar 360° · Rueda para acercar · Selecciona los destellos</p>
+
+    <section class="scene-card" aria-live="polite">
+      <div class="copy">
+        <p id="sceneEyebrow" class="eyebrow"></p>
+        <h1 id="sceneTitle"></h1>
+        <p id="sceneDescription" class="description"></p>
+      </div>
+      <div class="steps">
+        <button id="prevButton" class="nav-btn" type="button">← Anterior</button>
+        <span class="counter"><b id="sceneNumber">01</b> / <span id="sceneTotal">07</span></span>
+        <button id="nextButton" class="nav-btn primary" type="button">Continuar →</button>
+      </div>
+    </section>
+    <small class="watermark">© Sangre de Luna · Arte protegido</small>
+    <p id="announcement" class="sr-only" aria-live="assertive"></p>
+  </main>
+
+  <section id="intro" class="overlay intro" aria-labelledby="introTitle">
+    <div class="intro-panel">
+      <img class="intro-logo" src="/assets/logo-oficial.png" alt="Sangre de Luna">
+      <p class="intro-tag">TOUR 360° · EXPLORACIÓN 3D</p>
+      <h2 id="introTitle">Elige una tierra<br>por explorar</h2>
+      <p>Viaja por los territorios de Sangre de Luna acompañado por el Cronista. Cada ruta conserva sus propios lugares, historia y secretos.</p>
+      <div id="territorySelector" class="territories" aria-label="Territorios disponibles">
+        <button class="territory active" type="button" data-territory="citadel" style="--territory-image:url('/assets/tour-360-dron.webp')">
+          <span class="territory-copy"><small>TERRITORIO DE LA MANADA</small><strong>La Ciudadela</strong><span>7 lugares · Fortaleza del Alfa</span></span>
+        </button>
+        <button class="territory" type="button" data-territory="east" style="--territory-image:url('/assets/tour-vampiro-aerea.webp')">
+          <span class="territory-copy"><small>TIERRAS DEL ESTE</small><strong>Reino Vampiro</strong><span>6 lugares · Corte del príncipe Aleric</span></span>
+        </button>
+      </div>
+      <button id="startButton" class="start" type="button">Explorar La Ciudadela</button>
+      <small class="intro-note">Arrastra para mirar en todas direcciones · Música y narración épica incluidas</small>
+    </div>
+  </section>
+
+  <section id="mapOverlay" class="overlay" hidden aria-labelledby="mapTitle">
+    <div class="map-panel" role="dialog" aria-modal="true">
+      <button class="close" data-close="mapOverlay" type="button" aria-label="Cerrar mapa">×</button>
+      <span class="panel-kicker">Mapa del recorrido</span>
+      <h2 id="mapTitle">La Ciudadela</h2>
+      <p id="mapDescription">Selecciona un lugar para trasladarte directamente o cambia de territorio.</p>
+      <div id="mapTerritories" class="map-territories" aria-label="Cambiar territorio"></div>
+      <div id="mapRoute" class="map-route"></div>
+    </div>
+  </section>
+
+  <section id="detailOverlay" class="overlay" hidden aria-labelledby="detailTitle">
+    <div class="detail-panel" role="dialog" aria-modal="true">
+      <button class="close" data-close="detailOverlay" type="button" aria-label="Cerrar detalle">×</button>
+      <div class="detail-icon">✦</div>
+      <span id="detailKicker" class="panel-kicker"></span>
+      <h2 id="detailTitle"></h2>
+      <p id="detailText"></p>
+      <div class="detail-actions"><a id="detailLink" class="nav-btn primary detail-link" href="/" hidden>Abrir en el sitio</a><button class="nav-btn" data-close="detailOverlay" type="button">Seguir explorando</button></div>
+    </div>
+  </section>
+
+  <section id="finale" class="overlay finale" hidden aria-labelledby="finaleTitle">
+    <div>
+      <span class="panel-kicker">RECORRIDO COMPLETADO</span>
+      <h2 id="finaleTitle">Territorio<br>recorrido</h2>
+      <p id="finaleText">Has completado esta expedición por las tierras de Sangre de Luna.</p>
+      <div class="final-actions"><button id="repeatButton" class="start secondary" type="button">Repetir recorrido</button><button id="chooseTerritoryButton" class="start" type="button">Explorar otra tierra</button><a class="start secondary" href="/" style="display:inline-flex;align-items:center;justify-content:center;text-decoration:none">Volver al sitio</a></div>
+    </div>
+  </section>
+
+  <audio id="ambient" src="/assets/blood-moon-theme.mp3" preload="metadata" loop></audio>
+  <script type="module">
+  (async()=>{
+    const territories={
+      citadel:{name:'La Ciudadela',brand:'TOUR DE LA CIUDADELA',intro:'Explorar La Ciudadela',finalTitle:'La Ciudadela<br>te reconoce',finalText:'Has atravesado la fortaleza de la Manada, desde sus cielos y murallas hasta el Salón del Trono del Alfa.',scenes:[
+      {label:'I · VISTA DE DRON',title:'La Ciudadela desde el <em>cielo</em>',plain:'Vista aérea de la Ciudadela',image:'/assets/tour-360-dron.webp',description:'Un vuelo nocturno revela la fortaleza, los bosques y las rutas que conectan las tierras de Sangre de Luna.',narration:'Desde las alturas puedes contemplar la Ciudadela completa. Sus torres vigilan los bosques, los caminos y las tierras que se extienden bajo la luna.',hotspots:[
+        {yaw:0,pitch:-8,x:50,y:50,title:'La Ciudadela',text:'La fortaleza reúne torres, patios, archivos y salones protegidos por una misma muralla.'},
+        {yaw:-32,pitch:23,x:35,y:28,title:'La luna sobre las tierras',text:'La luz lunar dibuja los caminos y convierte la Ciudadela en un faro visible desde la distancia.'},
+        {yaw:72,pitch:-12,x:76,y:58,title:'Rutas exteriores',text:'Los caminos unen el bosque con las montañas y las regiones todavía no exploradas.'}
+      ]},
+      {label:'II · EL UMBRAL',title:'Las Puertas de la <em>Ciudadela</em>',plain:'Las Puertas de la Ciudadela',image:'/assets/tour-360-puertas.webp',description:'El visitante cruza el bosque y llega frente a las enormes murallas. Todo juramento comienza atravesando este umbral.',narration:'Has descendido ante las puertas de la Ciudadela. Tras estas murallas, la Manada protege sus juramentos y la memoria de sus aliados.',hotspots:[
+        {yaw:0,pitch:0,x:50,y:46,title:'El gran umbral',text:'La entrada principal separa las rutas exteriores del corazón protegido de la Ciudadela.'},
+        {yaw:168,pitch:-2,x:16,y:50,title:'El bosque exterior',text:'A tu espalda permanece el sendero nocturno por el que llegan aliados, mensajeros y viajeros.'},
+        {yaw:-43,pitch:17,x:30,y:34,title:'Torres de acceso',text:'Desde estas torres la guardia identifica cada movimiento antes de abrir las puertas.'}
+      ]},
+      {label:'III · CORAZÓN DE LA MANADA',title:'El Patio <em>Exterior</em>',plain:'El Patio Exterior de la Ciudadela',image:'/assets/tour-360-patio.webp',description:'Guardias, estandartes, antorchas y miembros de la Manada dan vida al gran espacio de encuentro de la fortaleza.',narration:'Este es el Patio Exterior de la Ciudadela. Aquí entrenan los guardias, llegan los mensajeros y la Manada cumple sus actividades bajo los estandartes.',hotspots:[
+        {yaw:0,pitch:-5,x:50,y:51,title:'Actividades de la Manada',text:'Entrenamiento, coordinación y vida cotidiana convergen alrededor del fuego central.'},
+        {yaw:-58,pitch:10,x:25,y:38,title:'Estandartes',text:'Los emblemas recuerdan que cada miembro pertenece a una historia mayor que la suya.'},
+        {yaw:70,pitch:1,x:78,y:45,title:'Rutas interiores',text:'Los accesos del patio conducen hacia las murallas, las torres, el Archivo y el Salón del Trono.'}
+      ]},
+      {label:'IV · EL LÍMITE',title:'Las Murallas <em>Exteriores</em>',plain:'Las Murallas Exteriores',image:'/assets/tour-360-murallas.webp',description:'La guardia observa la niebla y busca señales de posibles amenazas más allá de las defensas.',narration:'Caminas ahora sobre las murallas exteriores. Aquí la vigilancia nunca se interrumpe y cada señal en la niebla merece atención.',hotspots:[
+        {yaw:0,pitch:-2,x:50,y:48,title:'La niebla exterior',text:'La bruma oculta distancias y obliga a la guardia a confiar en experiencia, oído y disciplina.'},
+        {yaw:48,pitch:0,x:70,y:46,title:'Puesto de guardia',text:'Los vigilantes recorren la muralla con lanzas cortas y arcos compactos, sin abandonar su posición.'},
+        {yaw:-68,pitch:13,x:22,y:35,title:'Torres defensivas',text:'Cada torre enlaza visualmente con la siguiente para transmitir alertas a toda la fortaleza.'}
+      ]},
+      {label:'V · LOS CONFINES',title:'La Torre de <em>Vigilancia</em>',plain:'La Torre de Vigilancia',image:'/assets/tour-360-torre.webp',description:'Una vista panorámica se abre sobre las montañas, el bosque y las tierras lejanas.',narration:'Has alcanzado la Torre de Vigilancia. Desde este punto, las montañas, los bosques y los caminos lejanos quedan bajo la mirada de la Ciudadela.',hotspots:[
+        {yaw:0,pitch:6,x:50,y:39,title:'Las montañas',text:'Las cumbres marcan los límites visibles y protegen rutas todavía cubiertas por la noche.'},
+        {yaw:82,pitch:-13,x:82,y:59,title:'El bosque',text:'Bajo la torre, el bosque rodea la fortaleza y esconde senderos conocidos solo por los exploradores.'},
+        {yaw:-77,pitch:0,x:19,y:46,title:'Tierras lejanas',text:'Más allá del valle aguardan futuras expediciones y nuevos territorios de Sangre de Luna.'}
+      ]},
+      {label:'VI · LA MEMORIA',title:'El Archivo de la <em>Ciudadela</em>',plain:'El Archivo de la Ciudadela',image:'/assets/tour-360-archivo-nine.webp',description:'Nine custodia una cámara de investigación que conecta al visitante con personajes, historias, temporadas y episodios.',narration:'Has entrado al Archivo de la Ciudadela. Nine protege, estudia y organiza los registros que conservan la memoria de cada temporada y personaje.',hotspots:[
+        {yaw:0,pitch:-7,x:50,y:52,title:'Nine, guardiana del Archivo',text:'Nine combina investigación, memoria y observación para ayudar a interpretar los registros de la Ciudadela.'},
+        {yaw:-57,pitch:0,x:25,y:46,title:'Personajes',text:'Consulta los perfiles oficiales de quienes dan forma al destino de Sangre de Luna.',href:'/#personajes',linkLabel:'Ver personajes'},
+        {yaw:56,pitch:0,x:75,y:46,title:'Historias y temporadas',text:'Abre el archivo narrativo organizado por temporadas y capítulos.',href:'/#historias',linkLabel:'Leer historias'},
+        {yaw:172,pitch:0,x:50,y:44,title:'Episodios',text:'Accede a los episodios publicados y continúa la historia en video.',href:'/#episodios',linkLabel:'Ver episodios'}
+      ]},
+      {label:'VII · LA CORTE',title:'El Salón del <em>Trono</em>',plain:'El Salón del Trono del Alfa',image:'/assets/tour-360-salon-trono.webp',description:'Chris y Ella presiden la Corte desde el trono; Gabriel y Varkos permanecen a sus lados como pilares de la Ciudadela.',narration:'Ante ti se abre el Salón del Trono del Alfa. Chris y Ella presiden la Corte, acompañados por Gabriel y Varkos, mientras la Ciudadela protege sus alianzas y juramentos.',hotspots:[
+        {yaw:0,pitch:-5,x:50,y:50,title:'Chris y Ella',text:'El Alfa y la Luna presiden juntos el salón desde el estrado central.'},
+        {yaw:-20,pitch:-3,x:41,y:48,title:'Gabriel',text:'Como Beta, Gabriel permanece junto al trono y sostiene las decisiones del núcleo principal.'},
+        {yaw:20,pitch:-3,x:59,y:48,title:'Varkos',text:'El comandante vigila el salón y coordina la defensa de la Ciudadela.'},
+        {yaw:0,pitch:19,x:50,y:31,title:'Emblema de la Manada',text:'El lobo plateado preside la Corte como símbolo de memoria, unidad y lealtad.'}
+      ]}
+    ]},
+      east:{name:'Reino Vampiro del Este',brand:'REINO VAMPIRO DEL ESTE',intro:'Explorar el Reino Vampiro',finalTitle:'El Reino del Este<br>te reconoce',finalText:'Has recorrido la fortaleza del príncipe Aleric, desde sus puertas monumentales hasta la Terraza Oriental.',scenes:[
+      {label:'I · VISTA AÉREA',title:'El Reino Vampiro desde el <em>cielo</em>',plain:'Vista aérea del Reino Vampiro del Este',image:'/assets/tour-vampiro-aerea.webp',description:'Una imponente fortaleza vampira se eleva entre las montañas del Este, rodeada de torres, cascadas y profundos valles iluminados por la luna.',narration:'Ante ti se extiende el Reino Vampiro del Este. Entre montañas, cascadas y valles profundos, la fortaleza del príncipe Aleric domina las rutas orientales bajo la luna.',hotspots:[
+        {yaw:0,pitch:-2,x:50,y:48,title:'Fortaleza del Este',text:'Torres, salones y terrazas se alzan sobre la roca y forman el corazón político del Reino Vampiro.'},
+        {yaw:-48,pitch:12,x:28,y:37,title:'Montañas orientales',text:'Las montañas protegen los accesos naturales y ocultan antiguas rutas entre las casas vampiras.'},
+        {yaw:58,pitch:-8,x:74,y:55,title:'Cascadas del reino',text:'Las aguas descienden hacia los valles y rodean la fortaleza con una defensa natural.'}
+      ]},
+      {label:'II · EL ACCESO',title:'Puente y Puertas <em>Monumentales</em>',plain:'Puente y Puertas Monumentales',image:'/assets/tour-vampiro-puente.webp',description:'El gran puente de piedra conduce hacia las puertas fortificadas del reino, custodiadas por la Guardia Vampira bajo la luz de la luna.',narration:'Has llegado al gran puente del Este. Más allá de las puertas monumentales, la Guardia Vampira protege el acceso a la fortaleza y vigila a cada visitante.',hotspots:[
+        {yaw:0,pitch:-2,x:50,y:48,title:'Puertas monumentales',text:'El acceso principal anuncia el poder y la disciplina del Reino Vampiro del Este.'},
+        {yaw:-38,pitch:-5,x:33,y:51,title:'Gran puente de piedra',text:'Este puente es la única entrada ceremonial directa hacia el corazón de la fortaleza.'},
+        {yaw:42,pitch:1,x:68,y:45,title:'Guardia Vampira',text:'La guardia de Aleric custodia el umbral y mantiene abiertas las rutas para las casas aliadas.'}
+      ]},
+      {label:'III · LA CORTE',title:'Patio de la <em>Corte Vampira</em>',plain:'Patio de la Corte Vampira',image:'/assets/tour-vampiro-patio.webp',description:'Un majestuoso patio ceremonial recibe a los visitantes con fuentes, jardines, estandartes borgoña y elegantes construcciones de piedra negra.',narration:'Este es el Patio de la Corte Vampira. Fuentes, jardines y estandartes borgoña reciben a emisarios, aliados y miembros de las antiguas casas del Este.',hotspots:[
+        {yaw:0,pitch:-8,x:50,y:54,title:'Fuentes ceremoniales',text:'El agua y la piedra ordenan el patio alrededor de un eje reservado para las recepciones oficiales.'},
+        {yaw:-54,pitch:4,x:26,y:44,title:'Estandartes borgoña',text:'Los estandartes identifican la autoridad de la Corte y las tradiciones del Reino del Este.'},
+        {yaw:57,pitch:0,x:75,y:47,title:'Jardines de la Corte',text:'Los jardines suavizan la severidad de la piedra negra y acompañan las ceremonias nocturnas.'}
+      ]},
+      {label:'IV · EL PRÍNCIPE',title:'Salón del Trono de <em>Aleric</em>',plain:'Salón del Trono de Aleric',image:'/assets/tour-vampiro-trono.webp',description:'El imponente salón donde el príncipe Aleric dirige el Reino Vampiro del Este y recibe a los representantes de las casas aliadas.',narration:'En este salón, el príncipe Aleric dirige el Reino Vampiro del Este. Aquí recibe a las casas aliadas y sostiene la alianza que conecta su corte con la Ciudadela.',hotspots:[
+        {yaw:0,pitch:-4,x:50,y:49,title:'Trono de Aleric',text:'Desde el estrado central, Aleric preside las decisiones y alianzas del Reino Vampiro del Este.'},
+        {yaw:-48,pitch:1,x:29,y:45,title:'Galería de las casas',text:'Los representantes de las casas aliadas ocupan estos espacios durante los consejos de la Corte.'},
+        {yaw:51,pitch:10,x:72,y:39,title:'Ventanas orientales',text:'La luz lunar atraviesa los altos vitrales y domina la arquitectura ceremonial del salón.'}
+      ]},
+      {label:'V · MEMORIA ANCESTRAL',title:'Archivo y Biblioteca <em>Ancestral</em>',plain:'Archivo y Biblioteca Ancestral',image:'/assets/tour-vampiro-archivo.webp',description:'Una antigua biblioteca conserva documentos, mapas, relatos y secretos relacionados con la historia del reino y las familias vampiras.',narration:'Has entrado al Archivo y Biblioteca Ancestral. En sus estantes permanecen mapas, relatos y documentos sobre el reino y las antiguas familias vampiras.',hotspots:[
+        {yaw:0,pitch:2,x:50,y:44,title:'Esfera cartográfica',text:'Este mecanismo representa rutas, territorios y relaciones conservadas por los estudiosos del reino.'},
+        {yaw:-55,pitch:0,x:25,y:47,title:'Archivos de las familias',text:'Los registros preservan genealogías, pactos y acontecimientos de las casas vampiras.'},
+        {yaw:56,pitch:-4,x:75,y:51,title:'Mapas y relatos',text:'Cartas antiguas y testimonios permiten reconstruir la historia política de las tierras del Este.'}
+      ]},
+      {label:'VI · HORIZONTE ORIENTAL',title:'Terraza y <em>Jardín Lunar</em>',plain:'Terraza Oriental y Jardín Lunar',image:'/assets/tour-vampiro-terraza.webp',description:'Una elegante terraza rodeada de jardines y fuentes ofrece una extraordinaria vista de las montañas, cascadas y torres del reino.',narration:'La expedición culmina en la Terraza Oriental y el Jardín Lunar. Desde aquí contemplas las montañas, las cascadas y las torres que protegen el reino de Aleric.',hotspots:[
+        {yaw:0,pitch:-5,x:50,y:51,title:'Jardín Lunar',text:'Flores claras, fuentes y senderos geométricos transforman la terraza en un espacio de calma y encuentro.'},
+        {yaw:-63,pitch:3,x:23,y:44,title:'Cascadas orientales',text:'Las cascadas atraviesan los riscos antes de desaparecer entre los valles del Este.'},
+        {yaw:65,pitch:10,x:78,y:39,title:'Torres del reino',text:'Desde la terraza se distinguen los distintos niveles y torres de la fortaleza vampira.'}
+      ]}
+    ]}
+    };
+    let territoryKey='citadel',scenes=territories[territoryKey].scenes;
+    const $=selector=>document.querySelector(selector),ambient=$('#ambient');ambient.volume=.22;
+    let current=0,started=false,lastFocus=null,speechId=0,renderTimer=null;
+    let musicEnabled=localStorage.getItem('sdl-tour-music')!=='0',voiceEnabled=localStorage.getItem('sdl-tour-voice')!=='0';
+    let THREE=null,renderer=null,camera=null,world=null,material=null,texture=null,textureRequest=0,lon=0,lat=0,dragging=false,startX=0,startY=0,startLon=0,startLat=0;
+
+    function render(announce=true){
+      const item=scenes[current],background=$('#sceneBackground');
+      background.classList.remove('active');clearTimeout(renderTimer);
+      renderTimer=setTimeout(()=>{background.style.backgroundImage=`url("${item.image}")`;background.setAttribute('aria-label',item.plain);background.classList.add('active')},100);
+      lon=item.yaw||0;lat=item.pitch||0;
+      $('#sceneEyebrow').textContent=item.label;$('#sceneTitle').innerHTML=item.title;$('#sceneDescription').textContent=item.description;$('#sceneNumber').textContent=String(current+1).padStart(2,'0');$('#sceneTotal').textContent=String(scenes.length).padStart(2,'0');
+      $('#prevButton').disabled=current===0;$('#nextButton').textContent=current===scenes.length-1?'Finalizar →':'Continuar →';
+      $('#progress').innerHTML=scenes.map((scene,index)=>`<button class="${index===current?'active':''}" type="button" data-scene="${index}" aria-label="Ir a ${scene.plain}" aria-current="${index===current?'step':'false'}"></button>`).join('');
+      $('#territoryBrand').textContent=territories[territoryKey].brand;
+      $('#mapTitle').textContent=territories[territoryKey].name;
+      $('#mapTerritories').innerHTML=Object.entries(territories).map(([key,territory])=>`<button class="map-territory ${key===territoryKey?'active':''}" type="button" data-map-territory="${key}">${territory.name}</button>`).join('');
+      $('#mapRoute').innerHTML=scenes.map((scene,index)=>`<button class="map-node ${index===current?'active':''}" type="button" data-map-scene="${index}"><i>${String(index+1).padStart(2,'0')}</i><span>${scene.plain}</span></button>`).join('');
+      $('#hotspots').innerHTML=item.hotspots.map((spot,index)=>`<button class="hotspot" type="button" style="left:${spot.x}%;top:${spot.y}%" data-hotspot="${index}" aria-label="Explorar: ${spot.title}"><span>${spot.title}</span></button>`).join('');
+      loadPanorama(item);if(announce)$('#announcement').textContent=`Escena ${current+1} de ${scenes.length}: ${item.plain}`;if(started)speak(item.narration);
+    }
+    async function init3D(){
+      try{
+        THREE=await import('https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js');
+        const host=$('#webgl');world=new THREE.Scene();camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,220);
+        renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.75));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;host.appendChild(renderer.domElement);
+        const geometry=new THREE.SphereGeometry(100,64,40);geometry.scale(-1,1,1);material=new THREE.MeshBasicMaterial({color:0xffffff});world.add(new THREE.Mesh(geometry,material));
+        const down=e=>{dragging=true;startX=e.clientX;startY=e.clientY;startLon=lon;startLat=lat;renderer.domElement.setPointerCapture?.(e.pointerId)};
+        const move=e=>{if(!dragging)return;lon=startLon-(e.clientX-startX)*.12;lat=startLat+(e.clientY-startY)*.1};
+        const up=e=>{dragging=false;renderer.domElement.releasePointerCapture?.(e.pointerId)};
+        renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointermove',move);renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('pointercancel',up);
+        renderer.domElement.addEventListener('wheel',e=>{e.preventDefault();camera.fov=Math.max(42,Math.min(90,camera.fov+e.deltaY*.025));camera.updateProjectionMatrix()},{passive:false});
+        addEventListener('resize',resize3D);animate3D();loadPanorama(scenes[current]);
+      }catch(error){$('#sceneLoading').hidden=true;$('#announcement').textContent='El modo 3D no pudo iniciarse. Se muestra la vista panorámica alternativa.'}
+    }
+    function loadPanorama(item){
+      if(!THREE||!material)return;const request=++textureRequest;$('#sceneLoading').hidden=false;$('#webgl').classList.remove('ready');
+      new THREE.TextureLoader().load(item.image,newTexture=>{if(request!==textureRequest){newTexture.dispose();return}newTexture.colorSpace=THREE.SRGBColorSpace;if(texture)texture.dispose();texture=newTexture;material.map=texture;material.needsUpdate=true;$('#webgl').classList.add('ready');$('#sceneBackground').classList.remove('active');$('#sceneLoading').hidden=true},undefined,()=>{$('#sceneLoading').hidden=true;$('#sceneBackground').classList.add('active')});
+    }
+    function resize3D(){if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+    function angleVector(yaw,pitch,radius=80){const y=THREE.MathUtils.degToRad(pitch),x=THREE.MathUtils.degToRad(yaw);return new THREE.Vector3(radius*Math.cos(y)*Math.cos(x),radius*Math.sin(y),radius*Math.cos(y)*Math.sin(x))}
+    function positionHotspots(){
+      if(!THREE||!camera)return;const direction=new THREE.Vector3();camera.getWorldDirection(direction);
+      document.querySelectorAll('[data-hotspot]').forEach((button,index)=>{const spot=scenes[current].hotspots[index];if(!spot)return;const position=angleVector(spot.yaw,spot.pitch),visible=position.clone().normalize().dot(direction)>.07,projected=position.clone().project(camera);if(!visible||Math.abs(projected.x)>1.2||Math.abs(projected.y)>1.2){button.style.visibility='hidden';return}button.style.visibility='visible';button.style.left=`${(projected.x*.5+.5)*innerWidth}px`;button.style.top=`${(-projected.y*.5+.5)*innerHeight}px`});
+    }
+    function animate3D(){requestAnimationFrame(animate3D);if(!renderer||!camera)return;lat=Math.max(-72,Math.min(72,lat));const target=angleVector(lon,lat,100);camera.lookAt(target);renderer.render(world,camera);positionHotspots()}
+    function selectVoice(){
+      if(!('speechSynthesis'in window))return null;const spanish=speechSynthesis.getVoices().filter(v=>/^es([-_]|$)/i.test(v.lang));
+      const latin=/^es-(mx|us|419|ar|bo|cl|co|cr|cu|do|ec|gt|hn|ni|pa|pe|pr|py|sv|uy|ve)$/i,neutral=/^es-(mx|us|419)$/i,male=/jorge|raul|raúl|diego|pablo|alvaro|álvaro|carlos|mateo|miguel|andres|andrés|gonzalo|juan|martin|martín|enrique|ricardo|male|masculino/i,female=/monica|mónica|paulina|sabina|helena|elvira|paloma|dalia|valentina|sofia|sofía|maria|maría|female|femenina/i;
+      return spanish.sort((a,b)=>{const score=v=>(male.test(v.name)?240:0)+(latin.test(v.lang)?100:0)+(neutral.test(v.lang)?45:0)+(/natural|neural|online/i.test(v.name)?20:0)-(female.test(v.name)?220:0);return score(b)-score(a)})[0]||null;
+    }
+    function stopSpeech(){if(!('speechSynthesis'in window))return;speechId++;speechSynthesis.cancel();if(started&&musicEnabled){ambient.volume=.22;ambient.play().catch(()=>{})}}
+    function speak(text){if(!voiceEnabled||!('speechSynthesis'in window)||!text)return;const id=++speechId;speechSynthesis.cancel();if(musicEnabled)ambient.volume=.08;const utterance=new SpeechSynthesisUtterance(text),voice=selectVoice();if(voice){utterance.voice=voice;utterance.lang=voice.lang}else utterance.lang='es-MX';utterance.rate=.83;utterance.pitch=.74;utterance.volume=1;const finish=()=>{if(id===speechId&&musicEnabled)ambient.volume=.22};utterance.onend=finish;utterance.onerror=finish;speechSynthesis.speak(utterance)}
+    function go(index){if(index<0||index>=scenes.length)return;current=index;render()}
+    function selectTerritory(key,{begin=false}={}){
+      if(!territories[key])return;territoryKey=key;scenes=territories[key].scenes;current=0;
+      document.querySelectorAll('[data-territory]').forEach(button=>button.classList.toggle('active',button.dataset.territory===key));
+      $('#startButton').textContent=territories[key].intro;$('#intro').style.backgroundImage=`linear-gradient(#02060b8f,#02060bea),url('${scenes[0].image}')`;
+      $('#finaleTitle').innerHTML=territories[key].finalTitle;$('#finaleText').textContent=territories[key].finalText;
+      render(false);if(begin){started=true;$('#intro').hidden=true;if(musicEnabled)ambient.play().catch(()=>{});speak(scenes[0].narration)}
+    }
+    function openOverlay(id){lastFocus=document.activeElement;const overlay=document.getElementById(id);overlay.hidden=false;setTimeout(()=>overlay.querySelector('button,a')?.focus(),0)}
+    function closeOverlay(id){document.getElementById(id).hidden=true;lastFocus?.focus()}
+    function updateControls(){$('#musicButton').classList.toggle('on',musicEnabled);$('#musicButton').setAttribute('aria-label',musicEnabled?'Silenciar música':'Activar música');const available='speechSynthesis'in window;$('#voiceButton').disabled=!available;$('#voiceButton').classList.toggle('on',voiceEnabled&&available);$('#voiceButton').setAttribute('aria-label',voiceEnabled?'Silenciar voz del Cronista':'Activar voz del Cronista')}
+    $('#territorySelector').addEventListener('click',event=>{const target=event.target.closest('[data-territory]');if(target)selectTerritory(target.dataset.territory)});
+    $('#startButton').addEventListener('click',()=>selectTerritory(territoryKey,{begin:true}));
+    $('#prevButton').addEventListener('click',()=>go(current-1));$('#nextButton').addEventListener('click',()=>current===scenes.length-1?(stopSpeech(),openOverlay('finale')):go(current+1));$('#repeatButton').addEventListener('click',()=>{closeOverlay('finale');go(0)});
+    $('#progress').addEventListener('click',e=>{const target=e.target.closest('[data-scene]');if(target)go(Number(target.dataset.scene))});
+    $('#hotspots').addEventListener('click',e=>{const target=e.target.closest('[data-hotspot]');if(!target)return;const spot=scenes[current].hotspots[Number(target.dataset.hotspot)],link=$('#detailLink');$('#detailKicker').textContent=scenes[current].plain;$('#detailTitle').textContent=spot.title;$('#detailText').textContent=spot.text;link.hidden=!spot.href;if(spot.href){link.href=spot.href;link.textContent=spot.linkLabel||'Abrir en el sitio'}openOverlay('detailOverlay')});
+    $('#mapButton').addEventListener('click',()=>openOverlay('mapOverlay'));$('#mapTerritories').addEventListener('click',e=>{const target=e.target.closest('[data-map-territory]');if(!target)return;selectTerritory(target.dataset.mapTerritory);render(false)});$('#mapRoute').addEventListener('click',e=>{const target=e.target.closest('[data-map-scene]');if(!target)return;closeOverlay('mapOverlay');go(Number(target.dataset.mapScene))});document.querySelectorAll('[data-close]').forEach(button=>button.addEventListener('click',()=>closeOverlay(button.dataset.close)));
+    $('#chooseTerritoryButton').addEventListener('click',()=>{closeOverlay('finale');started=false;stopSpeech();$('#intro').hidden=false;$('#startButton').focus()});
+    $('#musicButton').addEventListener('click',()=>{musicEnabled=!musicEnabled;localStorage.setItem('sdl-tour-music',musicEnabled?'1':'0');musicEnabled&&started?ambient.play().catch(()=>{}):ambient.pause();updateControls()});$('#voiceButton').addEventListener('click',()=>{voiceEnabled=!voiceEnabled;localStorage.setItem('sdl-tour-voice',voiceEnabled?'1':'0');voiceEnabled?speak('La voz del Cronista ha despertado.'):stopSpeech();updateControls()});
+    $('#fullscreenButton').addEventListener('click',async()=>{try{document.fullscreenElement?await document.exitFullscreen():await document.documentElement.requestFullscreen()}catch{}});document.addEventListener('fullscreenchange',()=>$('#fullscreenButton').classList.toggle('on',Boolean(document.fullscreenElement)));
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){['detailOverlay','mapOverlay','finale'].forEach(id=>{if(!document.getElementById(id).hidden)closeOverlay(id)});return}if(!started||!$('#mapOverlay').hidden||!$('#detailOverlay').hidden||!$('#finale').hidden)return;if(event.key==='ArrowRight'&&current<scenes.length-1)go(current+1);if(event.key==='ArrowLeft'&&current>0)go(current-1)});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){ambient.pause();if('speechSynthesis'in window){speechId++;speechSynthesis.cancel()}}else if(started&&musicEnabled)ambient.play().catch(()=>{})});
+    const requestedTerritory=new URLSearchParams(location.search).get('territory');
+    selectTerritory(territories[requestedTerritory]?requestedTerritory:'citadel');updateControls();init3D();
+  })();
+  </script>
+<script src="/cronista-global.js" defer></script>
+<script>
+/* SANGRE DE LUNA · LYKOS VIEWPORT FIT
+   Keeps the open assistant panel inside the visible viewport, including mobile keyboards.
+*/
+(()=> {
+  if(window.__SDL_LYKOS_VIEWPORT_FIT_V1__)return;
+  window.__SDL_LYKOS_VIEWPORT_FIT_V1__=true;
+
+  const set=(el,name,value)=>el&&el.style.setProperty(name,value,'important');
+  function fit(){
+    const vv=window.visualViewport;
+    const width=vv?.width||window.innerWidth;
+    const height=vv?.height||window.innerHeight;
+    const offsetLeft=vv?.offsetLeft||0;
+    const offsetTop=vv?.offsetTop||0;
+    const rightInset=Math.max(0,window.innerWidth-(offsetLeft+width));
+    const bottomInset=Math.max(0,window.innerHeight-(offsetTop+height));
+    const gap=width<=650?12:18;
+    const player=document.querySelector('.playerbar.show');
+    const playerOffset=player?Math.max(108,Math.ceil(player.getBoundingClientRect().height+28)):0;
+
+    for(const [rootId,panelId,bodySelector] of [
+      ['cronistaWidget','cronistaPanel','#cronistaBody'],
+      ['sdlgCronista','sdlgPanel','.sdlg-body']
+    ]){
+      const root=document.getElementById(rootId);
+      const panel=document.getElementById(panelId);
+      if(!root||!panel||!(panel.classList.contains('open')||panel.getAttribute('aria-hidden')==='false'))continue;
+
+      const panelWidth=Math.max(0,Math.min(width-gap*2,width<=650?430:405));
+      const maxHeight=Math.max(160,height-gap*2-playerOffset);
+      set(panel,'position','fixed');
+      set(panel,'left','auto');
+      set(panel,'top','auto');
+      set(panel,'right',Math.round(rightInset+gap)+'px');
+      set(panel,'bottom',Math.round(bottomInset+gap+playerOffset)+'px');
+      set(panel,'width',Math.round(panelWidth)+'px');
+      set(panel,'max-width',Math.round(panelWidth)+'px');
+      set(panel,'height',`min(650px, ${Math.round(maxHeight)}px)`);
+      set(panel,'max-height',Math.round(maxHeight)+'px');
+      set(panel,'margin','0');
+      set(panel,'transform','none');
+      set(panel,'overflow','hidden');
+      set(panel,'grid-template-rows','auto minmax(0,1fr) auto');
+
+      const body=panel.querySelector(bodySelector);
+      set(body,'min-height','0');
+      set(body,'overflow-y','auto');
+      set(body,'overscroll-behavior','contain');
+    }
+  }
+
+  let timer=0;
+  const schedule=()=>{clearTimeout(timer);timer=setTimeout(fit,60)};
+  window.addEventListener('resize',schedule,{passive:true});
+  window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+  window.visualViewport?.addEventListener('scroll',schedule,{passive:true});
+  document.addEventListener('click',event=>{if(event.target?.closest?.('#cronistaLaunch,#sdlgLaunch'))schedule()},true);
+  document.addEventListener('focusin',event=>{if(event.target?.matches?.('#cronistaInput,#sdlgInput'))schedule()},true);
+
+  const observe=()=>{
+    if(!document.body)return;
+    new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','aria-hidden']});
+    schedule();
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',observe,{once:true});
+  else observe();
+})();
+
+</script>
+</body>
+<script src="/lykos-viewport-fit.js?v=20260930-9" defer></script>
+
+<script src="/experiencia-ux.js?v=2" defer></script>
+</html>

@@ -1,0 +1,3 @@
+Sangre de Luna production synchronization marker.
+Purpose: trigger a clean deployment of the current repository after the non-breaking security audit.
+Created: 2026-08-17.
