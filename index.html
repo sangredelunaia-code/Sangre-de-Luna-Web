@@ -1207,8 +1207,6 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
   const buttons=Array.from(nav.querySelectorAll('[data-panel]'));const next=buttons.map(b=>[b.dataset.panel,b.textContent,permitted(b)].join(':')).join('|');if(signature===next){syncActive();return}signature=next;
   for(const {list} of sections.values())list.replaceChildren();
   for(const b of buttons){if(!permitted(b))continue;const key=b.dataset.panel,entry=known[key]||[/fan|member|community/i.test(key)?'community':'world',b.textContent];sections.get(entry[0]).list.append(proxy(key,entry[1],descriptions[key]));}
-  if(original('characters')&&permitted(original('characters')))sections.get('appearance').list.append(proxy('characters','Personaje destacado','El personaje que aparece en la portada.','#featuredCharacterForm'));
-  if(original('site-editorial')&&permitted(original('site-editorial')))sections.get('content').list.append(proxy('site-editorial','Libro destacado','Portada, descripción y enlace de compra.','#sdlBookForm'));
   for(const {section,list} of sections.values())section.hidden=!list.childElementCount;
   const cards=document.getElementById('sdlAdminShortcuts');if(cards){cards.replaceChildren();for(const [key,title,description] of groups){if(key==='home')continue;const item=sections.get(key).list.querySelector('[data-admin-target]');if(item)cards.append(proxy(item.dataset.adminTarget,title,description));}}
   syncActive();
