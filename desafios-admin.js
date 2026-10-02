@@ -83,7 +83,7 @@
     const old=document.querySelector('script[data-fanclub-admin-module]');
     if(old)old.remove();
     const s=document.createElement('script');
-    s.src=`${CDN}/fanclub.js?v=admin-fixed-20260817-${retry}`;
+    s.src=`/fanclub.js?v=admin-newsletter-20261001-${retry}`;
     s.async=false;
     s.dataset.fanclubAdminModule='1';
     s.onload=()=>{
