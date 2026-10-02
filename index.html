@@ -1005,43 +1005,28 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 #dashboard{
   position:relative!important;
   isolation:isolate;
-  background:#03070c!important;
-}
-#dashboard:before{
-  content:''!important;
-  position:fixed!important;
-  inset:0!important;
-  z-index:-2!important;
-  pointer-events:none!important;
   background:
-    linear-gradient(180deg,rgba(3,7,12,.58),rgba(3,7,12,.82)),
-    url('/assets/admin-ciudadela-bg.webp') center 34% / cover no-repeat!important;
-  filter:saturate(.84) contrast(1.02);
+    radial-gradient(circle at 22% 14%,rgba(176,210,244,.10),transparent 25%),
+    linear-gradient(180deg,rgba(3,7,12,.54),rgba(3,7,12,.72) 48%,rgba(3,7,12,.84)),
+    url('/assets/admin-ciudadela-bg.webp') center 30% / cover fixed no-repeat!important;
 }
-#dashboard:after{
-  content:''!important;
-  position:fixed!important;
-  inset:0!important;
-  z-index:-1!important;
-  pointer-events:none!important;
-  background:
-    radial-gradient(circle at 22% 14%,rgba(176,210,244,.12),transparent 26%),
-    linear-gradient(180deg,rgba(4,15,25,.08),rgba(2,7,12,.26) 52%,rgba(2,7,12,.48));
-}
+#dashboard:before,
+#dashboard:after{content:none!important}
 #dashboard .panel,
 #sdlAdminWorkspace{
-  background:rgba(5,13,21,.90)!important;
+  background:rgba(5,13,21,.78)!important;
   backdrop-filter:blur(10px)!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.32)!important;
 }
 #dashboard .fld,
 #dashboard .stat{
-  background:rgba(7,17,26,.90)!important;
+  background:rgba(7,17,26,.82)!important;
   backdrop-filter:blur(6px)!important;
 }
 @media(max-width:900px){
-  #dashboard:before{
+  #dashboard{
     background:
-      linear-gradient(180deg,rgba(3,7,12,.68),rgba(3,7,12,.88)),
+      linear-gradient(180deg,rgba(3,7,12,.66),rgba(3,7,12,.86)),
       url('/assets/admin-ciudadela-bg.webp') center top / cover no-repeat!important;
   }
 }
@@ -1956,6 +1941,24 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
   const buttons=Array.from(nav.querySelectorAll('[data-panel]'));const next=buttons.map(b=>[b.dataset.panel,b.textContent,permitted(b)].join(':')).join('|');if(signature===next){syncActive();return}signature=next;
   for(const {list} of sections.values())list.replaceChildren();
   for(const b of buttons){if(!permitted(b))continue;const key=b.dataset.panel,entry=known[key]||[/fan|member|community/i.test(key)?'community':'world',b.textContent];sections.get(entry[0]).list.append(proxy(key,entry[1],descriptions[key]));}
+  const fanButton=original('fanclub');
+  if(fanButton&&permitted(fanButton)){
+    const newsletter=document.createElement('button');
+    newsletter.type='button';
+    newsletter.dataset.adminTarget='fanclub-newsletter';
+    newsletter.innerHTML='<span>Envío de newsletter</span><small>Sube una imagen y envíala a los miembros del Fan Club.</small>';
+    newsletter.onclick=()=>{
+      go('fanclub');
+      let tries=0;
+      const openNewsletter=()=>{
+        const tab=document.querySelector('[data-page="fanclub"] [data-fan-pane="newsletter"]');
+        if(tab){tab.click();setTimeout(()=>tab.scrollIntoView({behavior:'smooth',block:'center'}),60);return}
+        if(++tries<40)setTimeout(openNewsletter,100);
+      };
+      setTimeout(openNewsletter,80);
+    };
+    sections.get('community').list.append(newsletter);
+  }
   for(const {section,list} of sections.values())section.hidden=!list.childElementCount;
   const cards=document.getElementById('sdlAdminShortcuts');if(cards){cards.replaceChildren();for(const [key,title,description] of groups){if(key==='home')continue;const item=sections.get(key).list.querySelector('[data-admin-target]');if(item)cards.append(proxy(item.dataset.adminTarget,title,description));}}
   syncActive();
