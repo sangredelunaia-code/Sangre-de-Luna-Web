@@ -112,7 +112,7 @@ if(!document.querySelector(".top nav.nav")){
  .sdl-local-header .brand{justify-self:auto}
  .sdl-has-shared-header .top-actions{display:flex;flex-wrap:wrap;gap:8px}
  .sdl-has-shared-header #intro{top:var(--sdl-header-height)!important;max-height:calc(100svh - var(--sdl-header-height));overflow:auto!important;align-items:start;padding-top:24px;padding-bottom:24px}
- .sdl-has-shared-header:has(#portal) .portal{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;align-items:center!important;padding:24px 12px calc(24px + env(safe-area-inset-bottom))!important;z-index:5000!important}
+ .sdl-has-shared-header:has(#portal) .portal{position:fixed!important;top:var(--sdl-header-height,179px)!important;right:0!important;bottom:0!important;left:0!important;width:100vw!important;height:auto!important;max-height:none!important;overflow-x:hidden!important;overflow-y:auto!important;align-items:center!important;padding:24px 12px calc(24px + env(safe-area-inset-bottom))!important;z-index:80!important}
  .sdl-has-shared-header #intro>div{margin:auto}
  .sdl-has-shared-header:has(#tour){height:auto;overflow:auto}
  .sdl-has-shared-header:has(#tour) .sdl-common-header{position:fixed!important;top:0!important;left:0!important;right:0!important;z-index:100!important}
