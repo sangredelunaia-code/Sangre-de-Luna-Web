@@ -2073,7 +2073,7 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
    const btn=document.createElement('button');
    btn.type='button';
    btn.dataset.newsletterShortcut='1';
-   btn.innerHTML='<span>Envío de newsletter</span><small>Sube una imagen y envíala a los miembros del Fan Club.</small>';
+   btn.innerHTML='<span>Enviar newsletter</span><small>Envía una imagen con enlace opcional a los miembros del Fan Club.</small>';
    btn.onclick=()=>{
      const nav=document.querySelector('#adminNav [data-panel="fanclub"]');
      if(nav)nav.click();
