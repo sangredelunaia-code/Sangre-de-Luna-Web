@@ -1007,11 +1007,10 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
   isolation:isolate;
   background:
     radial-gradient(circle at 22% 14%,rgba(176,210,244,.10),transparent 25%),
-    linear-gradient(180deg,rgba(3,7,12,.54),rgba(3,7,12,.72) 48%,rgba(3,7,12,.84)),
+    linear-gradient(180deg,rgba(3,7,12,.52),rgba(3,7,12,.70) 48%,rgba(3,7,12,.82)),
     url('/assets/admin-ciudadela-bg.webp') center 30% / cover fixed no-repeat!important;
 }
-#dashboard:before,
-#dashboard:after{content:none!important}
+#dashboard:before,#dashboard:after{content:none!important}
 #dashboard .panel,
 #sdlAdminWorkspace{
   background:rgba(5,13,21,.78)!important;
@@ -1026,7 +1025,7 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 @media(max-width:900px){
   #dashboard{
     background:
-      linear-gradient(180deg,rgba(3,7,12,.66),rgba(3,7,12,.86)),
+      linear-gradient(180deg,rgba(3,7,12,.64),rgba(3,7,12,.86)),
       url('/assets/admin-ciudadela-bg.webp') center top / cover no-repeat!important;
   }
 }
@@ -1941,24 +1940,6 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
   const buttons=Array.from(nav.querySelectorAll('[data-panel]'));const next=buttons.map(b=>[b.dataset.panel,b.textContent,permitted(b)].join(':')).join('|');if(signature===next){syncActive();return}signature=next;
   for(const {list} of sections.values())list.replaceChildren();
   for(const b of buttons){if(!permitted(b))continue;const key=b.dataset.panel,entry=known[key]||[/fan|member|community/i.test(key)?'community':'world',b.textContent];sections.get(entry[0]).list.append(proxy(key,entry[1],descriptions[key]));}
-  const fanButton=original('fanclub');
-  if(fanButton&&permitted(fanButton)){
-    const newsletter=document.createElement('button');
-    newsletter.type='button';
-    newsletter.dataset.adminTarget='fanclub-newsletter';
-    newsletter.innerHTML='<span>Envío de newsletter</span><small>Sube una imagen y envíala a los miembros del Fan Club.</small>';
-    newsletter.onclick=()=>{
-      go('fanclub');
-      let tries=0;
-      const openNewsletter=()=>{
-        const tab=document.querySelector('[data-page="fanclub"] [data-fan-pane="newsletter"]');
-        if(tab){tab.click();setTimeout(()=>tab.scrollIntoView({behavior:'smooth',block:'center'}),60);return}
-        if(++tries<40)setTimeout(openNewsletter,100);
-      };
-      setTimeout(openNewsletter,80);
-    };
-    sections.get('community').list.append(newsletter);
-  }
   for(const {section,list} of sections.values())section.hidden=!list.childElementCount;
   const cards=document.getElementById('sdlAdminShortcuts');if(cards){cards.replaceChildren();for(const [key,title,description] of groups){if(key==='home')continue;const item=sections.get(key).list.querySelector('[data-admin-target]');if(item)cards.append(proxy(item.dataset.adminTarget,title,description));}}
   syncActive();
@@ -2043,6 +2024,35 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
    });
  };
  boot();
+})();
+</script>
+<script id="sdl-admin-newsletter-shortcut">
+(()=>{
+ if(new URLSearchParams(location.search).get('admin')!=='1')return;
+ const add=()=>{
+   const menu=document.getElementById('sdlAdminMenu');
+   if(!menu)return setTimeout(add,120);
+   const community=menu.querySelector('details[data-group="community"] .sdl-admin-links');
+   if(!community)return setTimeout(add,120);
+   if(community.querySelector('[data-newsletter-shortcut="1"]'))return;
+   const btn=document.createElement('button');
+   btn.type='button';
+   btn.dataset.newsletterShortcut='1';
+   btn.innerHTML='<span>Envío de newsletter</span><small>Sube una imagen y envíala a los miembros del Fan Club.</small>';
+   btn.onclick=()=>{
+     const nav=document.querySelector('#adminNav [data-panel="fanclub"]');
+     if(nav)nav.click();
+     let tries=0;
+     const open=()=>{
+       const tab=document.querySelector('[data-page="fanclub"] [data-fan-pane="newsletter"]');
+       if(tab){tab.click();setTimeout(()=>tab.scrollIntoView({behavior:'smooth',block:'center'}),80);return}
+       if(++tries<40)setTimeout(open,100);
+     };
+     setTimeout(open,100);
+   };
+   community.append(btn);
+ };
+ add();
 })();
 </script>
 </html>
