@@ -719,6 +719,288 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
   #sdlAdminWorkspace{border-radius:16px!important}
 }
 </style>
+<style id="sdl-admin-menu-public-exact">
+/* MENU ADMIN: MISMO LENGUAJE VISUAL QUE EL MENU PÚBLICO */
+#dashboard .adm-top{
+  min-height:130px!important;
+  padding:14px 3%!important;
+  background:#071725!important;
+  border-bottom:1px solid #42647d!important;
+  box-shadow:none!important;
+}
+#dashboard .adm-top img{
+  width:190px!important;
+  max-width:34vw!important;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.26))!important;
+}
+#dashboard .who{
+  margin-left:auto!important;
+  align-self:center!important;
+}
+#dashboard .adm-shell{
+  width:100%!important;
+  max-width:none!important;
+  padding:0 0 56px!important;
+}
+#dashboard .adgrid{display:block!important}
+
+/* barra horizontal azul, como la navegación pública */
+#sdlAdminMenu{
+  position:sticky!important;
+  top:130px!important;
+  z-index:115!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:0 clamp(26px,4vw,54px)!important;
+  min-height:46px!important;
+  border:0!important;
+  border-top:1px solid rgba(130,186,225,.24)!important;
+  border-bottom:1px solid #42647d!important;
+  border-radius:0!important;
+  background:linear-gradient(180deg,#244760 0%,#17364d 48%,#0c2538 100%)!important;
+  box-shadow:0 9px 20px rgba(0,0,0,.24)!important;
+  backdrop-filter:none!important;
+  display:flex!important;
+  align-items:stretch!important;
+  justify-content:center!important;
+  gap:0!important;
+  overflow:visible!important;
+}
+
+/* Ocultamos el bloque "Administrar el sitio" para que la barra sea como la pública */
+#sdlAdminMenu .sdl-admin-heading{
+  display:none!important;
+}
+#sdlAdminSearchWrap{
+  position:absolute!important;
+  right:24px!important;
+  top:-76px!important;
+  width:min(245px,22vw)!important;
+  padding:0!important;
+  margin:0!important;
+}
+#sdlAdminSearchWrap label{
+  height:36px!important;
+  border-radius:999px!important;
+  background:#071521!important;
+  border:1px solid #6d8ca3!important;
+}
+#sdlAdminSearch{
+  height:34px!important;
+  font-size:12px!important;
+}
+#sdlAdminSearchWrap kbd{display:none!important}
+
+#sdlAdminMenu>details{
+  position:static!important;
+  flex:1 1 0!important;
+  min-width:120px!important;
+  max-width:220px!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-left:1px solid rgba(142,193,229,.16)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  overflow:visible!important;
+}
+#sdlAdminMenu>details:last-of-type{
+  border-right:1px solid rgba(142,193,229,.16)!important;
+}
+#sdlAdminMenu>details>summary{
+  position:relative!important;
+  min-height:46px!important;
+  width:100%!important;
+  padding:0 28px 0 18px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#f4f8fc!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  letter-spacing:.025em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  box-shadow:none!important;
+}
+#sdlAdminMenu>details>summary:after{
+  content:'⌄'!important;
+  right:12px!important;
+  top:50%!important;
+  transform:translateY(-53%)!important;
+  font-size:13px!important;
+  color:#d8ebf8!important;
+}
+#sdlAdminMenu>details>summary:hover{
+  background:linear-gradient(180deg,#315d7c,#214860)!important;
+  color:#fff!important;
+}
+#sdlAdminMenu>details[open]>summary{
+  background:linear-gradient(180deg,#315e7e,#244d68)!important;
+  color:#fff!important;
+  box-shadow:inset 0 0 0 1px rgba(143,205,246,.28)!important;
+}
+#sdlAdminMenu>details[open]>summary:before{
+  content:''!important;
+  position:absolute!important;
+  left:50%!important;
+  bottom:-1px!important;
+  transform:translateX(-50%)!important;
+  width:0!important;
+  height:0!important;
+  border-left:6px solid transparent!important;
+  border-right:6px solid transparent!important;
+  border-bottom:7px solid #0b2536!important;
+}
+
+/* mega-menu como el del sitio público */
+#sdlAdminMenu .sdl-admin-links{
+  display:none!important;
+  position:absolute!important;
+  z-index:500!important;
+  left:3%!important;
+  right:3%!important;
+  top:calc(100% + 1px)!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  max-height:min(66vh,620px)!important;
+  overflow:auto!important;
+  padding:22px 24px 24px!important;
+  border:1px solid #42647d!important;
+  border-top:0!important;
+  border-radius:0 0 14px 14px!important;
+  background:#071d2c!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.55)!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  column-gap:26px!important;
+  row-gap:0!important;
+}
+#sdlAdminMenu details[open]>.sdl-admin-links{
+  display:grid!important;
+}
+#sdlAdminMenu .sdl-admin-links:before{
+  content:attr(data-title)!important;
+  display:block!important;
+  grid-column:1/-1!important;
+}
+#sdlAdminMenu .sdl-admin-links button{
+  position:relative!important;
+  display:grid!important;
+  gap:4px!important;
+  min-height:68px!important;
+  margin:0!important;
+  padding:14px 2px!important;
+  border:0!important;
+  border-bottom:1px solid #2a485d!important;
+  border-radius:0!important;
+  background:transparent!important;
+  color:#edf5fb!important;
+  text-align:left!important;
+  transform:none!important;
+}
+#sdlAdminMenu .sdl-admin-links button:hover,
+#sdlAdminMenu .sdl-admin-links button.on{
+  padding-left:10px!important;
+  background:linear-gradient(90deg,rgba(67,126,166,.16),transparent 72%)!important;
+  border-color:#47718e!important;
+}
+#sdlAdminMenu .sdl-admin-links button span{
+  font-family:Arial,sans-serif!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  color:#eef6fc!important;
+}
+#sdlAdminMenu .sdl-admin-links button small{
+  font-size:12px!important;
+  line-height:1.45!important;
+  color:#9eb4c5!important;
+}
+
+/* contenido debajo, con márgenes similares al sitio público */
+#dashboard main{
+  width:min(1320px,94%)!important;
+  margin:22px auto 0!important;
+}
+
+/* barra contextual del admin menos intrusiva */
+#sdlAdminWorkspace{
+  margin-bottom:16px!important;
+  background:#071725!important;
+  border-color:#2e4f65!important;
+  border-radius:14px!important;
+}
+
+/* móvil: misma identidad, comportamiento compacto */
+@media(max-width:900px){
+  #dashboard .adm-top{
+    min-height:88px!important;
+    padding:10px 14px!important;
+  }
+  #dashboard .adm-top img{
+    width:150px!important;
+    max-width:42vw!important;
+  }
+  #sdlAdminMenuToggle{
+    display:inline-flex!important;
+    border-radius:999px!important;
+    border-color:#5d8099!important;
+    background:#0b2538!important;
+  }
+  #sdlAdminMenu{
+    display:none!important;
+    position:fixed!important;
+    top:88px!important;
+    left:10px!important;
+    right:10px!important;
+    width:auto!important;
+    max-height:calc(100dvh - 100px)!important;
+    overflow:auto!important;
+    padding:10px!important;
+    border:1px solid #42647d!important;
+    border-radius:14px!important;
+    background:#071d2c!important;
+  }
+  #dashboard.sdl-menu-open #sdlAdminMenu{display:block!important}
+  #sdlAdminSearchWrap{
+    position:static!important;
+    width:100%!important;
+    margin:0 0 10px!important;
+  }
+  #sdlAdminMenu>details{
+    max-width:none!important;
+    width:100%!important;
+    border:1px solid #2a485d!important;
+    border-radius:10px!important;
+    margin:6px 0!important;
+  }
+  #sdlAdminMenu>details>summary{
+    justify-content:flex-start!important;
+    border-radius:9px!important;
+  }
+  #sdlAdminMenu .sdl-admin-links{
+    position:static!important;
+    display:none!important;
+    grid-template-columns:1fr!important;
+    max-height:none!important;
+    left:auto!important;
+    right:auto!important;
+    padding:8px 12px!important;
+    border:0!important;
+    border-top:1px solid #2a485d!important;
+    border-radius:0 0 10px 10px!important;
+    box-shadow:none!important;
+    background:#061621!important;
+  }
+  #sdlAdminMenu details[open]>.sdl-admin-links{display:grid!important}
+  #dashboard main{width:min(100% - 20px,900px)!important;margin-top:14px!important}
+}
+</style>
 </head>
 <body>
 <div id="publicApp">
@@ -1690,6 +1972,29 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
    setTimeout(()=>{if(submit.isConnected){submit.disabled=false;submit.textContent=original}},1400);
  });
  window.addEventListener('resize',()=>{if(innerWidth>900){dashboard.classList.remove('sdl-menu-open');menuToggle.setAttribute('aria-expanded','false')}});
+})();
+</script>
+<script id="sdl-admin-menu-public-behavior">
+(()=>{
+ if(!new URLSearchParams(location.search).has('admin'))return;
+ const boot=()=>{
+   const menu=document.getElementById('sdlAdminMenu');
+   if(!menu)return setTimeout(boot,100);
+   const groups=[...menu.querySelectorAll(':scope > details')];
+   groups.forEach(d=>{
+     d.addEventListener('toggle',()=>{
+       if(!d.open)return;
+       groups.forEach(other=>{if(other!==d)other.open=false});
+     });
+   });
+   document.addEventListener('click',e=>{
+     if(!menu.contains(e.target))groups.forEach(d=>d.open=false);
+   });
+   menu.querySelectorAll('[data-admin-target]').forEach(btn=>{
+     btn.addEventListener('click',()=>groups.forEach(d=>d.open=false));
+   });
+ };
+ boot();
 })();
 </script>
 </html>
