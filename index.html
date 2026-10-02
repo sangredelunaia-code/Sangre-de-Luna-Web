@@ -297,6 +297,78 @@ body:has(.playerbar.show) .sdl-ux-dock{bottom:132px!important}@media(max-width:7
 <style>
 .promo-box{max-height:94dvh;overflow-y:auto}.promo-stage video,.promo-stage iframe{display:block;width:100%;max-height:72dvh;background:#000;border:0;object-fit:contain}.promo-stage iframe{aspect-ratio:16/9}.promo-box.r11 iframe{aspect-ratio:1}.promo-box.r916 iframe{aspect-ratio:9/16}.promo-stage video{max-height:72dvh}.promo-stage .media-help{display:block;padding:8px 16px;font-size:14px;color:#b8dfff}.previewbox video,.previewbox iframe{display:block;width:100%;max-height:300px;aspect-ratio:16/9;border:0;background:#000}.promo-stage .media-error{padding:20px;color:#f5c8c8}
 </style><style id="sdl-admin-ux-style">#adminNav.sdl-original-nav{display:none!important}#sdlAdminMenu{position:sticky;top:94px;align-self:start;max-height:calc(100dvh - 114px);overflow:auto;padding:14px;background:#07121d;border:1px solid #29455d;border-radius:18px}#sdlAdminMenu .sdl-admin-heading{padding:6px 8px 16px;display:grid;gap:5px}#sdlAdminMenu strong{font-size:17px;color:#ecf6ff}#sdlAdminMenu .sdl-admin-heading span{font-size:14px;color:#9db4c8}#sdlAdminMenu details{border-top:1px solid #1b3549;padding:6px 0}#sdlAdminMenu summary{cursor:pointer;padding:12px 8px;font-size:15px;font-weight:700;color:#d4e7f7}#sdlAdminMenu button{display:grid;width:100%;text-align:left;padding:12px;margin:4px 0;border:1px solid transparent;border-radius:10px;background:transparent;color:#b9ccdc;font:inherit;cursor:pointer;gap:5px}#sdlAdminMenu button span{font-size:15px}#sdlAdminMenu button small{font-size:13px;line-height:1.45;color:#9fb5c8}#sdlAdminMenu button:hover,#sdlAdminMenu button.on{background:#102b40;border-color:#3a6c90;color:#fff}#sdlAdminMenu button:focus-visible,#sdlAdminShortcuts button:focus-visible{outline:2px solid #a6dcff;outline-offset:2px}.sdl-admin-crumb{color:#a4c9e3;font-size:14px;margin:0 0 14px}#sdlAdminShortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}#sdlAdminShortcuts button{display:grid;gap:8px;text-align:left;background:linear-gradient(135deg,#102a3d,#09141f);border:1px solid #31536c;border-radius:14px;padding:20px;color:#ecf6ff;cursor:pointer;font:inherit}#sdlAdminShortcuts span{font-size:18px;font-weight:700}#sdlAdminShortcuts small{font-size:14px;line-height:1.5;color:#b2c6d6}#dashboard form[data-unsaved="true"]>.toolbar:after{content:'Cambios sin guardar';color:#eed19b;font-size:14px;align-self:center}#sdlAdminSaved{position:fixed;z-index:10000;bottom:24px;left:50%;transform:translateX(-50%);width:min(520px,calc(100vw - 32px));display:flex;gap:18px;align-items:flex-start;padding:20px 22px;border:1px solid #699f94;border-radius:16px;background:#0b2423;color:#f0fff9;box-shadow:0 20px 65px #0009}#sdlAdminSaved[hidden],#sdlAdminMenu [hidden]{display:none!important}#sdlAdminSaved strong{font-size:18px}#sdlAdminSaved p{margin:7px 0 0;font-size:15px;line-height:1.5;color:#d0e5df}#sdlAdminSaved button{margin-left:auto;flex-shrink:0;width:34px;height:34px;border:1px solid #72998b;background:transparent;border-radius:50%;font-size:23px;color:#fff;cursor:pointer}#dashboard main{min-width:0}#dashboard .toolbar{flex-wrap:wrap;gap:10px}@media(min-width:901px){#dashboard .adgrid{grid-template-columns:265px minmax(0,1fr);gap:24px}}@media(max-width:900px){#sdlAdminMenu{position:static;max-height:none}#sdlAdminMenu .sdl-admin-heading{padding-bottom:10px}#sdlAdminMenu summary{padding:10px 8px}}@media(max-width:560px){#sdlAdminShortcuts{grid-template-columns:1fr}#sdlAdminSaved{bottom:12px;padding:16px}#dashboard .panel{padding:18px}}
+</style><style id="sdl-admin-ux-v2-style">
+#dashboard{background:linear-gradient(180deg,#07111b 0,#09141f 100%);min-height:100dvh}
+#dashboard .adm-top{position:sticky;top:0;z-index:120;background:rgba(5,13,21,.94);backdrop-filter:blur(14px);border-bottom:1px solid #20384c;padding:12px clamp(16px,3vw,34px)}
+#dashboard .adm-top img{max-height:48px}
+#dashboard .who{gap:10px;align-items:center}
+#dashboard .adm-shell{padding:24px clamp(14px,3vw,34px) 44px}
+#dashboard main{max-width:1320px;width:100%}
+#dashboard .panel{background:linear-gradient(180deg,#0d1c29,#0a1722);border:1px solid #223d52;border-radius:20px;padding:clamp(20px,3vw,34px);box-shadow:0 18px 60px #0003}
+#dashboard .panel>h2{font-size:clamp(27px,3vw,40px);line-height:1.08;margin:8px 0 10px;letter-spacing:-.02em}
+#dashboard .panel>.sub{font-size:15px;line-height:1.6;color:#a9bfd1;max-width:820px}
+#dashboard .panel form{margin-top:20px}
+#dashboard .formgrid{gap:16px}
+#dashboard .fld{background:#0a1620;border:1px solid #1d3548;border-radius:13px;padding:14px}
+#dashboard .fld:focus-within{border-color:#4c83a9;box-shadow:0 0 0 3px #2f6d9820}
+#dashboard .fld label{display:block;margin-bottom:8px;font-size:12px;letter-spacing:.075em;color:#a9c3d7}
+#dashboard input,#dashboard textarea,#dashboard select{border-radius:10px;min-height:44px}
+#dashboard textarea{min-height:120px}
+#dashboard .toolbar{padding-top:16px;margin-top:4px}
+#dashboard .toolbar .btn{min-height:44px;border-radius:11px}
+#dashboard .toolbar .btn.pri{box-shadow:0 8px 24px #1d638b24}
+#dashboard .notice,#dashboard .uploadzone{border-radius:14px;border:1px solid #29455d;background:#0a1a27}
+#dashboard [id$="Table"]{overflow:auto;margin-top:22px;border-radius:14px}
+#dashboard table{min-width:720px}
+#dashboard .stats{gap:12px}
+#dashboard .stats>*,#dashboard .site-visit-stat{border-radius:14px}
+#sdlAdminMenu{box-shadow:0 18px 50px #0003}
+#sdlAdminMenu .sdl-admin-heading{border-bottom:1px solid #20384c;margin-bottom:8px}
+#sdlAdminMenu details{border-top:0;margin:6px 0;background:#091823;border:1px solid #173247;border-radius:12px;overflow:hidden}
+#sdlAdminMenu details[open]{border-color:#2b516c;background:#0b1d2b}
+#sdlAdminMenu summary{list-style:none;position:relative;padding-right:32px}
+#sdlAdminMenu summary::-webkit-details-marker{display:none}
+#sdlAdminMenu summary:after{content:'›';position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(0deg);font-size:22px;color:#7fa5bf;transition:.18s}
+#sdlAdminMenu details[open] summary:after{transform:translateY(-50%) rotate(90deg)}
+#sdlAdminMenu .sdl-admin-links{padding:0 6px 7px}
+#sdlAdminMenu button{transition:.15s ease}
+#sdlAdminMenu button.on{box-shadow:inset 3px 0 0 #8ecfff}
+#sdlAdminSearchWrap{padding:4px 0 12px}
+#sdlAdminSearchWrap label{display:flex;align-items:center;gap:8px;background:#0a1b28;border:1px solid #29455d;border-radius:12px;padding:0 10px}
+#sdlAdminSearch{width:100%;height:42px;background:transparent;border:0;color:#eef7ff;outline:0;font:inherit}
+#sdlAdminSearch::placeholder{color:#7792a6}
+#sdlAdminSearchWrap kbd{font-size:10px;color:#8aa4b8;border:1px solid #35566e;border-bottom-width:2px;border-radius:5px;padding:2px 5px;white-space:nowrap}
+#sdlAdminSearchEmpty{font-size:13px;color:#9eb5c7;padding:8px 6px 2px}
+#sdlAdminWorkspace{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 16px;padding:12px 14px;border:1px solid #223e54;background:#081823;border-radius:14px}
+#sdlAdminWorkspace .left{min-width:0}
+#sdlAdminWorkspace b{display:block;color:#edf7ff;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sdlAdminWorkspace small{color:#91aabd}
+#sdlAdminWorkspace .actions{display:flex;gap:8px;flex-wrap:wrap}
+#sdlAdminWorkspace button,#sdlAdminWorkspace a,#sdlAdminMenuToggle{border:1px solid #35566f;background:#0d2536;color:#dceefa;border-radius:9px;padding:9px 12px;font:inherit;font-size:13px;cursor:pointer;text-decoration:none}
+#sdlAdminWorkspace button:hover,#sdlAdminWorkspace a:hover,#sdlAdminMenuToggle:hover{background:#14344a}
+#sdlAdminMenuToggle{display:none}
+#sdlAdminMenu .sdl-admin-match{background:#153852;border-color:#4b7da0}
+#dashboard form[data-unsaved="true"]{outline:1px solid #a97935;outline-offset:8px;border-radius:10px}
+#dashboard form[data-unsaved="true"]>.toolbar:after{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#362714;border:1px solid #765527}
+@media(max-width:900px){
+ #dashboard .adm-top{padding:10px 14px}
+ #dashboard .adm-shell{padding:14px 12px 34px}
+ #dashboard .adgrid{display:block}
+ #sdlAdminMenuToggle{display:inline-flex}
+ #sdlAdminMenu{display:none;position:fixed;z-index:150;left:12px;right:12px;top:72px;max-height:calc(100dvh - 88px);overflow:auto}
+ #dashboard.sdl-menu-open #sdlAdminMenu{display:block}
+ #dashboard.sdl-menu-open:after{content:'';position:fixed;z-index:140;inset:72px 0 0;background:#0008}
+ #sdlAdminWorkspace{align-items:flex-start}
+}
+@media(max-width:620px){
+ #dashboard .panel{padding:18px 14px;border-radius:16px}
+ #dashboard .formgrid{grid-template-columns:1fr}
+ #dashboard .fld.span2{grid-column:auto}
+ #sdlAdminWorkspace{display:grid}
+ #sdlAdminWorkspace .actions{width:100%}
+ #sdlAdminWorkspace button,#sdlAdminWorkspace a{flex:1;text-align:center}
+ #dashboard .who span{display:none}
+}
 </style></head>
 <body>
 <div id="publicApp">
@@ -1216,6 +1288,58 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
  const handled=new WeakMap();const successSelector='.msg.ok,.msg.err,.sdl-admin-msg,.sdl360-msg,.sdlx-admin-msg,.sdlx-msg';
  function inspectMessages(root){if(root.nodeType!==1)return;const messages=[...(root.matches(successSelector)?[root]:[]),...root.querySelectorAll(successSelector)];for(const el of messages){const text=el.textContent.trim();if(handled.get(el)===text)continue;handled.set(el,text);const panel=el.closest('[data-page]');if(!panel||dashboard.classList.contains('hidden'))continue;if(el.matches('.err,.error')||/^(error|no se|no pud|fall|selecciona|debes)/i.test(text)){for(const [form,entry] of pending)if(entry.panel===panel)pending.delete(form);continue;}if(/\b(guardad[oa]s?|actualizad[oa]s?|cread[oa]s?|publicad[oa]s?)\b/i.test(text))notify(text,panel);}}
  new MutationObserver(records=>{for(const r of records){if(r.type==='characterData')inspectMessages(r.target.parentElement);else for(const n of r.addedNodes)inspectMessages(n)}}).observe(main,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+<script id="sdl-admin-ux-v2">
+(()=>{
+ if(new URLSearchParams(location.search).get('admin')!=='1')return;
+ const dashboard=document.getElementById('dashboard');
+ const menu=document.getElementById('sdlAdminMenu');
+ const top=document.querySelector('#dashboard .adm-top');
+ const main=document.querySelector('#dashboard main');
+ if(!dashboard||!menu||!top||!main)return;
+ const heading=menu.querySelector('.sdl-admin-heading');
+ const searchWrap=document.createElement('div');
+ searchWrap.id='sdlAdminSearchWrap';
+ searchWrap.innerHTML='<label aria-label="Buscar en el administrador"><span aria-hidden="true">⌕</span><input id="sdlAdminSearch" type="search" autocomplete="off" placeholder="Buscar sección…"><kbd>Ctrl K</kbd></label><div id="sdlAdminSearchEmpty" hidden>No se encontraron secciones.</div>';
+ heading?.after(searchWrap);
+ const search=searchWrap.querySelector('input'),empty=searchWrap.querySelector('#sdlAdminSearchEmpty');
+ function filterMenu(){
+   const q=search.value.trim().toLowerCase();let matches=0;
+   menu.querySelectorAll('[data-admin-target]').forEach(btn=>{const hit=!q||btn.textContent.toLowerCase().includes(q);btn.hidden=!hit;btn.classList.toggle('sdl-admin-match',!!q&&hit);if(hit)matches++});
+   menu.querySelectorAll('details').forEach(d=>{const visible=[...d.querySelectorAll('[data-admin-target]')].some(b=>!b.hidden);d.hidden=!visible;if(q&&visible)d.open=true});
+   empty.hidden=matches>0||!q;
+ }
+ search.addEventListener('input',filterMenu);
+ document.addEventListener('keydown',e=>{
+   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();dashboard.classList.add('sdl-menu-open');search.focus();search.select()}
+   if(e.key==='Escape'){dashboard.classList.remove('sdl-menu-open');search.blur()}
+ });
+ const menuToggle=document.createElement('button');
+ menuToggle.id='sdlAdminMenuToggle';menuToggle.type='button';menuToggle.textContent='☰ Menú';menuToggle.setAttribute('aria-expanded','false');
+ const who=top.querySelector('.who');top.insertBefore(menuToggle,who);
+ menuToggle.onclick=()=>{const open=dashboard.classList.toggle('sdl-menu-open');menuToggle.setAttribute('aria-expanded',String(open));if(open)setTimeout(()=>search.focus(),50)};
+ menu.addEventListener('click',e=>{if(e.target.closest('[data-admin-target]')&&innerWidth<=900){dashboard.classList.remove('sdl-menu-open');menuToggle.setAttribute('aria-expanded','false')}});
+ const workspace=document.createElement('div');workspace.id='sdlAdminWorkspace';
+ workspace.innerHTML='<div class="left"><small>SECCIÓN ACTUAL</small><b id="sdlWorkspaceTitle">Centro de control</b></div><div class="actions"><button type="button" id="sdlWorkspaceHome">Resumen</button><a href="./" target="_blank" rel="noopener">Ver sitio ↗</a></div>';
+ const crumb=main.querySelector('.sdl-admin-crumb');if(crumb)crumb.after(workspace);else main.prepend(workspace);
+ workspace.querySelector('#sdlWorkspaceHome').onclick=()=>document.querySelector('#adminNav [data-panel="home"]')?.click();
+ function syncWorkspace(){
+   const panel=[...main.querySelectorAll('[data-page]')].find(p=>!p.hidden&&!p.classList.contains('hidden'));if(!panel)return;
+   workspace.querySelector('#sdlWorkspaceTitle').textContent=panel.querySelector('h2')?.textContent?.trim()||'Administración';
+   sessionStorage.setItem('sdl-admin-last-panel',panel.dataset.page||'home');
+ }
+ const observer=new MutationObserver(syncWorkspace);
+ main.querySelectorAll('[data-page]').forEach(p=>observer.observe(p,{attributes:true,attributeFilter:['class','hidden']}));
+ syncWorkspace();
+ const originalNav=document.getElementById('adminNav'),last=sessionStorage.getItem('sdl-admin-last-panel');
+ if(last&&last!=='home'){const target=originalNav?.querySelector('[data-panel="'+CSS.escape(last)+'"]');if(target&&!target.hidden&&!target.classList.contains('hidden'))setTimeout(()=>target.click(),120)}
+ main.addEventListener('click',e=>{
+   const submit=e.target.closest('button[type="submit"]');if(!submit)return;
+   const original=submit.textContent;submit.textContent='Guardando…';submit.disabled=true;
+   setTimeout(()=>{if(submit.isConnected){submit.disabled=false;submit.textContent=original}},1400);
+ });
+ window.addEventListener('resize',()=>{if(innerWidth>900){dashboard.classList.remove('sdl-menu-open');menuToggle.setAttribute('aria-expanded','false')}});
 })();
 </script>
 </html>
