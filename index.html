@@ -2048,11 +2048,9 @@ async function loadPublicSafe(){try{await loadPublic()}catch{}}
  syncWorkspace();
  const originalNav=document.getElementById('adminNav'),last=sessionStorage.getItem('sdl-admin-last-panel');
  if(last&&last!=='home'){const target=originalNav?.querySelector('[data-panel="'+CSS.escape(last)+'"]');if(target&&!target.hidden&&!target.classList.contains('hidden'))setTimeout(()=>target.click(),120)}
- main.addEventListener('click',e=>{
-   const submit=e.target.closest('button[type="submit"]');if(!submit)return;
-   const original=submit.textContent;submit.textContent='Guardando…';submit.disabled=true;
-   setTimeout(()=>{if(submit.isConnected){submit.disabled=false;submit.textContent=original}},1400);
- });
+ // Leave submit buttons enabled until the native submit event reaches the form.
+ // Disabling a button during its click can cancel form submission in the browser.
+
  window.addEventListener('resize',()=>{if(innerWidth>900){dashboard.classList.remove('sdl-menu-open');menuToggle.setAttribute('aria-expanded','false')}});
 })();
 </script>
