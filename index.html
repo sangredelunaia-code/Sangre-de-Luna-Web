@@ -1609,7 +1609,7 @@ async function playTrack(t){
 }
 function closeModal(m){m.classList.remove('open');document.body.style.overflow='';if(m.id==='videoModal'){$('#videoFrame').src='';resumeAmbientAfterMedia()}if(m.id==='premiereModal'){$('#premiereFrame').src='';resumeAmbientAfterMedia()}}
 $$('[data-close]').forEach(b=>b.onclick=()=>closeModal(b.closest('.modal')));$$('.modal').forEach(m=>m.onclick=e=>{if(e.target===m)closeModal(m)});addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal.open').forEach(closeModal)});$('#closePlayer').onclick=()=>{musicRequest++;musicCurrentId=null;$('#audio').pause();$('#audio').src='';$('#playerbar').classList.remove('show');resumeAmbientAfterMedia()};
-$('#enterSite').onclick=()=>{$('#splash').classList.add('hide');sessionStorage.setItem('sdl-entered','1');startAmbient();setTimeout(maybeShowPromo,450);setTimeout(showCronistaNudge,1100)};if(sessionStorage.getItem('sdl-entered')){$('#splash').classList.add('hide');addEventListener('pointerdown',startAmbient,{once:true});setTimeout(showCronistaNudge,900)}
+$('#enterSite').onclick=()=>{$('#splash').classList.add('hide');sessionStorage.setItem('sdl-entered','1');startAmbient();setTimeout(maybeShowPromo,10000);setTimeout(showCronistaNudge,1100)};if(sessionStorage.getItem('sdl-entered')){$('#splash').classList.add('hide');addEventListener('pointerdown',startAmbient,{once:true});setTimeout(showCronistaNudge,900)}
 
 // ADMIN
 let adminInitialized=false;
