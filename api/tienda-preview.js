@@ -127,7 +127,7 @@ async function catalogPage(view='inicio'){
       '<div class="product-art product-art-'+escapeHtml(p.kind)+'">'+art+
       '<span class="image-note">'+(p.kind==='uploaded'?'Imagen del administrador':p.kind==='portrait'?'Rostro oficial de referencia':'Concepto visual inicial')+'</span></div>'+
       '<div class="product-info"><div class="product-top"><span class="badge">'+escapeHtml(p.collection)+'</span><span class="product-code">'+escapeHtml(p.id)+'</span></div>'+
-      '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+(p.price?'<p class="concept"><b>Precio referencial:</b> 
+      '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+(p.price?'<p class="concept"><b>Precio referencial:</b> $'+p.price.toFixed(2)+'</p>':'')+
       '<p class="concept"><b>Dirección artística:</b> '+escapeHtml(p.concept)+'</p>'+
       '<span class="tag">Borrador · pendiente de aprobación</span></div></article>';
   };
