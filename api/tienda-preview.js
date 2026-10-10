@@ -114,8 +114,18 @@ async function catalogPage(view='inicio'){
   const catalogVariants=require('../data/tienda-catalogo.json').products;
   const variantMap=new Map(catalogVariants.map(v=>[v.sku,v]));
   for(const p of products){const v=variantMap.get(p.id);if(v){p.sizes=(v.variants&&v.variants.sizes)||[];p.colors=(v.variants&&v.variants.colors)||[];p.saleEnabled=false;}}
+  // Public-facing preview: one product card, two independently stored SKUs.
+  const black=products.find(p=>p.id==='SDL-ORI-001');
+  const white=products.find(p=>p.id==='SDL-ORI-002');
+  if(black&&white){
+    black.name='Origen de la Manada';
+    black.colors=['Negro Lunar','Blanco Lunar'];
+    black.colorSkus=['SDL-ORI-001','SDL-ORI-002'];
+    black.desc='Camiseta oficial Origen de la Manada. Elige Negro Lunar o Blanco Lunar y consulta sus diseños delantero y posterior.';
+    products.splice(products.indexOf(white),1);
+  }
   const renderCard=(p)=>{
-    const art=p.art||'<img src="'+escapeHtml(p.image)+'" loading="lazy" alt="'+escapeHtml((p.kind==='portrait'?'Retrato original de ':'Referencia visual de ')+p.name)+'">';
+    const art=p.art||'<img data-store-product-image src="'+escapeHtml(p.image)+'" loading="lazy" alt="'+escapeHtml((p.kind==='portrait'?'Retrato original de ':'Referencia visual de ')+p.name)+'">';
     const zoomImage=p.image||((p.id==='SDL-ORI-001'||p.id==='SDL-ORI-002')?PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(p.id):'');
     const zoomOpen=zoomImage?'<button class="store-zoom-trigger" type="button" data-zoom-src="'+escapeHtml(zoomImage)+'" data-zoom-title="'+escapeHtml(p.name)+'" aria-label="Ampliar imagen de '+escapeHtml(p.name)+'">': '';
     const zoomClose=zoomImage?'</button>':'';
@@ -123,9 +133,9 @@ async function catalogPage(view='inicio'){
       '<div class="product-art product-art-'+escapeHtml(p.kind)+'">'+zoomOpen+art+zoomClose+
       '<span class="image-note">'+(p.kind==='portrait'?'Rostro oficial de referencia':'Concepto visual inicial')+'</span></div>'+
       '<div class="product-info"><div class="product-top"><span class="badge">'+escapeHtml(p.collection)+'</span><span class="product-code">'+escapeHtml(p.id)+'</span></div>'+
-      '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+
+      '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+(p.colorSkus?'<p class="concept"><b>Modelos:</b> SDL-ORI-001 / SDL-ORI-002 · $29,99 cada color</p>':'')+
       '<p class="concept"><b>Dirección artística:</b> '+escapeHtml(p.concept)+'</p>'+ 
-      (p.sizes&&p.sizes.length?'<div class="store-variants"><label>Talla <select aria-label="Talla de '+escapeHtml(p.name)+'">'+p.sizes.map(z=>'<option>'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Color <select aria-label="Color de '+escapeHtml(p.name)+'">'+(p.colors.length?p.colors:['Por confirmar']).map(z=>'<option>'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Cantidad <input type="number" min="1" max="10" value="1" aria-label="Cantidad"></label><small>Vista previa de opciones. Disponibilidad y guía de tallas sujetas a confirmación con Gelato.</small></div>':'')+
+      (p.sizes&&p.sizes.length?'<div class="store-variants"><label>Talla <select aria-label="Talla de '+escapeHtml(p.name)+'">'+p.sizes.map(z=>'<option>'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Color <select '+(p.colorSkus?'data-store-color-variant="true" ':'')+'aria-label="Color de '+escapeHtml(p.name)+'">'+(p.colors.length?p.colors:['Por confirmar']).map(z=>'<option>'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Cantidad <input type="number" min="1" max="10" value="1" aria-label="Cantidad"></label><small>Vista previa de opciones. Disponibilidad y guía de tallas sujetas a confirmación con Gelato.</small></div>':'')+
       '<span class="tag">Borrador · pendiente de aprobación</span></div></article>';
   };
   const origen=products.filter(p=>p.collection==='Origen').map(renderCard).join('');
