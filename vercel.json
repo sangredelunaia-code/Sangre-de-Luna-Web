@@ -331,6 +331,66 @@
   ],
   "rewrites": [
     {
+      "source": "/tienda-privada/colecciones",
+      "destination": "/api/tienda-preview?view=colecciones"
+    },
+    {
+      "source": "/tienda-privada/colecciones/origen",
+      "destination": "/api/tienda-preview?view=origen"
+    },
+    {
+      "source": "/tienda-privada/colecciones/personajes",
+      "destination": "/api/tienda-preview?view=personajes-coleccion"
+    },
+    {
+      "source": "/tienda-privada/productos",
+      "destination": "/api/tienda-preview?view=productos"
+    },
+    {
+      "source": "/tienda-privada/personajes",
+      "destination": "/api/tienda-preview?view=personajes"
+    },
+    {
+      "source": "/tienda-privada/administracion",
+      "destination": "/api/tienda-preview?view=administracion"
+    },
+    {
+      "source": "/tienda-privada/seguridad",
+      "destination": "/api/tienda-preview?view=seguridad"
+    },
+    {
+      "source": "/tienda-privada/productos/camisetas",
+      "destination": "/api/tienda-preview?view=tipo-camisetas"
+    },
+    {
+      "source": "/tienda-privada/productos/sudaderas",
+      "destination": "/api/tienda-preview?view=tipo-sudaderas"
+    },
+    {
+      "source": "/tienda-privada/productos/tazas",
+      "destination": "/api/tienda-preview?view=tipo-tazas"
+    },
+    {
+      "source": "/tienda-privada/productos/posteres",
+      "destination": "/api/tienda-preview?view=tipo-posteres"
+    },
+    {
+      "source": "/tienda-privada/productos/gorras",
+      "destination": "/api/tienda-preview?view=tipo-gorras"
+    },
+    {
+      "source": "/tienda-privada/productos/libretas",
+      "destination": "/api/tienda-preview?view=tipo-libretas"
+    },
+    {
+      "source": "/tienda-privada/productos/stickers",
+      "destination": "/api/tienda-preview?view=tipo-stickers"
+    },
+    {
+      "source": "/tienda-privada/productos/llaveros",
+      "destination": "/api/tienda-preview?view=tipo-llaveros"
+    },
+    {
       "source": "/tienda-privada",
       "destination": "/api/tienda-preview"
     },
