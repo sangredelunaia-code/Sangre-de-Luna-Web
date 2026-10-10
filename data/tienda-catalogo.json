@@ -1,0 +1,504 @@
+{
+  "schemaVersion": 1,
+  "brand": "Sangre de Luna",
+  "market": "Ecuador",
+  "currency": "USD",
+  "storeMode": "private_draft",
+  "checkoutEnabled": false,
+  "ordersEnabled": false,
+  "publishRequires": [
+    "approved",
+    "assets.printReady",
+    "pricing.retail",
+    "fulfillment.provider"
+  ],
+  "collections": [
+    {
+      "id": "origen",
+      "label": "Origen",
+      "status": "borrador"
+    },
+    {
+      "id": "personajes",
+      "label": "Personajes",
+      "status": "borrador"
+    }
+  ],
+  "productCount": 12,
+  "products": [
+    {
+      "sku": "SDL-ORI-001",
+      "collection": "origen",
+      "name": "Camiseta Origen",
+      "type": "camiseta",
+      "subject": "Logotipo oficial",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-ORI-002",
+      "collection": "origen",
+      "name": "Camiseta La Ciudadela",
+      "type": "camiseta",
+      "subject": "Ciudadela",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-ORI-003",
+      "collection": "origen",
+      "name": "Sudadera El Legado",
+      "type": "sudadera",
+      "subject": "Luna",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-ORI-004",
+      "collection": "origen",
+      "name": "Taza Luna Primera",
+      "type": "taza",
+      "subject": "Luna",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "capacityOz": [],
+        "colors": []
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-ORI-005",
+      "collection": "origen",
+      "name": "Póster El Reino Lunar",
+      "type": "poster",
+      "subject": "Ciudadela",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "sizes": [],
+        "finish": []
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-ORI-006",
+      "collection": "origen",
+      "name": "Stickers del Universo",
+      "type": "stickers",
+      "subject": "Emblemas",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "packs": [],
+        "finish": []
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-PER-001",
+      "collection": "personajes",
+      "name": "Camiseta Chris — Edición Dorada",
+      "type": "camiseta",
+      "subject": "Chris",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-PER-002",
+      "collection": "personajes",
+      "name": "Camiseta Gabriel — Edición Blanca",
+      "type": "camiseta",
+      "subject": "Gabriel",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-PER-003",
+      "collection": "personajes",
+      "name": "Camiseta Ella — Edición Plata",
+      "type": "camiseta",
+      "subject": "Ella",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ]
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-PER-004",
+      "collection": "personajes",
+      "name": "Póster Varkos — Guardián Azul",
+      "type": "poster",
+      "subject": "Varkos",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "sizes": [],
+        "finish": []
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-PER-005",
+      "collection": "personajes",
+      "name": "Taza Nine — Edición Violeta",
+      "type": "taza",
+      "subject": "Nine",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "capacityOz": [],
+        "colors": []
+      },
+      "approved": false
+    },
+    {
+      "sku": "SDL-PER-006",
+      "collection": "personajes",
+      "name": "Libreta Ethan — Edición Carmesí",
+      "type": "libreta",
+      "subject": "Ethan",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "formats": [],
+        "paperTypes": []
+      },
+      "approved": false
+    }
+  ]
+}
