@@ -335,10 +335,6 @@
       "destination": "/api/tienda-preview"
     },
     {
-      "source": "/tienda",
-      "destination": "/tienda.html"
-    },
-    {
       "source": "/assets/:path*",
       "destination": "https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/:path*"
     },
