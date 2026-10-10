@@ -331,6 +331,10 @@
   ],
   "rewrites": [
     {
+      "source": "/tienda-privada/productos/bolsas",
+      "destination": "/api/tienda-preview?view=tipo-bolsas"
+    },
+    {
       "source": "/tienda-privada/colecciones",
       "destination": "/api/tienda-preview?view=colecciones"
     },
