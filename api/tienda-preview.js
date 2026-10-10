@@ -88,7 +88,7 @@ function passwordPanel(){return '<details class="change-panel" open><summary>Cam
 async function catalogPage(view='inicio'){
   const products=[
     {id:'SDL-ORI-001',collection:'Origen',name:'Camiseta Origen',desc:'Camiseta negra con el logotipo oficial plateado. Diseño limpio para llevar la identidad de Sangre de Luna.',concept:'Logotipo oficial · negro y plata',art:shirtSvg(),kind:'graphic',accent:'#a6c9e2'},
-    {id:'SDL-ORI-002',collection:'Origen',name:'Camiseta La Ciudadela',desc:'Prenda azul noche con una composición inspirada en el paisaje y la luna de la Ciudadela.',concept:'Ciudadela · azul nocturno',image:'/assets/hero.webp',kind:'scenery',accent:'#8abfe1'},
+    {id:'SDL-ORI-008',collection:'Origen',name:'Camiseta La Ciudadela',desc:'Prenda azul noche con una composición inspirada en el paisaje y la luna de la Ciudadela.',concept:'Ciudadela · azul nocturno',image:'/assets/hero.webp',kind:'scenery',accent:'#8abfe1'},
     {id:'SDL-ORI-003',collection:'Origen',name:'Sudadera El Legado',desc:'Sudadera de inspiración minimalista: luna plateada y detalles discretos en azul profundo.',concept:'Luna creciente · azul profundo',art:hoodieSvg(),kind:'graphic',accent:'#a8c9f3'},
     {id:'SDL-ORI-004',collection:'Origen',name:'Taza Luna Primera',desc:'Taza coleccionable con marca lunar. Propuesta inicial con combinación negro, plata y blanco.',concept:'Luna · plata y negro',art:mugSvg(),kind:'graphic',accent:'#d2dfe9'},
     {id:'SDL-ORI-005',collection:'Origen',name:'Póster El Reino Lunar',desc:'Lámina vertical cinematográfica de la Ciudadela, la luna y sus paisajes emblemáticos.',concept:'Arte de la Ciudadela · póster',image:'/assets/admin-ciudadela-bg.webp',kind:'scenery',accent:'#94c6df'},
@@ -101,13 +101,155 @@ async function catalogPage(view='inicio'){
     {id:'SDL-PER-005',collection:'Personajes',name:'Taza Nine — Edición Violeta',desc:'Rostro original de Nine en una composición elegante con símbolos lunares morados.',concept:'Nine · violeta',image:'/assets/nine.webp',kind:'portrait',accent:'#b094eb'},
     {id:'SDL-PER-006',collection:'Personajes',name:'Libreta Ethan — Edición Carmesí',desc:'Retrato original de Ethan y acentos rojo oscuro, sin recursos visuales violentos.',concept:'Ethan · rojo carmesí',image:'/assets/ethan.webp',kind:'portrait',accent:'#ce6c70'}
   ];
+  // The private catalog must display the same persisted drafts as administration.
+  // Keep the historic Ciudadela concept under its own SKU; never overwrite the white shirt.
+  let drafts=[];
+  try { drafts=await rpc('sdl_store_draft_list',{p_admin_secret:SESSION_SECRET}); }
+  catch(e) { drafts=[]; }
+  const bySku=new Map((Array.isArray(drafts)?drafts:[]).map(d=>[d.sku,d]));
+  products.splice(1,0,{id:'SDL-ORI-002',collection:'Origen',name:'Camiseta Origen Blanco',desc:'Origen de la Manada — Blanco Lunar.',concept:'Origen de la Manada · blanco lunar',kind:'uploaded',accent:'#dbe6f2'});
+  for(const p of products){
+    const draft=bySku.get(p.id);
+    if(draft){
+      if(typeof draft.name==='string'&&draft.name.trim())p.name=draft.name.trim();
+      if(typeof draft.description==='string'&&draft.description.trim())p.desc=draft.description.trim();
+      if(Number(draft.retail_usd)>0)p.price=Number(draft.retail_usd);
+    }
+    if(p.id==='SDL-ORI-001'||p.id==='SDL-ORI-002'){
+      p.kind='uploaded';
+      p.image=PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(p.id);
+      delete p.art;
+    }
+  }
   const renderCard=(p)=>{
     const art=p.art||'<img src="'+escapeHtml(p.image)+'" loading="lazy" alt="'+escapeHtml((p.kind==='portrait'?'Retrato original de ':'Referencia visual de ')+p.name)+'">';
     return '<article class="card" data-store-card data-store-category="'+escapeHtml(({Camiseta:'Camisetas',Sudadera:'Sudaderas',Taza:'Tazas',Póster:'Pósteres',Stickers:'Stickers',Libreta:'Libretas'})[p.name.split(' ')[0]]||'Otros')+'" data-store-text="'+escapeHtml(p.name+' '+p.collection+' '+p.desc)+'" style="--product-accent:'+escapeHtml(p.accent)+'">'+
       '<div class="product-art product-art-'+escapeHtml(p.kind)+'">'+art+
-      '<span class="image-note">'+(p.kind==='portrait'?'Rostro oficial de referencia':'Concepto visual inicial')+'</span></div>'+
+      '<span class="image-note">'+(p.kind==='uploaded'?'Imagen del administrador':p.kind==='portrait'?'Rostro oficial de referencia':'Concepto visual inicial')+'</span></div>'+
       '<div class="product-info"><div class="product-top"><span class="badge">'+escapeHtml(p.collection)+'</span><span class="product-code">'+escapeHtml(p.id)+'</span></div>'+
-      '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+
+      '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+(p.price?'<p class="concept"><b>Precio referencial:</b> 
+      '<p class="concept"><b>Dirección artística:</b> '+escapeHtml(p.concept)+'</p>'+
+      '<span class="tag">Borrador · pendiente de aprobación</span></div></article>';
+  };
+  const origen=products.filter(p=>p.collection==='Origen').map(renderCard).join('');
+  const personajes=products.filter(p=>p.collection==='Personajes').map(renderCard).join('');
+  const viewName=view||'inicio';
+  const section=(heading,sub,items)=>'<section class="catalog-section"><div class="section-head"><h2>'+heading+'</h2><p>'+sub+'</p></div><div class="grid">'+items+'</div></section>';
+  const all=origen+personajes;
+  let body='';
+  if(viewName==='inicio')body=storeShowcase()+storeBenefits();
+  else if(viewName==='colecciones')body='<div class="page-lead"><h1>Colecciones</h1><p>Descubre nuestros universos creativos.</p></div><div class="shop-highlights"><a class="shop-highlight" href="/tienda-privada/colecciones/origen"><strong>Origen</strong><small>6 artículos</small></a><a class="shop-highlight" href="/tienda-privada/colecciones/personajes"><strong>Personajes</strong><small>6 artículos</small></a></div>';
+  else if(viewName==='origen')body=section('Colección Origen','Identidad oficial y Ciudadela.',origen);
+  else if(viewName==='personajes-coleccion')body=section('Colección Personajes','Ediciones de los protagonistas.',personajes);
+  else if(viewName==='productos')body='<div class="page-lead"><h1>Productos</h1><p>Explora todas las categorías.</p></div>'+shopFiltering()+section('Catálogo completo','14 productos en borrador.',all)+storeFilterScript();
+  else if(viewName.startsWith('tipo-')){const slug=viewName.slice(5),names={camisetas:'Camisetas',sudaderas:'Sudaderas',tazas:'Tazas',posteres:'Pósteres',gorras:'Gorras',libretas:'Libretas',stickers:'Stickers',llaveros:'Llaveros',bolsas:'Bolsas tote'};if(!names[slug])return page('Sección no encontrada','<p class="lead">No disponible.</p>',true);const typeNames={'Camisetas':'camiseta','Sudaderas':'sudadera','Tazas':'taza','Pósteres':'poster','Gorras':'gorra','Libretas':'libreta','Stickers':'stickers','Llaveros':'llavero'};const selectedItems=products.filter(p=>p.name.toLowerCase().startsWith(typeNames[names[slug]])).map(renderCard).join('');body='<div class="page-lead"><h1>'+names[slug]+'</h1><p>Artículos de esta categoría.</p></div>'+(selectedItems?section(names[slug],'Diseños en preparación.',selectedItems):'<div class="store-empty">Todavía no tenemos productos de esta categoría. Próximamente.</div>');}
+  else if(viewName==='personajes')body=section('Personajes','Chris, Gabriel, Ella, Varkos, Ethan y Nine.',personajes);
+  else if(viewName==='administracion')body='<section class="readiness-panel"><h3>Proveedor principal · Gelato</h3><p>Conexión API confirmada en modo consulta. Pedidos, pagos y ventas continúan desactivados.</p><div class="gelato-steps"><div><b>1. Conexión API</b><small>Verificada</small></div><div><b>2. Productos y variantes</b><small>Pendiente de vincular con catálogo Gelato</small></div><div><b>3. Envío a Ecuador</b><small>Costo y disponibilidad por artículo por verificar</small></div><div><b>4. Cobros en USD</b><small>Pasarela no configurada</small></div></div><a class="btn" href="/tienda-privada?action=gelato_status" target="_blank" rel="noopener">Comprobar conexión Gelato →</a></section>'+(await catalogConfigurationPanel())+'<script src="/store-private-image-upload.js" defer></script>';
+  else if(viewName==='seguridad')body='<div class="page-lead"><h1>Seguridad de la tienda</h1></div>'+passwordPanel();
+  else return page('Sección no encontrada','<p class="lead">No disponible.</p>',true);
+  body+=(viewName==='inicio'?'':'<p class="note">Catálogo privado en preparación. Sin ventas ni pagos activos.</p>')+'<form class="logout" action="'+PREVIEW_PATH+'" method="post"><input type="hidden" name="action" value="logout"><button type="submit">Cerrar sesión privada</button></form>';
+  return page('14 artículos · Estudio privado',body,true);
+}
+function noticePage(message){return page('Seguridad de la tienda','<section class="login"><h1>Seguridad de la tienda</h1><p>'+escapeHtml(message)+'</p><a class="pill" href="'+PREVIEW_PATH+'">Volver a entrar</a></section>')}
+function loginPage(error=false){
+ const body='<section class="access-layout"><div class="access-art"><div class="access-art-inner"><img src="/assets/logo-oficial.png" alt="Logotipo oficial Sangre de Luna"><span class="eyebrow">SANGRE DE LUNA · TIENDA OFICIAL</span><h1>El legado<br>de la luna</h1><p class="access-motto">Lleva contigo la historia</p><p class="access-desc">Un espacio exclusivo para configurar, revisar y aprobar las colecciones del universo Sangre de Luna.</p><div class="access-status"><span>Catálogo privado</span><span>Diseños en revisión</span><span>Ventas desactivadas</span></div></div></div><div class="access-side"><div class="access-login"><span class="eyebrow">VISTA PREVIA PROTEGIDA</span><h2>Acceso privado</h2><p>Solo para el creador. Ingresa tu contraseña para entrar a la administración y al catálogo en desarrollo.</p>'+
+ (error?'<p role="alert" class="error">Clave incorrecta. Comprueba los caracteres e inténtalo de nuevo.</p>':'')+
+ '<form action="'+PREVIEW_PATH+'" method="post"><label for="password">Contraseña de acceso</label><input id="password" type="password" name="password" required minlength="10" maxlength="128" autocomplete="current-password" placeholder="Introduce tu contraseña"><button class="btn" type="submit">Entrar a mi tienda privada →</button></form><p class="access-public">El público solo puede ver la página «Próximamente».</p><a class="access-back" href="/">← Volver al sitio oficial</a></div></div></section><div class="access-foot">SANGRE DE LUNA · TIENDA EN DESARROLLO · ACCESO EXCLUSIVO</div>';
+ return page('Acceso privado a tienda',body);
+}
+function respond(res,code,html){
+ res.statusCode=code;res.setHeader('Content-Type','text/html; charset=utf-8');res.end(html);
+}
+module.exports=async function handler(req,res){
+ res.setHeader('Cache-Control','private, no-store, max-age=0');
+ res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
+ res.setHeader('X-Content-Type-Options','nosniff');
+ res.setHeader('Referrer-Policy','no-referrer');
+ res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; connect-src 'self'; media-src 'self' https:; frame-src 'self'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+ if(!DB_URL.startsWith('https://') || !DB_KEY || SESSION_SECRET.length<48) {
+  return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_status'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({connected:false,reason:'login_required'}));}
+  const key=process.env.GELATO_API_KEY;
+  if(!key){return res.end(JSON.stringify({connected:false,reason:'key_not_available_in_deployment'}));}
+  try{
+   const controller=new AbortController();
+   const timer=setTimeout(()=>controller.abort(),6500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs',{method:'GET',headers:{'X-API-KEY':key,'Accept':'application/json'},signal:controller.signal});}finally{clearTimeout(timer);}
+   return res.end(JSON.stringify({connected:upstream.ok,httpStatus:upstream.status,provider:'Gelato',mode:'read_only',ordersEnabled:false}));
+  }catch(e){return res.end(JSON.stringify({connected:false,reason:'connection_unavailable',provider:'Gelato',ordersEnabled:false}));}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='image'){
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
+  const sku=String(req.query.sku||'');
+  if(!/^SDL-(ORI|PER)-[0-9]{3}$/.test(sku)){res.statusCode=400;return res.end();}
+  try{const image=await rpc('sdl_store_image_get',{p_secret:SESSION_SECRET,p_sku:sku});
+    if(!image||!image[0]){res.statusCode=404;return res.end();}
+    const bytes=Buffer.from(image[0].base64,'base64');
+    res.setHeader('Content-Type',image[0].mime);res.setHeader('Content-Length',String(bytes.length));return res.end(bytes);
+  }catch(e){res.statusCode=503;return res.end();}
+ }
+ if(req.method==='POST'){
+  // Vercel rewrites may set an internal Host differing from the browser Origin.
+  // Reject explicit cross-site browser submissions; session cookies remain SameSite=Strict,
+  // and a password change independently requires both the session and current password.
+  const fetchSite=String(req.headers['sec-fetch-site']||'').toLowerCase();
+  if(fetchSite==='cross-site')return respond(res,403,noticePage('Solicitud no autorizada.'));
+
+
+  const declaredSize=Number(req.headers['content-length']||0);
+  if(declaredSize>1500000) return respond(res,413,loginPage(true));
+  let data='';
+  try{
+   if(typeof req.body==='string') data=req.body;
+   else if(Buffer.isBuffer(req.body)) data=req.body.toString('utf8');
+   else if(req.body && typeof req.body==='object') data=new URLSearchParams(req.body).toString();
+   else for await (const part of req) {data+=part.toString('utf8');if(data.length>1500000)break;}
+   if(data.length>1500000) return respond(res,413,loginPage(true));
+   const p=new URLSearchParams(data);
+   if(p.get('action')==='upload_image'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    const ok=await rpc('sdl_store_image_save',{p_secret:SESSION_SECRET,p_sku:p.get('sku')||'',p_mime:p.get('mime')||'',p_base64:p.get('image')||''});
+    res.setHeader('Content-Type','application/json; charset=utf-8');return res.end(JSON.stringify({ok:!!ok}));
+   }
+   if(p.get('action')==='save_product'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    const sku=p.get('sku')||'',name=p.get('product_name')||'',description=p.get('product_description')||'',raw=p.get('retail_usd')||'';
+    const price=raw===''?null:Number(raw);
+    if(raw!==''&&!Number.isFinite(price))return respond(res,400,noticePage('Precio inválido.'));
+    const ok=await rpc('sdl_store_draft_save',{p_admin_secret:SESSION_SECRET,p_sku:sku,p_name:name,p_description:description,p_retail_usd:price});
+    if(!ok)return respond(res,400,noticePage('No fue posible guardar el producto. Revisa los datos.'));
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion');return res.end();
+   }
+   if(p.get('action')==='change_password'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('La sesión expiró. Inicia sesión.'));
+    const current=p.get('current_password')||'',next=p.get('new_password')||'',confirm=p.get('confirm_password')||'';
+    if(next!==confirm||next.length<12||next.length>128||next===current)return respond(res,400,noticePage('Revisa las contraseñas.'));
+    const ok=await rpc('sdl_store_change',{p_current:current,p_next:next,p_rate_key:rateKey(req)});
+    if(!ok)return respond(res,401,noticePage('Contraseña actual incorrecta o demasiados intentos.'));
+    res.setHeader('Set-Cookie',COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return respond(res,200,noticePage('Contraseña actualizada. Las sesiones previas fueron invalidadas. Entra con la nueva clave.'));
+   }
+   if(p.get('action')==='logout'){
+    res.setHeader('Set-Cookie',COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH);return res.end();
+   }
+   const pass=p.get('password')||'';
+   const check=await rpc('sdl_store_auth',{p_password:pass,p_rate_key:rateKey(req)});
+   if(check&&check[0]&&check[0].valid){
+    const session=createSession(check[0].credential_version);
+    res.setHeader('Set-Cookie',COOKIE+'='+session+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age='+MAX_AGE);
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH);return res.end();
+   }
+   return respond(res,401,loginPage(true));
+  }catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
+ }
+ if(req.method!=='GET') {res.setHeader('Allow','GET, POST');return respond(res,405,loginPage(false));}
+ try{return respond(res,200,(await isValidSession(req))?await catalogPage((req.query&&req.query.view)||'inicio'):loginPage());}catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
+};
++p.price.toFixed(2)+'</p>':'')+
       '<p class="concept"><b>Dirección artística:</b> '+escapeHtml(p.concept)+'</p>'+
       '<span class="tag">Borrador · pendiente de aprobación</span></div></article>';
   };
