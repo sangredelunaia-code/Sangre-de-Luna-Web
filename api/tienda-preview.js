@@ -106,7 +106,12 @@ module.exports=async function handler(req,res){
   return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
  }
  if(req.method==='POST'){
-  if(req.headers.origin){let originHost='';try{const u=new URL(req.headers.origin);if(u.protocol!=='https:')return respond(res,403,noticePage('Solicitud no autorizada.'));originHost=u.host.toLowerCase()}catch{return respond(res,403,noticePage('Solicitud no autorizada.'))}const allowed=['sangre-de-luna-public.vercel.app',String(req.headers['x-forwarded-host']||'').toLowerCase(),String(req.headers.host||'').toLowerCase()].filter(Boolean);if(!allowed.includes(originHost))return respond(res,403,noticePage('Solicitud no autorizada.'))}
+  // Vercel rewrites may set an internal Host differing from the browser Origin.
+  // Reject explicit cross-site browser submissions; session cookies remain SameSite=Strict,
+  // and a password change independently requires both the session and current password.
+  const fetchSite=String(req.headers['sec-fetch-site']||'').toLowerCase();
+  if(fetchSite==='cross-site')return respond(res,403,noticePage('Solicitud no autorizada.'));
+
 
   const declaredSize=Number(req.headers['content-length']||0);
   if(declaredSize>2048) return respond(res,413,loginPage(true));
