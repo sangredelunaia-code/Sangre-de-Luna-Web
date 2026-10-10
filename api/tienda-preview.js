@@ -124,7 +124,7 @@ async function catalogPage(view='inicio'){
   else if(viewName==='productos')body='<div class="page-lead"><h1>Productos</h1><p>Explora todas las categorías.</p></div>'+shopFiltering()+section('Catálogo completo','13 productos en borrador.',all)+storeFilterScript();
   else if(viewName.startsWith('tipo-')){const slug=viewName.slice(5),names={camisetas:'Camisetas',sudaderas:'Sudaderas',tazas:'Tazas',posteres:'Pósteres',gorras:'Gorras',libretas:'Libretas',stickers:'Stickers',llaveros:'Llaveros',bolsas:'Bolsas tote'};if(!names[slug])return page('Sección no encontrada','<p class="lead">No disponible.</p>',true);const typeNames={'Camisetas':'camiseta','Sudaderas':'sudadera','Tazas':'taza','Pósteres':'poster','Gorras':'gorra','Libretas':'libreta','Stickers':'stickers','Llaveros':'llavero'};const selectedItems=products.filter(p=>p.name.toLowerCase().startsWith(typeNames[names[slug]])).map(renderCard).join('');body='<div class="page-lead"><h1>'+names[slug]+'</h1><p>Artículos de esta categoría.</p></div>'+(selectedItems?section(names[slug],'Diseños en preparación.',selectedItems):'<div class="store-empty">Todavía no tenemos productos de esta categoría. Próximamente.</div>');}
   else if(viewName==='personajes')body=section('Personajes','Chris, Gabriel, Ella, Varkos, Ethan y Nine.',personajes);
-  else if(viewName==='administracion')body=(await catalogConfigurationPanel())+'<script src="/store-private-image-upload.js" defer></script>';
+  else if(viewName==='administracion')body='<section class="readiness-panel"><h3>Proveedor principal · Gelato</h3><p>Conexión privada en modo consulta. No se crearán pedidos ni cargos.</p><a class="btn" href="/tienda-privada?action=gelato_status" target="_blank" rel="noopener">Comprobar conexión Gelato →</a></section>'+(await catalogConfigurationPanel())+'<script src="/store-private-image-upload.js" defer></script>';
   else if(viewName==='seguridad')body='<div class="page-lead"><h1>Seguridad de la tienda</h1></div>'+passwordPanel();
   else return page('Sección no encontrada','<p class="lead">No disponible.</p>',true);
   body+=(viewName==='inicio'?'':'<p class="note">Catálogo privado en preparación. Sin ventas ni pagos activos.</p>')+'<form class="logout" action="'+PREVIEW_PATH+'" method="post"><input type="hidden" name="action" value="logout"><button type="submit">Cerrar sesión privada</button></form>';
@@ -148,6 +148,19 @@ module.exports=async function handler(req,res){
  res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
  if(!DB_URL.startsWith('https://') || !DB_KEY || SESSION_SECRET.length<48) {
   return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_status'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({connected:false,reason:'login_required'}));}
+  const key=process.env.GELATO_API_KEY;
+  if(!key){return res.end(JSON.stringify({connected:false,reason:'key_not_available_in_deployment'}));}
+  try{
+   const controller=new AbortController();
+   const timer=setTimeout(()=>controller.abort(),6500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs',{method:'GET',headers:{'X-API-KEY':key,'Accept':'application/json'},signal:controller.signal});}finally{clearTimeout(timer);}
+   return res.end(JSON.stringify({connected:upstream.ok,httpStatus:upstream.status,provider:'Gelato',mode:'read_only',ordersEnabled:false}));
+  }catch(e){return res.end(JSON.stringify({connected:false,reason:'connection_unavailable',provider:'Gelato',ordersEnabled:false}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='image'){
   if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
