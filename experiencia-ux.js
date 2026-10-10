@@ -75,7 +75,7 @@ const universeMenu=[
 ["Recorrido por la Ciudadela","Visita sus espacios en el tour interactivo.","https://sangre-de-luna-public.vercel.app/tour","ciudadela tour recorrido"]
 ];catalog.push(universeMenu[0],universeMenu[2],universeMenu[3]);
 groupRoot.appendChild(makeMenuLink(homeEntry));groupRoot.appendChild(makeDetails("LA SAGA",sagaEntries));groupRoot.appendChild(makeDetails("UNIVERSO",universeMenu));groupRoot.appendChild(makeDetails("MULTIMEDIA",universeEntries.slice(3,5)));groupRoot.appendChild(makeDetails("EXPLORAR",universeEntries.slice(5)));groupRoot.appendChild(makeDetails("COMUNIDAD",communityEntries.slice(0,3)));
-groupRoot.appendChild(makeMenuLink(catalog[catalog.length-1]));
+groupRoot.appendChild(makeMenuLink(catalog.find(x=>x[2]==="/tienda")));
 const gameUrl="https://sangre-de-luna-ecos-ciudadela.vercel.app/";const gameItem=["Jugar · Crónicas de la Ciudadela","Entra al juego de Sangre de Luna.",gameUrl,"juego jugar"];
 groupRoot.appendChild(makeMenuLink(gameItem));
 const isWelcome=()=>{const splash=document.getElementById("splash");return !!(splash&&!splash.classList.contains("hide"))};
