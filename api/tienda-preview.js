@@ -66,17 +66,15 @@ function storeBenefits(){
  const benefits=[['✓','Productos oficiales','Diseños desarrollados para Sangre de Luna'],['◇','Calidad premium','Materiales por validar con el proveedor'],['↗','Envíos','Cobertura y tarifas pendientes'],['♙','Pagos seguros','Pasarela aún no activada'],['☾','Apoya el universo','Cada compra futura impulsará la saga']];
  return '<section class="store-benefits" aria-label="Beneficios de la tienda"><div class="store-benefits-grid">'+benefits.map(b=>'<div class="store-benefit"><i aria-hidden="true">'+b[0]+'</i><strong>'+b[1]+'</strong><span>'+b[2]+'</span></div>').join('')+'</div></section>';
 }
-function storeFilterScript(){
- return '<script>(function(){const search=document.getElementById("store-search"),buttons=[...document.querySelectorAll("[data-filter]")],cards=[...document.querySelectorAll("[data-store-card]")],empty=document.getElementById("store-empty"),count=document.getElementById("store-count");let active="Todos";function normalized(s){return (s||"").normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").toLowerCase()}function refresh(){let visible=0;for(const c of cards){let matchCat=active==="Todos"||c.dataset.storeCategory===active;let matchText=normalized(c.dataset.storeText).includes(normalized(search.value.trim()));c.hidden=!(matchCat&&matchText);if(!c.hidden)visible++}for(const b of buttons)b.setAttribute("aria-pressed",String(b.dataset.filter===active));count.textContent=visible+" producto(s) encontrado(s)";empty.hidden=visible!==0;empty.textContent=active==="Todos"?"No encontramos artículos con esa búsqueda.":("No hay productos disponibles todavía en "+active+". Próximamente.");}buttons.forEach(b=>b.addEventListener("click",()=>{active=b.dataset.filter;refresh()}));search.addEventListener("input",refresh);refresh()})();</script>';
-}
-function catalogConfigurationPanel(){
+function storeFilterScript(){return '<script src="/store-private-filters.js" defer></script>';}
+async function catalogConfigurationPanel(){
  const catalog=require('../data/tienda-catalogo.json');
  const edits=await rpc('sdl_store_draft_list',{p_admin_secret:SESSION_SECRET});
  const bySku=new Map(edits.map(x=>[x.sku,x]));
  const rows=catalog.products.map(p=>{const d=bySku.get(p.sku)||p;return '<tr><td>'+escapeHtml(p.sku)+'</td><td><form id="edit-'+escapeHtml(p.sku)+'" method="post" action="'+PREVIEW_PATH+'"><input type="hidden" name="action" value="save_product"><input type="hidden" name="sku" value="'+escapeHtml(p.sku)+'"></form><input form="edit-'+escapeHtml(p.sku)+'" name="product_name" maxlength="120" required value="'+escapeHtml(d.name)+'" aria-label="Nombre de '+escapeHtml(p.sku)+'"></td><td>'+escapeHtml(p.collection)+'</td><td><input form="edit-'+escapeHtml(p.sku)+'" name="retail_usd" inputmode="decimal" type="number" min="0.01" max="10000" step="0.01" value="'+(d.retail_usd==null?'':escapeHtml(d.retail_usd))+'" placeholder="Sin definir" aria-label="Precio USD"></td><td><textarea form="edit-'+escapeHtml(p.sku)+'" name="product_description" rows="2" maxlength="700" placeholder="Descripción">'+escapeHtml(d.description||'')+'</textarea><button form="edit-'+escapeHtml(p.sku)+'" class="btn small-save" type="submit">Guardar</button></td></tr>'}).join('');
  return '<section class="catalog-section" id="configuracion"><div class="section-head"><span class="eyebrow">Administración · Configuración</span><h2>Base de productos</h2><p>'+catalog.productCount+' productos estructurados · '+catalog.collections.length+' colecciones · moneda USD. No hay ventas activas.</p></div><div class="catalog-table-wrap"><table class="catalog-table"><thead><tr><th>SKU</th><th>Producto</th><th>Colección</th><th>Precio</th><th>Estado</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="note">Los datos de producto están guardados en un catálogo de configuración. Las imágenes actuales son solo referencias. Precios, tallas definitivas, proveedor, stock e impresión se completarán antes de activar compras.</p></section>';
 }
-async function catalogPage(){
+async async function catalogPage(){
   const products=[
     {id:'SDL-ORI-001',collection:'Origen',name:'Camiseta Origen',desc:'Camiseta negra con el logotipo oficial plateado. Diseño limpio para llevar la identidad de Sangre de Luna.',concept:'Logotipo oficial · negro y plata',art:shirtSvg(),kind:'graphic',accent:'#a6c9e2'},
     {id:'SDL-ORI-002',collection:'Origen',name:'Camiseta La Ciudadela',desc:'Prenda azul noche con una composición inspirada en el paisaje y la luna de la Ciudadela.',concept:'Ciudadela · azul nocturno',image:'/assets/hero.webp',kind:'scenery',accent:'#8abfe1'},
@@ -126,7 +124,7 @@ module.exports=async function handler(req,res){
  res.setHeader('X-Robots-Tag','noindex, nofollow, noarchive');
  res.setHeader('X-Content-Type-Options','nosniff');
  res.setHeader('Referrer-Policy','no-referrer');
- res.setHeader('Content-Security-Policy',"default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
+ res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
  if(!DB_URL.startsWith('https://') || !DB_KEY || SESSION_SECRET.length<48) {
   return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
  }
