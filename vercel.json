@@ -301,9 +301,43 @@
           "value": "no-store, no-cache, must-revalidate"
         }
       ]
+    },
+    {
+      "source": "/tienda",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, follow"
+        }
+      ]
+    },
+    {
+      "source": "/tienda-privada",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store, max-age=0"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
     }
   ],
   "rewrites": [
+    {
+      "source": "/tienda-privada",
+      "destination": "/api/tienda-preview"
+    },
+    {
+      "source": "/tienda",
+      "destination": "/tienda.html"
+    },
     {
       "source": "/assets/:path*",
       "destination": "https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@main/assets/:path*"
