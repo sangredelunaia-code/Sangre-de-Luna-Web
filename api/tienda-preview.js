@@ -118,7 +118,7 @@ async function catalogPage(view='inicio'){
   const black=products.find(p=>p.id==='SDL-ORI-001');
   const white=products.find(p=>p.id==='SDL-ORI-002');
   if(black&&white){
-    black.name='Origen de la Manada';
+    black.name='Camiseta Origen de la Manada';
     black.colors=['Negro Lunar','Blanco Lunar'];
     black.colorSkus=['SDL-ORI-001','SDL-ORI-002'];
     black.desc='Camiseta oficial Origen de la Manada. Elige Negro Lunar o Blanco Lunar y consulta sus diseños delantero y posterior.';
