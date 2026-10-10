@@ -713,10 +713,22 @@
     }
   ],
   "catalogSetup": {
-    "stage": "Variantes preliminares",
-    "shippingStatus": "No configurado",
+    "stage": "Preparación de integración Gelato",
+    "shippingStatus": "Cotizaciones por país pendientes; Ecuador por verificar por artículo",
     "paymentStatus": "Desactivado",
-    "supplierStatus": "Pendiente",
-    "lastUpdated": "2026-10-09"
+    "supplierStatus": "Gelato seleccionado, conexión API pendiente",
+    "lastUpdated": "2026-10-09",
+    "supplierIntegration": {
+      "provider": "Gelato",
+      "plan": "Free",
+      "integration": "Order Flow API",
+      "connectionStatus": "not_connected",
+      "apiKeyConfigured": false,
+      "sandboxChecked": false,
+      "ecuadorDeliveryVerified": false,
+      "checkoutEnabled": false,
+      "currency": "USD",
+      "officialDocumentation": "https://dashboard.gelato.com/docs/"
+    }
   }
 }
