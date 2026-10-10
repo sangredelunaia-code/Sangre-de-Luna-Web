@@ -24,7 +24,7 @@
       "status": "borrador"
     }
   ],
-  "productCount": 12,
+  "productCount": 13,
   "products": [
     {
       "sku": "SDL-ORI-001",
@@ -666,6 +666,50 @@
         "availability": "No disponible",
         "inventoryMode": "No configurado"
       }
+    },
+    {
+      "sku": "SDL-ORI-007",
+      "collection": "origen",
+      "name": "Bolsa tote — Legado Lunar",
+      "type": "bolsa",
+      "subject": "Logotipo oficial",
+      "status": "borrador",
+      "visibility": "privado",
+      "saleEnabled": false,
+      "descriptionStatus": "pendiente_revision",
+      "designStatus": "pendiente_diseno_final",
+      "assets": {
+        "front": null,
+        "back": null,
+        "printReady": null
+      },
+      "pricing": {
+        "currency": "USD",
+        "retail": null,
+        "baseCost": null,
+        "shipping": null,
+        "margin": null,
+        "taxIncluded": null
+      },
+      "fulfillment": {
+        "provider": null,
+        "externalProductId": null,
+        "stockTracking": false,
+        "inventory": null
+      },
+      "variants": {
+        "colors": [],
+        "sizes": []
+      },
+      "variantConfiguration": {
+        "formats": [],
+        "material": "Lona o algodón, por confirmar",
+        "finish": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      },
+      "approved": false
     }
   ],
   "catalogSetup": {
