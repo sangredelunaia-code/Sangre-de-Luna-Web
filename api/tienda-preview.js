@@ -5,6 +5,9 @@ const PREVIEW_PATH = '/tienda-privada';
 const MAX_AGE = 8 * 60 * 60;
 const HASH = process.env.SDL_STORE_PREVIEW_KEY_SHA256 || '';
 const SESSION_SECRET = process.env.SDL_STORE_PREVIEW_SESSION_SECRET || '';
+const DB_URL=process.env.SDL_STORE_SUPABASE_URL||'',DB_KEY=process.env.SDL_STORE_SUPABASE_PUBLISHABLE_KEY||'';
+async function rpc(name,payload){const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),6000);try{const r=await fetch(DB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:DB_KEY,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctl.signal});if(!r.ok)throw Error('Credential service unavailable');return await r.json()}finally{clearTimeout(timeout)}}
+function rateKey(req){return crypto.createHmac('sha256',SESSION_SECRET).update(String(req.headers['x-forwarded-for']||req.headers['x-real-ip']||'unknown').split(',')[0].trim()).digest('hex')}
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -13,21 +16,8 @@ function safeEqual(a, b) {
   if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
   return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
 }
-function createSession() {
-  const expiry = Date.now() + MAX_AGE * 1000;
-  const mac = crypto.createHmac('sha256', SESSION_SECRET).update('sdl-store:' + expiry).digest('hex');
-  return expiry + '.' + mac;
-}
-function isValidSession(req) {
-  const pairs = String(req.headers.cookie || '').split(';').map(x => x.trim());
-  const raw = pairs.find(p => p.startsWith(COOKIE + '='));
-  if (!raw) return false;
-  const value = raw.slice(COOKIE.length + 1);
-  const m = value.match(/^(\d{13})\.([a-f0-9]{64})$/);
-  if (!m || Number(m[1]) < Date.now() || Number(m[1]) > Date.now() + MAX_AGE * 1000) return false;
-  const mac = crypto.createHmac('sha256', SESSION_SECRET).update('sdl-store:' + m[1]).digest('hex');
-  return safeEqual(mac, m[2]);
-}
+function createSession(version){const expiry=Date.now()+MAX_AGE*1000,payload=expiry+'.'+version,mac=crypto.createHmac('sha256',SESSION_SECRET).update('sdl-store:'+payload).digest('hex');return payload+'.'+mac}
+async function isValidSession(req){const pair=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='));if(!pair)return false;const m=pair.slice(COOKIE.length+1).match(/^(\d{13})\.(\d+)\.([a-f0-9]{64})$/);if(!m||Number(m[1])<Date.now()||Number(m[1])>Date.now()+MAX_AGE*1000)return false;const mac=crypto.createHmac('sha256',SESSION_SECRET).update('sdl-store:'+m[1]+'.'+m[2]).digest('hex');if(!safeEqual(mac,m[3]))return false;return Number(await rpc('sdl_store_version',{}))===Number(m[2])}
 function page(title, body) {
   return `<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -45,7 +35,7 @@ main{position:relative;z-index:1;padding:58px 0 95px}.eyebrow{color:var(--gold);
 .product-art{border-bottom:2px solid var(--product-accent,#84c5ef);background:radial-gradient(circle at 50% 30%,color-mix(in srgb,var(--product-accent) 20%,transparent),transparent 70%),#0b121c}.product-art img{width:100%;height:100%;display:block;object-fit:cover;object-position:center 22%}.product-art-logo img{object-fit:contain;width:80%;height:80%;filter:drop-shadow(0 15px 15px #000)}.product-art-scenery img{object-position:center center}.image-note{position:absolute;z-index:2;left:12px;bottom:12px;padding:5px 8px;border-radius:99px;color:#e9f4ff;background:#05101ccf;border:1px solid #607e9866;font-size:.67rem;letter-spacing:.015em}.product-art::after{pointer-events:none}
 .concept{border-top:1px solid #34495b;padding-top:12px!important;color:#a8c7da!important}.concept b{color:#e9f5ff}
 @media(max-width:750px){.catalog-nav{gap:8px}.catalog-nav a{font-size:.75rem;padding:8px 11px}.catalog-section{margin-bottom:52px}}
-.badge{display:inline-block;color:#9dd7fe;text-transform:uppercase;font-size:.69rem;font-weight:700;letter-spacing:.13em;border:1px solid #486983;border-radius:99px;padding:5px 10px}.note{margin:34px 0 0;border:1px dashed #456078;padding:18px 22px;border-radius:12px;color:var(--muted);font-size:.9rem}.login{max-width:440px;margin:0 auto;border:1px solid #3b536a;border-radius:22px;background:#0b1725e5;padding:35px;box-shadow:0 20px 70px #0006}.login h1{font:500 2.45rem Georgia,serif;margin:10px 0 16px}.login p{color:var(--muted)}.login label{font-size:.85rem;display:block;margin:22px 0 8px}.login input{width:100%;border:1px solid #4b6984;border-radius:12px;background:#08121c;color:var(--ink);font-size:1rem;padding:13px}.btn{background:linear-gradient(120deg,#aacfea,#d7eaf6);border:0;border-radius:100px;padding:12px 22px;color:#071420;font-size:.94rem;font-weight:800;cursor:pointer}.login .btn{width:100%;margin-top:20px}.error{color:#ffd4d4!important;background:#6c26342f;padding:10px;border-radius:8px}.logout{display:inline-block}.logout button{color:#daeafb;background:#1b3242;border:1px solid #47637c;border-radius:99px;cursor:pointer;padding:8px 14px}.meta{text-align:center;color:#94b0c9;margin:32px auto 0;font-size:.9rem}.foot{border-top:1px solid #ffffff20;padding:22px 0;text-align:center;color:#70869d;font-size:.78rem}
+.badge{display:inline-block;color:#9dd7fe;text-transform:uppercase;font-size:.69rem;font-weight:700;letter-spacing:.13em;border:1px solid #486983;border-radius:99px;padding:5px 10px}.note{margin:34px 0 0;border:1px dashed #456078;padding:18px 22px;border-radius:12px;color:var(--muted);font-size:.9rem}.login{max-width:440px;margin:0 auto;border:1px solid #3b536a;border-radius:22px;background:#0b1725e5;padding:35px;box-shadow:0 20px 70px #0006}.login h1{font:500 2.45rem Georgia,serif;margin:10px 0 16px}.login p{color:var(--muted)}.login label{font-size:.85rem;display:block;margin:22px 0 8px}.login input{width:100%;border:1px solid #4b6984;border-radius:12px;background:#08121c;color:var(--ink);font-size:1rem;padding:13px}.btn{background:linear-gradient(120deg,#aacfea,#d7eaf6);border:0;border-radius:100px;padding:12px 22px;color:#071420;font-size:.94rem;font-weight:800;cursor:pointer}.login .btn{width:100%;margin-top:20px}.error{color:#ffd4d4!important;background:#6c26342f;padding:10px;border-radius:8px}.logout{display:inline-block}.logout button{color:#daeafb;background:#1b3242;border:1px solid #47637c;border-radius:99px;cursor:pointer;padding:8px 14px}.change-panel{margin:30px 0;border:1px solid #536b82;border-radius:18px;padding:22px;background:#0b1725}.change-panel summary{cursor:pointer;font-weight:750;color:#d6eafe}.change-panel label{display:block;margin:14px 0 5px;font-size:.9rem}.change-panel input{display:block;width:min(440px,100%);padding:12px;border-radius:9px;border:1px solid #526a84;color:#fff;background:#07121f}.change-panel .btn{margin-top:19px}.meta{text-align:center;color:#94b0c9;margin:32px auto 0;font-size:.9rem}.foot{border-top:1px solid #ffffff20;padding:22px 0;text-align:center;color:#70869d;font-size:.78rem}
 @media(max-width:750px){.grid{grid-template-columns:1fr}.product-art{height:210px}.login{padding:25px}.brand img{width:45px}.top{gap:10px}.tag{font-size:.61rem}}
 </style></head><body><div class="wrap"><header class="top"><a class="brand" href="/"><img src="/assets/logo-oficial.png" alt="Logo oficial"><span>SANGRE DE LUNA<br><small class="tag">Laboratorio creativo</small></span></a><span class="pill">Acceso privado</span></header><main>${body}</main><footer class="foot">© Sangre de Luna · Propuesta en desarrollo, sin ventas activas.</footer></div></body></html>`;
 }
@@ -96,9 +86,10 @@ function catalogPage(){
     '<section id="coleccion-origen" class="catalog-section"><div class="section-head"><span class="eyebrow">Colección 01</span><h2>Origen</h2><p>Identidad de marca, emblemas narrativos y paisajes de la Ciudadela.</p></div><div class="grid" aria-label="Productos de la colección Origen">'+origen+'</div></section>'+
     '<section id="coleccion-personajes" class="catalog-section"><div class="section-head"><span class="eyebrow">Colección 02</span><h2>Personajes</h2><p>Ediciones con los rostros originales de Chris, Gabriel, Ella, Varkos, Nine y Ethan.</p></div><div class="grid" aria-label="Productos de personajes">'+personajes+'</div></section>'+
     '<p class="note"><b>CATÁLOGO EN REVISIÓN:</b> Las imágenes son referencias de diseño, no fotografías del producto final ni archivos listos para impresión. No se han publicado artículos en Fourthwall, no hay precios ni compras activas. Fabricación, tamaños, comisiones y envíos se verificarán antes de la venta. Se requiere confirmar los derechos comerciales de las imágenes de personajes.</p>'+
-    '<form class="logout" action="'+PREVIEW_PATH+'" method="post"><input type="hidden" name="action" value="logout"><button type="submit">Cerrar sesión privada</button></form>';
+    '<details class="change-panel"><summary>🔐 Cambiar contraseña de acceso</summary><p>Indica la clave actual y elige otra de al menos 12 caracteres.</p><form action="'+PREVIEW_PATH+'" method="post"><input type="hidden" name="action" value="change_password"><label for="current_password">Contraseña actual</label><input id="current_password" name="current_password" type="password" required minlength="10" maxlength="128"><label for="new_password">Nueva contraseña</label><input id="new_password" name="new_password" type="password" required minlength="12" maxlength="128"><label for="confirm_password">Confirmar contraseña</label><input id="confirm_password" name="confirm_password" type="password" required minlength="12" maxlength="128"><button class="btn" type="submit">Guardar nueva contraseña</button></form></details>'+ '<form class="logout" action="'+PREVIEW_PATH+'" method="post"><input type="hidden" name="action" value="logout"><button type="submit">Cerrar sesión privada</button></form>';
   return page('12 artículos · Estudio privado',body);
 }
+function noticePage(message){return page('Seguridad de la tienda','<section class="login"><h1>Seguridad de la tienda</h1><p>'+escapeHtml(message)+'</p><a class="pill" href="'+PREVIEW_PATH+'">Volver a entrar</a></section>')}
 function loginPage(error=false){
   return page('Acceso privado a tienda','<section class="login"><span class="eyebrow">Vista previa protegida</span><h1>Solo para el creador</h1><p>La Tienda Oficial está en preparación. Introduce la clave temporal para ver y aprobar los bocetos.</p>'+(error?'<p role="alert" class="error">Clave incorrecta. Revisa los caracteres e inténtalo de nuevo.</p>':'')+'<form action="'+PREVIEW_PATH+'" method="post"><label for="password">Clave temporal</label><input id="password" type="password" name="password" required minlength="10" maxlength="128" autocomplete="off" autofocus><button class="btn" type="submit">Entrar al estudio privado</button></form></section><p class="meta">El público solo verá la página «Próximamente».</p>');
 }
@@ -111,10 +102,12 @@ module.exports=async function handler(req,res){
  res.setHeader('X-Content-Type-Options','nosniff');
  res.setHeader('Referrer-Policy','no-referrer');
  res.setHeader('Content-Security-Policy',"default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'");
- if(!/^[a-f0-9]{64}$/.test(HASH) || SESSION_SECRET.length<48) {
+ if(!DB_URL.startsWith('https://') || !DB_KEY || SESSION_SECRET.length<48) {
   return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
  }
  if(req.method==='POST'){
+  if(req.headers.origin && req.headers.origin!=='https://'+req.headers.host)return respond(res,403,noticePage('Solicitud no autorizada.'));
+
   const declaredSize=Number(req.headers['content-length']||0);
   if(declaredSize>2048) return respond(res,413,loginPage(true));
   let data='';
@@ -125,20 +118,28 @@ module.exports=async function handler(req,res){
    else for await (const part of req) {data+=part.toString('utf8');if(data.length>2048)break;}
    if(data.length>2048) return respond(res,413,loginPage(true));
    const p=new URLSearchParams(data);
+   if(p.get('action')==='change_password'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('La sesión expiró. Inicia sesión.'));
+    const current=p.get('current_password')||'',next=p.get('new_password')||'',confirm=p.get('confirm_password')||'';
+    if(next!==confirm||next.length<12||next.length>128||next===current)return respond(res,400,noticePage('Revisa las contraseñas.'));
+    const ok=await rpc('sdl_store_change',{p_current:current,p_next:next,p_rate_key:rateKey(req)});
+    if(!ok)return respond(res,401,noticePage('Contraseña actual incorrecta o demasiados intentos.'));
+    res.setHeader('Set-Cookie',COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return respond(res,200,noticePage('Contraseña actualizada. Las sesiones previas fueron invalidadas. Entra con la nueva clave.'));
+   }
    if(p.get('action')==='logout'){
     res.setHeader('Set-Cookie',COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
     res.statusCode=303;res.setHeader('Location',PREVIEW_PATH);return res.end();
    }
    const pass=p.get('password')||'';
-   const digest=crypto.createHash('sha256').update(pass,'utf8').digest('hex');
-   if(pass.length>=10 && pass.length<=128 && safeEqual(digest,HASH)){
-    const session=createSession();
+   const check=await rpc('sdl_store_auth',{p_password:pass,p_rate_key:rateKey(req)});
+   if(check&&check[0]&&check[0].valid){
+    const session=createSession(check[0].credential_version);
     res.setHeader('Set-Cookie',COOKIE+'='+session+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age='+MAX_AGE);
     res.statusCode=303;res.setHeader('Location',PREVIEW_PATH);return res.end();
    }
    return respond(res,401,loginPage(true));
-  }catch(e){return respond(res,400,loginPage(true));}
+  }catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
  }
  if(req.method!=='GET') {res.setHeader('Allow','GET, POST');return respond(res,405,loginPage(false));}
- return respond(res,200,isValidSession(req)?catalogPage():loginPage());
+ try{return respond(res,200,(await isValidSession(req))?catalogPage():loginPage());}catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
 };
