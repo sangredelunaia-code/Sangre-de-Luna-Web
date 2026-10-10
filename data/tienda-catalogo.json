@@ -67,7 +67,26 @@
           "2XL"
         ]
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ],
+        "colors": [
+          "Por confirmar con proveedor"
+        ],
+        "material": "Pendiente de proveedor",
+        "printMethod": "Por definir",
+        "sizeGuide": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-ORI-002",
@@ -110,7 +129,26 @@
           "2XL"
         ]
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ],
+        "colors": [
+          "Por confirmar con proveedor"
+        ],
+        "material": "Pendiente de proveedor",
+        "printMethod": "Por definir",
+        "sizeGuide": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-ORI-003",
@@ -153,7 +191,26 @@
           "2XL"
         ]
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ],
+        "colors": [
+          "Por confirmar con proveedor"
+        ],
+        "material": "Pendiente de proveedor",
+        "printMethod": "Por definir",
+        "sizeGuide": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-ORI-004",
@@ -189,7 +246,16 @@
         "capacityOz": [],
         "colors": []
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "capacityOz": [],
+        "colors": [],
+        "material": "Cerámica (por confirmar)",
+        "finish": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-ORI-005",
@@ -225,7 +291,16 @@
         "sizes": [],
         "finish": []
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [],
+        "paper": "Pendiente",
+        "finish": "Pendiente",
+        "orientation": "Por definir",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-ORI-006",
@@ -261,7 +336,15 @@
         "packs": [],
         "finish": []
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "formats": [],
+        "material": "Pendiente",
+        "finish": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-PER-001",
@@ -304,7 +387,26 @@
           "2XL"
         ]
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ],
+        "colors": [
+          "Por confirmar con proveedor"
+        ],
+        "material": "Pendiente de proveedor",
+        "printMethod": "Por definir",
+        "sizeGuide": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-PER-002",
@@ -347,7 +449,26 @@
           "2XL"
         ]
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ],
+        "colors": [
+          "Por confirmar con proveedor"
+        ],
+        "material": "Pendiente de proveedor",
+        "printMethod": "Por definir",
+        "sizeGuide": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-PER-003",
@@ -390,7 +511,26 @@
           "2XL"
         ]
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [
+          "XS",
+          "S",
+          "M",
+          "L",
+          "XL",
+          "2XL"
+        ],
+        "colors": [
+          "Por confirmar con proveedor"
+        ],
+        "material": "Pendiente de proveedor",
+        "printMethod": "Por definir",
+        "sizeGuide": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-PER-004",
@@ -426,7 +566,16 @@
         "sizes": [],
         "finish": []
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "sizes": [],
+        "paper": "Pendiente",
+        "finish": "Pendiente",
+        "orientation": "Por definir",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-PER-005",
@@ -462,7 +611,16 @@
         "capacityOz": [],
         "colors": []
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "capacityOz": [],
+        "colors": [],
+        "material": "Cerámica (por confirmar)",
+        "finish": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     },
     {
       "sku": "SDL-PER-006",
@@ -498,7 +656,23 @@
         "formats": [],
         "paperTypes": []
       },
-      "approved": false
+      "approved": false,
+      "variantConfiguration": {
+        "formats": [],
+        "pages": null,
+        "paper": "Pendiente",
+        "cover": "Pendiente",
+        "approved": false,
+        "availability": "No disponible",
+        "inventoryMode": "No configurado"
+      }
     }
-  ]
+  ],
+  "catalogSetup": {
+    "stage": "Variantes preliminares",
+    "shippingStatus": "No configurado",
+    "paymentStatus": "Desactivado",
+    "supplierStatus": "Pendiente",
+    "lastUpdated": "2026-10-09"
+  }
 }
