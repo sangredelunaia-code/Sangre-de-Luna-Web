@@ -103,6 +103,7 @@ async function catalogConfigurationPanel(){
 function passwordPanel(){return '<details class="change-panel" open><summary>Cambiar contraseña</summary><form method="post" action="'+PREVIEW_PATH+'"><input type="hidden" name="action" value="change_password"><label>Contraseña actual<input type="password" name="current_password" required minlength="10"></label><label>Nueva contraseña<input type="password" name="new_password" required minlength="12"></label><label>Confirmación<input type="password" name="confirm_password" required minlength="12"></label><button class="btn" type="submit">Guardar</button></form></details>'}
 async function catalogPage(view='inicio'){
   const products=[];
+  const variantMap=new Map();
   const customItems=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
   for(const x of customItems)products.push({id:x.id,collection:x.collection,name:x.title,desc:x.description||'',price:Number(x.price),concept:'Diseño nuevo',image:PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(x.id),kind:'uploaded',accent:'#a6c9e2',colors:Array.isArray(x.variants)?x.variants:[],category:x.category,saleEnabled:false});
   const extraColors=await rpc('sdl_store_variant_list',{p_admin_secret:SESSION_SECRET});
@@ -148,7 +149,7 @@ async function catalogPage(view='inicio'){
   else if(viewName==='seguridad')body='<div class="page-lead"><h1>Seguridad de la tienda</h1></div>'+passwordPanel();
   else return page('Sección no encontrada','<p class="lead">No disponible.</p>',true);
   body+=(viewName==='inicio'?'':'<p class="note">Catálogo privado en preparación. Sin ventas ni pagos activos.</p>')+'<form class="logout" action="'+PREVIEW_PATH+'" method="post"><input type="hidden" name="action" value="logout"><button type="submit">Cerrar sesión privada</button></form>';
-  return page('12 artículos · Estudio privado',body,true);
+  return page(products.length+' artículos · Estudio privado',body,true);
 }
 function noticePage(message){return page('Seguridad de la tienda','<section class="login"><h1>Seguridad de la tienda</h1><p>'+escapeHtml(message)+'</p><a class="pill" href="'+PREVIEW_PATH+'">Volver a entrar</a></section>')}
 function loginPage(error=false){
