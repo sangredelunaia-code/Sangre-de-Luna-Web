@@ -76,7 +76,7 @@ function storeBenefits(){
 }
 function storeFilterScript(){return '<script src="/store-private-filters.js" defer></script>';}
 async function catalogConfigurationPanel(){
- const catalog=require('../data/tienda-catalogo.json');
+ const catalog={...require('../data/tienda-catalogo.json'),products:[],productCount:0};
  const edits=await rpc('sdl_store_draft_list',{p_admin_secret:SESSION_SECRET});
  const bySku=new Map(edits.map(x=>[x.sku,x]));
  const extraColors=await rpc('sdl_store_variant_list',{p_admin_secret:SESSION_SECRET});
@@ -102,34 +102,7 @@ async function catalogConfigurationPanel(){
 }
 function passwordPanel(){return '<details class="change-panel" open><summary>Cambiar contraseña</summary><form method="post" action="'+PREVIEW_PATH+'"><input type="hidden" name="action" value="change_password"><label>Contraseña actual<input type="password" name="current_password" required minlength="10"></label><label>Nueva contraseña<input type="password" name="new_password" required minlength="12"></label><label>Confirmación<input type="password" name="confirm_password" required minlength="12"></label><button class="btn" type="submit">Guardar</button></form></details>'}
 async function catalogPage(view='inicio'){
-  const products=[
-    {id:'SDL-ORI-001',collection:'Origen',name:'Camiseta Origen',desc:'Camiseta negra con el logotipo oficial plateado. Diseño limpio para llevar la identidad de Sangre de Luna.',concept:'Logotipo oficial · negro y plata',art:shirtSvg(),kind:'graphic',accent:'#a6c9e2'},
-    {id:'SDL-ORI-002',collection:'Origen',name:'Camiseta La Ciudadela',desc:'Prenda azul noche con una composición inspirada en el paisaje y la luna de la Ciudadela.',concept:'Ciudadela · azul nocturno',image:'/assets/hero.webp',kind:'scenery',accent:'#8abfe1'},
-    {id:'SDL-ORI-003',collection:'Origen',name:'Sudadera El Legado',desc:'Sudadera de inspiración minimalista: luna plateada y detalles discretos en azul profundo.',concept:'Luna creciente · azul profundo',art:hoodieSvg(),kind:'graphic',accent:'#a8c9f3'},
-    {id:'SDL-ORI-004',collection:'Origen',name:'Taza Luna Primera',desc:'Taza coleccionable con marca lunar. Propuesta inicial con combinación negro, plata y blanco.',concept:'Luna · plata y negro',art:mugSvg(),kind:'graphic',accent:'#d2dfe9'},
-    {id:'SDL-ORI-005',collection:'Origen',name:'Póster El Reino Lunar',desc:'Lámina vertical cinematográfica de la Ciudadela, la luna y sus paisajes emblemáticos.',concept:'Arte de la Ciudadela · póster',image:'/assets/admin-ciudadela-bg.webp',kind:'scenery',accent:'#94c6df'},
-    {id:'SDL-ORI-006',collection:'Origen',name:'Stickers del Universo',desc:'Propuesta de pegatinas con logotipo y elementos narrativos: luna, ciudadela y estrellas.',concept:'Logotipo oficial · símbolos',image:'/assets/logo-oficial.png',kind:'logo',accent:'#bfcde2'},
-    {id:'SDL-ORI-007',collection:'Origen',name:'Bolsa tote — Legado Lunar',desc:'Bolsa reutilizable propuesta con el logotipo oficial. Materiales y medidas pendientes de confirmación.',concept:'Bolsa coleccionable · diseño por aprobar',image:'/assets/logo-oficial.png',kind:'logo',accent:'#a4bad0'},
-    {id:'SDL-PER-001',collection:'Personajes',name:'Camiseta Chris — Edición Dorada',desc:'Dos vistas conceptuales de una camiseta negra: retrato oficial intacto de Chris en el frente y emblema lunar dorado discreto en la espalda.',concept:'Retrato original sin retoques · negro y oro · frente y espalda',art:chrisShirtSvg(),kind:'graphic',accent:'#d6b16a'},
-    {id:'SDL-PER-002',collection:'Personajes',name:'Camiseta Gabriel — Edición Blanca',desc:'Dos vistas de una camiseta negra: retrato original de Gabriel al frente, composición blanco lunar y sello plateado posterior.',concept:'Gabriel sin alteraciones · blanco y plata · frente y espalda',art:characterShirtSvg('Gabriel','/assets/gabriel.webp','#e4ebf7','Edición Blanca','LA LUZ PERMANECE'),kind:'graphic',accent:'#e4ebf7'},
-    {id:'SDL-PER-003',collection:'Personajes',name:'Camiseta Ella — Edición Plata',desc:'Propuesta de camiseta negra en dos vistas: fotografía original de Ella al frente y distintivo lunar plateado en la espalda.',concept:'Ella sin alteraciones · plata · frente y espalda',art:characterShirtSvg('Ella','/assets/ella.webp','#ccd3e0','Edición Plata','BAJO LA MISMA LUNA'),kind:'graphic',accent:'#ccd3e0'},
-    {id:'SDL-PER-004',collection:'Personajes',name:'Póster Varkos — Guardián Azul',desc:'Retrato original de Varkos con una composición azul profundo, sobria y estratégica.',concept:'Varkos · azul profundo',image:'/assets/varkos.webp',kind:'portrait',accent:'#579ee1'},
-    {id:'SDL-PER-005',collection:'Personajes',name:'Taza Nine — Edición Violeta',desc:'Rostro original de Nine en una composición elegante con símbolos lunares morados.',concept:'Nine · violeta',image:'/assets/nine.webp',kind:'portrait',accent:'#b094eb'},
-    {id:'SDL-PER-006',collection:'Personajes',name:'Libreta Ethan — Edición Carmesí',desc:'Retrato original de Ethan y acentos rojo oscuro, sin recursos visuales violentos.',concept:'Ethan · rojo carmesí',image:'/assets/ethan.webp',kind:'portrait',accent:'#ce6c70'}
-  ];
-  let drafts=[];
-  try { drafts=await rpc('sdl_store_draft_list',{p_admin_secret:SESSION_SECRET}); } catch(e) { drafts=[]; }
-  const bySku=new Map((Array.isArray(drafts)?drafts:[]).map(d=>[d.sku,d]));
-  products[1].id='SDL-ORI-008';
-  products.splice(1,0,{id:'SDL-ORI-002',collection:'Origen',name:'Camiseta Origen Blanco',desc:'Origen de la Manada Blanco Lunar',concept:'Blanco lunar',kind:'uploaded',accent:'#dbe6f2'});
-  for(const p of products){
-    const d=bySku.get(p.id);
-    if(d){if(d.name)p.name=d.name;if(d.description)p.desc=d.description;if(Number(d.retail_usd)>0)p.price=Number(d.retail_usd);}
-    if(p.id==='SDL-ORI-001'||p.id==='SDL-ORI-002'){p.kind='uploaded';p.image=PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(p.id);delete p.art;}
-  }
-  const catalogVariants=require('../data/tienda-catalogo.json').products;
-  const variantMap=new Map(catalogVariants.map(v=>[v.sku,v]));
-  for(const p of products){const v=variantMap.get(p.id);if(v){p.sizes=(v.variants&&v.variants.sizes)||[];p.colors=(v.variants&&v.variants.colors)||[];p.saleEnabled=false;}}
+  const products=[];
   const customItems=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
   for(const x of customItems)products.push({id:x.id,collection:x.collection,name:x.title,desc:x.description||'',price:Number(x.price),concept:'Diseño nuevo',image:PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(x.id),kind:'uploaded',accent:'#a6c9e2',colors:Array.isArray(x.variants)?x.variants:[],category:x.category,saleEnabled:false});
   const extraColors=await rpc('sdl_store_variant_list',{p_admin_secret:SESSION_SECRET});
