@@ -144,7 +144,21 @@ async function catalogPage(view='inicio'){
   const products=[];
   const variantMap=new Map();
   const customItems=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
-  for(const x of customItems)products.push({id:x.id,collection:x.collection,name:x.title,desc:x.description||'',price:Number(x.price),concept:'Diseño nuevo',image:Array.isArray(x.variants)&&x.variants.length?PREVIEW_PATH+'?action=color_photo&id='+encodeURIComponent(x.id)+'&color='+encodeURIComponent(x.variants[0]):PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(x.id),kind:'uploaded',accent:'#a6c9e2',colors:Array.isArray(x.variants)?x.variants:[],category:x.category,saleEnabled:false});
+  const groupedCustom=new Map();
+  for(const x of customItems){
+    const key=[x.collection,x.category,x.title.trim().toLocaleLowerCase('es')].join('::');
+    let product=groupedCustom.get(key);
+    if(!product){
+      product={id:x.id,collection:x.collection,name:x.title,desc:x.description||'',price:Number(x.price),concept:'Diseño nuevo',image:PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(x.id),kind:'uploaded',accent:'#a6c9e2',colors:[],colorOptions:[],category:x.category,saleEnabled:false};
+      groupedCustom.set(key,product);products.push(product);
+    }
+    for(const color of (Array.isArray(x.variants)?x.variants:[])){
+      if(product.colors.some(c=>c.toLocaleLowerCase('es')===String(color).toLocaleLowerCase('es')))continue;
+      const src=PREVIEW_PATH+'?action=color_photo&id='+encodeURIComponent(x.id)+'&color='+encodeURIComponent(color);
+      product.colors.push(String(color));product.colorOptions.push({color:String(color),src,id:x.id});
+      if(product.colorOptions.length===1)product.image=src;
+    }
+  }
   const extraColors=await rpc('sdl_store_variant_list',{p_admin_secret:SESSION_SECRET});
   // Public-facing preview: one product card, two independently stored SKUs.
   const black=products.find(p=>p.id==='SDL-ORI-001');
@@ -168,7 +182,7 @@ async function catalogPage(view='inicio'){
       '<div class="product-info"><div class="product-top"><span class="badge">'+escapeHtml(p.collection)+'</span><span class="product-code">'+escapeHtml(p.id)+'</span></div>'+
       '<h3>'+escapeHtml(p.name)+'</h3><p>'+escapeHtml(p.desc)+'</p>'+(p.colorSkus?'<p class="concept"><b>Personalización:</b> elige un color para visualizar su diseño.</p>':'')+
       '<p class="concept"><b>Dirección artística:</b> '+escapeHtml(p.concept)+'</p>'+ 
-      (p.sizes&&p.sizes.length?'<div class="store-variants"><label>Talla <select aria-label="Talla de '+escapeHtml(p.name)+'">'+p.sizes.map(z=>'<option>'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Color <select '+(p.colorSkus?'data-store-color-variant="true" ':'')+'aria-label="Color de '+escapeHtml(p.name)+'">'+(p.colors.length?p.colors:['Por confirmar']).map((z,i)=>'<option value="'+escapeHtml(p.colorSkus?p.colorSkus[i]:z)+'">'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Cantidad <input type="number" min="1" max="10" value="1" aria-label="Cantidad"></label><small>Vista previa de opciones. Disponibilidad y guía de tallas sujetas a confirmación con Gelato.</small></div>':'')+
+      ((p.colorOptions&&p.colorOptions.length)?'<div class="store-variants"><label>Color <select data-store-color-variant="true" aria-label="Color de '+escapeHtml(p.name)+'">'+p.colorOptions.map(v=>'<option value="'+escapeHtml(v.id)+'" data-image-src="'+escapeHtml(v.src)+'">'+escapeHtml(v.color)+'</option>').join('')+'</select></label><small>'+p.colorOptions.length+' colores registrados. Selecciona uno para ver su fotografía. Tallas y disponibilidad sujetos a confirmación con Gelato.</small></div>':(p.sizes&&p.sizes.length?'<div class="store-variants"><label>Talla <select aria-label="Talla de '+escapeHtml(p.name)+'">'+p.sizes.map(z=>'<option>'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Color <select '+(p.colorSkus?'data-store-color-variant="true" ':'')+'aria-label="Color de '+escapeHtml(p.name)+'">'+(p.colors.length?p.colors:['Por confirmar']).map((z,i)=>'<option value="'+escapeHtml(p.colorSkus?p.colorSkus[i]:z)+'">'+escapeHtml(z)+'</option>').join('')+'</select></label><label>Cantidad <input type="number" min="1" max="10" value="1" aria-label="Cantidad"></label><small>Vista previa de opciones. Disponibilidad y guía de tallas sujetas a confirmación con Gelato.</small></div>':''))+
       '<span class="tag">Borrador · pendiente de aprobación</span></div></article>';
   };
   const origen=products.filter(p=>p.collection==='Origen').map(renderCard).join('');
