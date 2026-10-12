@@ -78,9 +78,9 @@
   }
   // Selector visual de artículos directamente debajo del resumen.
   const types=[
-   ['Camisetas','/assets/hero.webp'],['Sudaderas','/assets/admin-ciudadela-bg.webp'],['Tazas','/assets/logo-oficial.png'],
-   ['Pósteres','/assets/admin-ciudadela-bg.webp'],['Gorras','/assets/logo-oficial.png'],['Libretas','/assets/logo-oficial.png'],
-   ['Stickers','/assets/logo-oficial.png'],['Llaveros','/assets/admin-ciudadela-bg.webp'],['Bolsas Tote','/assets/logo-oficial.png']
+   ['Camisetas','/tienda-privada?action=cover&slug=camisetas'],['Sudaderas','/tienda-privada?action=cover&slug=sudaderas'],['Tazas','/tienda-privada?action=cover&slug=tazas'],
+   ['Pósteres','/tienda-privada?action=cover&slug=posteres'],['Gorras','/tienda-privada?action=cover&slug=gorras'],['Libretas','/tienda-privada?action=cover&slug=libretas'],
+   ['Stickers','/tienda-privada?action=cover&slug=stickers'],['Llaveros','/tienda-privada?action=cover&slug=llaveros'],['Bolsas Tote','/tienda-privada?action=cover&slug=bolsas']
   ];
   const creation=document.createElement('section');creation.id='sdl-home-product-creation';
   creation.innerHTML='<div class="sdl-home-create-heading"><span>CATÁLOGO OFICIAL</span><h2>Creación de productos</h2><p>Selecciona el tipo de artículo para abrir su ficha de creación.</p></div><div class="sdl-home-product-grid"></div>';
