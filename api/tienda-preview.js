@@ -112,7 +112,7 @@ async function catalogPage(view='inicio'){
   const products=[];
   const variantMap=new Map();
   const customItems=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
-  for(const x of customItems)products.push({id:x.id,collection:x.collection,name:x.title,desc:x.description||'',price:Number(x.price),concept:'Diseño nuevo',image:PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(x.id),kind:'uploaded',accent:'#a6c9e2',colors:Array.isArray(x.variants)?x.variants:[],category:x.category,saleEnabled:false});
+  for(const x of customItems)products.push({id:x.id,collection:x.collection,name:x.title,desc:x.description||'',price:Number(x.price),concept:'Diseño nuevo',image:Array.isArray(x.variants)&&x.variants.length?PREVIEW_PATH+'?action=color_photo&id='+encodeURIComponent(x.id)+'&color='+encodeURIComponent(x.variants[0]):PREVIEW_PATH+'?action=image&sku='+encodeURIComponent(x.id),kind:'uploaded',accent:'#a6c9e2',colors:Array.isArray(x.variants)?x.variants:[],category:x.category,saleEnabled:false});
   const extraColors=await rpc('sdl_store_variant_list',{p_admin_secret:SESSION_SECRET});
   // Public-facing preview: one product card, two independently stored SKUs.
   const black=products.find(p=>p.id==='SDL-ORI-001');
