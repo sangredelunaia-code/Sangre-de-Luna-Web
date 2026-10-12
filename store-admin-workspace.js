@@ -8,11 +8,12 @@
    'colecciones-admin':document.getElementById('colecciones-admin'),
    'crear-coleccion':document.getElementById('crear-coleccion'),
    'crear-producto':document.getElementById('crear-producto'),
+   'productos-registrados':document.getElementById('productos-registrados'),
    'portadas-categorias':document.getElementById('portadas-categorias'),
    'configuracion':document.getElementById('configuracion')
   };
   if(Object.values(sections).some(x=>!x))return;
-  const names={'admin-resumen':'Resumen general','colecciones-admin':'Colecciones y productos','crear-coleccion':'Nueva colección','crear-producto':'Nuevo producto','portadas-categorias':'Portadas de categorías','configuracion':'Configuración avanzada'};
+  const names={'admin-resumen':'Resumen general','colecciones-admin':'Colecciones y productos','crear-coleccion':'Nueva colección','crear-producto':'Nuevo producto','productos-registrados':'Productos registrados','portadas-categorias':'Portadas de categorías','configuracion':'Configuración avanzada'};
   // Respetar los formularios originales y sus event listeners, sin duplicar contenido.
   const oldWorkspace=document.getElementById('sdl-store-workspace');
   if(oldWorkspace)oldWorkspace.remove();
