@@ -13,7 +13,7 @@ else if(/no se pudo|supera|máximo|utiliza|error|inválido|inténtalo|límite/i.
 };
 const observer=new MutationObserver(records=>{for(const r of records){let n=r.target.nodeType===3?r.target.parentElement:r.target;if(!n||n.nodeType!==1)continue;const matches=n.matches?.('.upload-status,.sdl-variant-status')?[n]:[...n.querySelectorAll('.upload-status,.sdl-variant-status')];matches.forEach(examine)}});
 observer.observe(document.body,{childList:true,subtree:true,characterData:true});
-const q=new URLSearchParams(location.search);if(q.get('notice')==='product_created'){window.sdlStoreNotice('Producto creado en borrador. Puedes continuar gestionando sus fotografías y variantes.','success','¡PRODUCTO CREADO CON ÉXITO!');q.delete('notice');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}
+const q=new URLSearchParams(location.search);if(q.get('notice')==='product_updated'){window.sdlStoreNotice('Nombre, descripción y precio actualizados correctamente.','success','¡PRODUCTO ACTUALIZADO!');q.delete('notice');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}if(q.get('notice')==='product_created'){window.sdlStoreNotice('Producto creado en borrador. Puedes continuar gestionando sus fotografías y variantes.','success','¡PRODUCTO CREADO CON ÉXITO!');q.delete('notice');history.replaceState(null,'',location.pathname+(q.toString()?'?'+q:'')+location.hash)}
 };
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
