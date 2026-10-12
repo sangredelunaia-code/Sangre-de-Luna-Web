@@ -343,6 +343,10 @@
       "destination": "/api/tienda-preview?view=origen"
     },
     {
+      "source": "/tienda-privada/colecciones/ver",
+      "destination": "/api/tienda-preview?view=collection-dynamic"
+    },
+    {
       "source": "/tienda-privada/colecciones/ciudadela",
       "destination": "/api/tienda-preview?view=ciudadela"
     },
