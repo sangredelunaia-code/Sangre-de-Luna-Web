@@ -23,6 +23,7 @@ function page(title, body, showNavigation=false) {
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#060c15">
 <script src="/store-admin-workspace.js" defer></script>
+<script src="/store-admin-notifications.js" defer></script>
 <script defer src="/store-collection-picker.js"></script>
 <title>${escapeHtml(title)} | Sangre de Luna</title>
 <style>
@@ -254,7 +255,7 @@ module.exports=async function handler(req,res){
     const id='SDL-NEW-'+String(Date.now())+String(Math.floor(Math.random()*1000)).padStart(3,'0');
     const ok=await rpc('sdl_store_custom_save',{p_secret:SESSION_SECRET,p_id:id,p_collection:collection,p_category:category,p_title:title,p_description:description,p_price:price,p_variants:colors});
     if(!ok)return respond(res,400,noticePage('No fue posible guardar el producto.'));
-    if(String(req.headers.accept||'').includes('application/json')){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,id}));}res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion#crear-producto');return res.end();
+    if(String(req.headers.accept||'').includes('application/json')){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,id}));}res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_created#crear-producto');return res.end();
    }
    if(p.get('action')==='add_color'){
     if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
