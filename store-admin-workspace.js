@@ -383,8 +383,8 @@
       message.textContent=options.length+' tallas encontradas para el color '+colorSelect.value+'. Verifica el modelo antes de aprobar fabricación.';
     };
     const searchBox=document.createElement('div');
-    searchBox.style.cssText='display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0';
-    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="flex:1;min-width:180px;padding:9px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="padding:9px;background:#163c58;color:white;border:0;border-radius:7px">Buscar en Gelato</button>';
+    searchBox.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;max-width:100%;min-width:0;margin:12px 0;box-sizing:border-box;overflow:hidden';
+    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="white-space:nowrap;min-width:0;padding:10px 12px;background:#163c58;color:white;border:0;border-radius:7px;cursor:pointer">Buscar en Gelato</button>';
     colorSelect.parentElement.before(searchBox);
     searchBox.querySelector('button').addEventListener('click',async()=>{
       const term=searchBox.querySelector('input').value.trim().toLowerCase();
@@ -497,8 +497,8 @@
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
     });
     const searchBox=document.createElement('div');
-    searchBox.style.cssText='display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0';
-    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="flex:1;min-width:180px;padding:9px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="padding:9px;background:#163c58;color:white;border:0;border-radius:7px">Buscar en Gelato</button>';
+    searchBox.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;max-width:100%;min-width:0;margin:12px 0;box-sizing:border-box;overflow:hidden';
+    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="white-space:nowrap;min-width:0;padding:10px 12px;background:#163c58;color:white;border:0;border-radius:7px;cursor:pointer">Buscar en Gelato</button>';
     color.parentElement.before(searchBox);
     searchBox.querySelector('button').addEventListener('click',async()=>{
       const term=searchBox.querySelector('input').value.trim().toLowerCase();
