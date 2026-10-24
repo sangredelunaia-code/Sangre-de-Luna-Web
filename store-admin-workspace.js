@@ -485,6 +485,36 @@
     const area=document.createElement('fieldset');area.style.cssText='display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:12px;margin:12px 0';
     area.innerHTML='<legend>Configurar fabricación en Gelato</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
     form.append(area);
+    const artwork=document.createElement('section');
+    artwork.style.cssText='border:1px solid #c1d1df;border-radius:8px;padding:10px;margin-top:12px;box-sizing:border-box;max-width:100%;overflow:hidden';
+    artwork.innerHTML='<strong>Archivos para fabricar esta camiseta</strong><p style="font-size:12px">Carga cada imagen de impresión por separado. Solo se guardan de forma privada. No se envían pedidos a Gelato.</p>';
+    const areaNames=[['front','Frente'],['back','Espalda'],['left_sleeve','Manga izquierda'],['right_sleeve','Manga derecha'],['inner_label','Etiqueta interior']];
+    const productId=(form.querySelector('[name="ids"]')?.value||'').split(',').filter(Boolean)[0]||'';
+    for(const [key,label] of areaNames){
+      const row=document.createElement('div');row.style.cssText='display:grid;grid-template-columns:minmax(0,1fr);gap:5px;border-top:1px solid #dae4eb;padding:10px 0';
+      const heading=document.createElement('label');heading.textContent=label;
+      const file=document.createElement('input');file.type='file';file.accept='image/png,image/jpeg,image/webp';file.style.cssText='max-width:100%;width:100%;box-sizing:border-box';
+      const save=document.createElement('button');save.type='button';save.textContent='Guardar '+label.toLowerCase();save.style.cssText='padding:8px;background:#194563;color:white;border:0;border-radius:6px;cursor:pointer';
+      const status=document.createElement('small');status.textContent='Sin verificar';
+      save.addEventListener('click',async()=>{
+        if(!file.files?.length){status.textContent='Selecciona una imagen primero.';return}
+        const selected=file.files[0];if(selected.size>2000000||!['image/png','image/jpeg','image/webp'].includes(selected.type)){status.textContent='Usa PNG, JPG o WebP de máximo 2 MB.';return}
+        save.disabled=true;status.textContent='Guardando…';
+        try{
+          const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=reject;reader.readAsDataURL(selected)});
+          const response=await fetch('/api/tienda-preview',{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},body:new URLSearchParams({action:'upload_gelato_print_file',id:productId,area:key,mime:selected.type,image:data})});
+          const result=await response.json();if(!response.ok||!result.ok)throw Error(result.reason||'Error al guardar');
+          status.textContent='Archivo guardado · Pendiente de validación técnica';
+        }catch(error){status.textContent='No se pudo guardar: '+error.message}finally{save.disabled=false}
+      });
+      heading.append(file);row.append(heading,save,status);artwork.append(row);
+    }
+    area.append(artwork);
+    fetch('/api/tienda-preview?action=gelato_print_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
+      if(!data.ok)return;
+      const stored=new Set((data.files||[]).filter(f=>f.product_id===productId).map(f=>f.area));
+      [...artwork.querySelectorAll('small')].forEach((status,i)=>{if(stored.has(areaNames[i][0]))status.textContent='Archivo guardado · Pendiente de validación técnica'});
+    }).catch(()=>{});
     const saveGelato=document.createElement('button');
     saveGelato.type='button';saveGelato.textContent='Guardar selección de Gelato';
     saveGelato.style.cssText='display:block;width:100%;padding:12px;background:#16496a;color:white;font-weight:700;border:0;border-radius:8px;margin-top:12px;cursor:pointer;box-sizing:border-box';
