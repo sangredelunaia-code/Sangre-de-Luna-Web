@@ -399,6 +399,40 @@
       if(!internal.parentNode)createForm.append(internal);
     });
   }
+  // Edición de productos registrados: mismos colores y tallas reales de Gelato.
+  const existingForms=Array.from(sections['productos-registrados'].querySelectorAll('form')).filter(form=>form.querySelector('[name="action"][value="edit_registered_product"]'));
+  for(const form of existingForms){
+    const area=document.createElement('fieldset');area.style.cssText='grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:14px;margin:12px 0';
+    area.innerHTML='<legend>Opciones de Gelato para este producto</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camisetas</option><option value="sweatshirts">Sudaderas</option><option value="mugs">Tazas</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
+    form.append(area);
+    const catalog=area.querySelector('[data-gelato-catalog]'),color=area.querySelector('[data-gelato-color]'),sizes=area.querySelector('[data-gelato-sizes]'),status=area.querySelector('[data-gelato-state]');
+    let models=[],version=0;
+    catalog.addEventListener('change',async()=>{
+      const current=++version;models=[];color.replaceChildren();color.disabled=true;sizes.textContent='Selecciona un color';status.textContent='Consultando Gelato…';
+      if(!catalog.value){status.textContent='Elige una categoría.';return}
+      try{
+        const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const res=await fetch('/api/tienda-preview?action=gelato_models&catalog='+catalog.value+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await res.json();if(!data.ok)throw Error(data.reason);return data.products||[]}));
+        if(current!==version)return;
+        models=pages.flat().filter(p=>p.uid&&p.attributes?.ProductStatus==='activated'&&!['kids','children','youth'].includes(String(p.attributes?.GarmentCut||'').toLowerCase()));
+        const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
+        [...new Set(models.map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
+        color.disabled=!models.length;status.textContent=models.length+' variantes reales consultadas. Elige el color base y sus tallas.';
+      }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
+    });
+    color.addEventListener('change',()=>{
+      sizes.replaceChildren();
+      const values=[...new Set(models.filter(p=>p.attributes?.GarmentColor===color.value).map(p=>p.attributes?.GarmentSize).filter(Boolean))];
+      if(!values.length){sizes.textContent='No se encontraron tallas para este color.';return}
+      values.forEach(v=>{const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=v;label.append(input,document.createTextNode(v));sizes.append(label)});
+    });
+    form.addEventListener('submit',()=>{
+      for(const name of ['gelato_catalog','gelato_base_color','gelato_sizes'])form.querySelector('[name="'+name+'"]')?.remove();
+      if(!catalog.value||!color.value)return;
+      for(const [name,value] of [['gelato_catalog',catalog.value],['gelato_base_color',color.value],['gelato_sizes',Array.from(sizes.querySelectorAll('input:checked')).map(i=>i.value).join(',')]]){
+        const h=document.createElement('input');h.type='hidden';h.name=name;h.value=value;form.append(h);
+      }
+    });
+  }
   function show(id){
    if(!sections[id])id='admin-resumen';
    Object.entries(sections).forEach(([key,el])=>{const visible=key===id;el.classList.toggle('sdl-v2-visible',visible);if(el.tagName==='DETAILS')el.open=visible});
