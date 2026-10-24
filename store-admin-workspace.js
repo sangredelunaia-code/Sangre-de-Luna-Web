@@ -188,7 +188,7 @@
   const bulkStatus=bulkPanel.querySelector('#sdl-bulk-status'),bulkResults=bulkPanel.querySelector('#sdl-bulk-results'),bulkApprove=bulkPanel.querySelector('#sdl-bulk-approve'),bulkReview=bulkPanel.querySelector('#sdl-bulk-review');
   let proposals=[];
   const clean=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]/g,'');
-  const colorEquivalences={blancolunar:['white'],grisplata:['sportgrey','ash','heathergrey'],grisoscuro:['darkheather','charcoal'],azulnocturno:['navy'],verdeoliva:['militarygreen','olive'],doradoarena:['sand']};
+  const colorEquivalences={blancolunar:['white'],grisplata:['sportgrey','ash','heathergrey'],grisoscuro:['darkheather','charcoal'],azulnocturno:['navy'],verdeoliva:['militarygreen','olive'],doradoarena:['sand'],negrolunar:['black'],negro:['black'],blanco:['white'],gris:['ash','sportgrey'],azul:['navy'],rojo:['red']};
   bulkReview.addEventListener('click',async()=>{
     bulkReview.disabled=true;bulkApprove.disabled=true;bulkResults.replaceChildren();proposals=[];
     try{
@@ -230,6 +230,12 @@
         const name=document.createElement('strong');name.textContent=item.title+' · '+item.category;line.append(name);
         const detail=document.createElement('p');detail.style.margin='5px 0';detail.textContent=candidate?'Modelo de referencia: '+candidate.uid+' · color Gelato: '+(candidate.attributes?.GarmentColor||'sin dato')+' · talla: '+(candidate.attributes?.GarmentSize||'sin dato'):'Sin modelo de referencia para esta categoría';line.append(detail);
         const info=document.createElement('p');info.style.margin='5px 0';info.textContent=eligible?'Coincidencia verificada para revisión y aprobación.':'Pendiente: '+reason;line.append(info);
+        if(catalog&&adult.length){
+          const suggest=document.createElement('p');suggest.style.cssText='font-size:12px;color:#465969;margin:5px 0';
+          const observed=[...new Set(adult.map(p=>p.attributes?.GarmentColor).filter(Boolean))].slice(0,20);
+          suggest.textContent='Colores disponibles en la muestra de Gelato: '+(observed.join(', ')||'no proporcionados')+'. '+(colors.length?'Colores registrados: '+colors.join(', ')+'.':'Define el color en la ficha antes de aprobar.');
+          line.append(suggest);
+        }
         if(eligible){
           const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=true;checkbox.setAttribute('aria-label','Aprobar recomendación para '+item.title);
           const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:8px';label.append(checkbox,document.createTextNode('Incluir en la aprobación conjunta'));line.append(label);
