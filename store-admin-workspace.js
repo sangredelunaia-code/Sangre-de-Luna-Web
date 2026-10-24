@@ -494,7 +494,7 @@
     area.append(saveGelato,saveHint);
     saveGelato.addEventListener('click',()=>{
       const id=form.querySelector('[name="gelato_target_id"]');
-      if(id&&!id.value){saveHint.textContent='Primero elige el registro de color que quieres configurar.';return}
+      if(id&&!id.value){const selected=form.querySelector('[name="gelato_store_color"]')?.selectedOptions?.[0];if(selected?.dataset.target)id.value=selected.dataset.target;else{saveHint.textContent='Primero elige el color que quieres configurar.';return}}
       const sel=area.querySelector('[data-gelato-catalog]'),base=area.querySelector('[data-gelato-color]');
       if(!sel?.value||!base?.value){saveHint.textContent='Selecciona la categoría y el color real de Gelato antes de guardar.';return}
       const options=area.querySelectorAll('[data-gelato-sizes] input:checked');
