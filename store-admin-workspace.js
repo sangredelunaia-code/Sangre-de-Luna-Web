@@ -264,6 +264,37 @@
     bulkStatus.textContent='Guardadas '+saved+' vinculaciones aprobadas. '+failed.length+' pendientes.'+(failed.length?' Revisar: '+failed.join('; '):'')+' Los pedidos y cobros permanecen desactivados.';
     await loadLinkItems();bulkReview.disabled=false;
   });
+  // Asistente simplificado: conserva todas las herramientas antiguas en opciones avanzadas.
+  const simplePanel=document.createElement('section');
+  simplePanel.id='sdl-preparar-productos';
+  simplePanel.style.cssText='margin:12px 0 20px;padding:22px;border:1px solid #c8d6e2;border-radius:15px;background:#fff;color:#142e45';
+  const simpleHeading=document.createElement('h2');simpleHeading.textContent='Preparar mis productos para Gelato';simpleHeading.style.cssText='margin:0 0 8px;font-size:24px';
+  const simpleIntro=document.createElement('p');simpleIntro.textContent='Tus diseños están guardados. Revisa las recomendaciones con un solo botón y aprueba únicamente las compatibles. No se realizan pedidos ni pagos.';
+  const countLine=document.createElement('div');countLine.setAttribute('role','status');countLine.style.cssText='padding:12px;margin:14px 0;background:#eaf1f7;border-radius:9px;font-weight:650';countLine.textContent='Consultando el estado de tus productos…';
+  simplePanel.append(simpleHeading,simpleIntro,countLine);
+  const simpleSteps=document.createElement('p');simpleSteps.textContent='1. Analizar diseños  →  2. Revisar coincidencias  →  3. Aprobar las correctas';simpleSteps.style.cssText='font-weight:650;margin:12px 0';simplePanel.append(simpleSteps);
+  bulkPanel.style.cssText='padding:12px 0;background:transparent;border:0';
+  bulkPanel.querySelector('h3').textContent='Revisión de los productos guardados';
+  bulkPanel.querySelector('p').textContent='Los productos sin colores, tallas o compatibilidad confirmada quedarán pendientes. No necesitas subirlos de nuevo.';
+  bulkReview.textContent='Revisar mis productos automáticamente';
+  bulkApprove.textContent='Aprobar las recomendaciones seleccionadas';
+  simplePanel.append(bulkPanel);
+  const advanced=document.createElement('details');advanced.style.cssText='margin:20px 0;padding:14px;border:1px solid #dce4ea;border-radius:11px';
+  const advancedSummary=document.createElement('summary');advancedSummary.textContent='Herramientas técnicas y diagnóstico (opcional)';advancedSummary.style.cssText='font-weight:650;cursor:pointer';advanced.append(advancedSummary,gelatoPanel);
+  const sectionSettings=sections['configuracion'];
+  sectionSettings.prepend(advanced);
+  sectionSettings.prepend(simplePanel);
+  const updateCount=async()=>{
+    try{
+      const response=await fetch('/api/tienda-preview?action=gelato_links',{credentials:'same-origin',cache:'no-store'});
+      const data=await response.json();if(!data.ok)throw Error('sin datos');
+      const total=(data.items||[]).length,approved=(data.links||[]).length;
+      countLine.textContent=total+' productos guardados · '+approved+' vinculaciones aprobadas · '+Math.max(0,total-approved)+' pendientes';
+    }catch(e){countLine.textContent='Tus diseños siguen guardados. No se pudo consultar su estado en este momento.'}
+  };
+  updateCount();
+  bulkApprove.addEventListener('click',()=>{setTimeout(updateCount,1200)});
+  bulkReview.addEventListener('click',()=>{bulkStatus.textContent='Buscando coincidencias seguras. Las fichas sin información suficiente quedarán pendientes.'});
   gelatoPanel.querySelector('#sdl-verify-gelato').addEventListener('click',async()=>{
     const button=gelatoPanel.querySelector('#sdl-verify-gelato'),output=gelatoPanel.querySelector('#sdl-gelato-result');
     button.disabled=true;output.textContent='Consultando a Gelato…';
