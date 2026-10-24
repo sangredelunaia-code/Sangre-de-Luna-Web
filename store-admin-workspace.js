@@ -389,6 +389,10 @@
     refreshGelato();
     createForm.addEventListener('submit',()=>{
       const selected=Array.from(sizes.querySelectorAll('input:checked')).map(i=>i.value);
+      const hiddenColors=createForm.querySelector('#sdl-variant-colors');
+      const isMultiColor=createForm.querySelector('#sdl-enable-color-variants')?.checked;
+      if(hiddenColors&&colorSelect.value&&!isMultiColor)hiddenColors.value=colorSelect.value;
+
       const internal=createForm.querySelector('#sdl-gelato-draft-details')||document.createElement('input');
       internal.type='hidden';internal.id='sdl-gelato-draft-details';internal.name='gelato_configuration_reference';
       internal.value=JSON.stringify({catalog:categories[categorySelect?.value]||'',color:colorSelect.value,sizes:selected});
