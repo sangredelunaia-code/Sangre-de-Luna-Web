@@ -181,6 +181,69 @@
    }catch(e){linkOutput.textContent='Consulta no completada: '+e.message}
    finally{btn.disabled=false}
   });
+  const bulkPanel=document.createElement('section');
+  bulkPanel.style.cssText='margin-top:18px;padding:18px;border:1px solid #a78b55;border-radius:12px;background:#f9fafc';
+  bulkPanel.innerHTML='<h3 style="margin:0 0 8px">Vinculación masiva asistida con Gelato</h3><p>Revisa todas las fichas de una vez. Solo se recomendarán coincidencias activas, adultas, del color solicitado y con Ecuador en los países admitidos. No se publicarán productos ni se crearán pedidos.</p><button id="sdl-bulk-review" type="button" style="padding:11px 15px;background:#153650;color:#fff;border:0;border-radius:8px;cursor:pointer">Analizar todos los productos</button><div id="sdl-bulk-status" role="status" style="margin:12px 0"></div><div id="sdl-bulk-results"></div><button id="sdl-bulk-approve" type="button" disabled style="padding:11px 15px;border-radius:8px;background:#b18a45;color:white;border:0">Aprobar las coincidencias verificadas</button>';
+  gelatoPanel.append(bulkPanel);
+  const bulkStatus=bulkPanel.querySelector('#sdl-bulk-status'),bulkResults=bulkPanel.querySelector('#sdl-bulk-results'),bulkApprove=bulkPanel.querySelector('#sdl-bulk-approve'),bulkReview=bulkPanel.querySelector('#sdl-bulk-review');
+  let proposals=[];
+  const clean=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  const colorEquivalences={blancolunar:['white'],grisplata:['sportgrey','ash','heathergrey'],grisoscuro:['darkheather','charcoal'],azulnocturno:['navy'],verdeoliva:['militarygreen','olive'],doradoarena:['sand']};
+  bulkReview.addEventListener('click',async()=>{
+    bulkReview.disabled=true;bulkApprove.disabled=true;bulkResults.replaceChildren();proposals=[];
+    try{
+      const answer=await fetch('/api/tienda-preview?action=gelato_links',{credentials:'same-origin',cache:'no-store'}),listing=await answer.json();
+      if(!listing.ok)throw Error('No fue posible leer los productos guardados.');
+      const approved=new Set((listing.links||[]).map(l=>l.product_id));
+      const items=(listing.items||[]).filter(p=>!approved.has(p.id));
+      const catalogs={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
+      const cache={};
+      for(const type of [...new Set(items.map(p=>catalogs[p.category]).filter(Boolean))]){
+        bulkStatus.textContent='Consultando el catálogo de Gelato: '+type+'…';
+        try{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type,{credentials:'same-origin',cache:'no-store'});const data=await response.json();cache[type]=data.ok?data.products:[]}catch(e){cache[type]=[]}
+      }
+      for(const item of items){
+        const catalog=catalogs[item.category],colors=item.colors||[];
+        let reason='',candidate=null;
+        if(!catalog)reason='Categoría pendiente de validación.';
+        else if(colors.length!==1)reason=colors.length?'Tiene varios colores: deben configurarse por variante.':'No tiene un color definido.';
+        else {
+          const wanted=clean(colors[0]);
+          candidate=(cache[catalog]||[]).find(p=>{
+            const a=p.attributes||{},color=clean(a.GarmentColor);
+            return !!p.uid&&String(a.ProductStatus||'').toLowerCase()==='activated'&&String(a.State||'').toLowerCase()==='published'&&String(a.GarmentCut||'').toLowerCase()!=='kids'&&(p.supportedCountries||[]).includes('EC')&&(catalog==='mugs'||color===wanted||(colorEquivalences[wanted]||[]).includes(color));
+          });
+          if(!candidate)reason='No se encontró un modelo verificable en el primer lote de Gelato.';
+        }
+        const line=document.createElement('div');line.style.cssText='padding:12px;margin:7px 0;border:1px solid #d1dae3;border-radius:9px';
+        const name=document.createElement('strong');name.textContent=item.title+' · '+item.category;line.append(name);
+        const detail=document.createElement('p');detail.style.margin='5px 0';detail.textContent=candidate?'Modelo: '+candidate.uid+' · talla: '+(candidate.attributes.GarmentSize||'sin talla'):'Revisión necesaria: '+reason;line.append(detail);
+        if(candidate){
+          const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=true;checkbox.setAttribute('aria-label','Aprobar recomendación para '+item.title);
+          const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:8px';label.append(checkbox,document.createTextNode('Incluir esta recomendación en la aprobación'));line.append(label);
+          proposals.push({item,catalog,candidate,checkbox});
+        }
+        bulkResults.append(line);
+      }
+      bulkStatus.textContent='Análisis terminado. '+proposals.length+' recomendaciones; '+(items.length-proposals.length)+' fichas requieren revisión. Ninguna aprobación se ha guardado aún.';
+      bulkApprove.disabled=proposals.length===0;
+    }catch(e){bulkStatus.textContent='No se pudo completar el análisis: '+e.message}
+    finally{bulkReview.disabled=false}
+  });
+  bulkApprove.addEventListener('click',async()=>{
+    const selected=proposals.filter(p=>p.checkbox.checked);if(!selected.length){bulkStatus.textContent='No hay recomendaciones seleccionadas.';return;}
+    if(!window.confirm('¿Confirmas guardar '+selected.length+' vinculaciones de Gelato? No se realizarán compras ni pedidos.'))return;
+    bulkApprove.disabled=true;bulkReview.disabled=true;let saved=0,failed=[];
+    for(const p of selected){
+      try{
+        const response=await fetch('/api/tienda-preview?action=approve_gelato_link',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:p.item.id,catalog:p.catalog,uid:p.candidate.uid})});
+        const data=await response.json();
+        if(data.ok)saved++;else failed.push(p.item.title+' ('+(data.reason||'sin verificar')+')');
+      }catch(e){failed.push(p.item.title+' (sin conexión)')}
+    }
+    bulkStatus.textContent='Guardadas '+saved+' vinculaciones aprobadas. '+failed.length+' pendientes.'+(failed.length?' Revisar: '+failed.join('; '):'')+' Los pedidos y cobros permanecen desactivados.';
+    await loadLinkItems();bulkReview.disabled=false;
+  });
   gelatoPanel.querySelector('#sdl-verify-gelato').addEventListener('click',async()=>{
     const button=gelatoPanel.querySelector('#sdl-verify-gelato'),output=gelatoPanel.querySelector('#sdl-gelato-result');
     button.disabled=true;output.textContent='Consultando a Gelato…';
