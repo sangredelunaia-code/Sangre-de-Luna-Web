@@ -308,6 +308,7 @@ module.exports=async function handler(req,res){
   }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'catalog_temporarily_unavailable'}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='public_image'){
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
   const id=String(req.query.id||'');
   if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)){res.statusCode=400;return res.end();}
   try{
@@ -493,6 +494,7 @@ module.exports=async function handler(req,res){
 +Number(p.price).toFixed(2)+' USD':'Precio por confirmar';\n    const badge=document.createElement('span');badge.className='pending';badge.textContent='Próximamente disponible · Compras desactivadas';\n    d.append(collection,h,desc,category,colors,price,badge);card.append(art,d);root.append(card);\n   });\n  }render();\n }catch(e){status.textContent='No se pudo cargar el catálogo. Vuelve a intentarlo más tarde.'}\n})();\n</script></body></html>");
  }
  if(req.method==='GET'&&req.query&&req.query.action==='public_catalog'){
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
   res.setHeader('Content-Type','application/json; charset=utf-8');
   res.setHeader('Cache-Control','public, max-age=0, s-maxage=120');
   try{
