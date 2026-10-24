@@ -200,7 +200,7 @@
       const cache={};
       for(const type of [...new Set(items.map(p=>catalogs[p.category]).filter(Boolean))]){
         bulkStatus.textContent='Consultando el catálogo de Gelato: '+type+'…';
-        try{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type,{credentials:'same-origin',cache:'no-store'});const data=await response.json();cache[type]=data.ok?data.products:[]}catch(e){cache[type]=[]}
+        try{const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await response.json();return data.ok?(data.products||[]):[]}));cache[type]=pages.flat()}catch(e){cache[type]=[]}
       }
       for(const item of items){
         const catalog=catalogs[item.category],colors=item.colors||[];
@@ -229,7 +229,7 @@
         }
         bulkResults.append(line);
       }
-      bulkStatus.textContent='Análisis terminado. '+proposals.length+' recomendaciones; '+(items.length-proposals.length)+' fichas requieren revisión. Ninguna aprobación se ha guardado aún.';
+      bulkStatus.textContent='Análisis de hasta 500 modelos por categoría terminado. '+proposals.length+' recomendaciones; '+(items.length-proposals.length)+' fichas requieren revisión. Ninguna aprobación se ha guardado aún.';
       bulkApprove.disabled=proposals.length===0;
     }catch(e){bulkStatus.textContent='No se pudo completar el análisis: '+e.message}
     finally{bulkReview.disabled=false}
