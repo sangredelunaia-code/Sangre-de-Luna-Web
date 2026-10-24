@@ -324,7 +324,7 @@ module.exports=async function handler(req,res){
    const payload=await response.json(),product=(payload.products||[]).find(p=>p.productUid===uid);
    if(!product)return res.end(JSON.stringify({ok:false,reason:'uid_not_verified_in_page'}));
    const a=product.attributes||{},status=String(a.ProductStatus||'').toLowerCase(),state=String(a.State||'').toLowerCase(),cut=String(a.GarmentCut||'').toLowerCase();
-   if(status!=='activated'||state!=='published'||cut==='kids')return res.end(JSON.stringify({ok:false,reason:'inactive_or_kids'}));
+   if(status!=='activated'||(state&&state!=='published')||cut==='kids')return res.end(JSON.stringify({ok:false,reason:'inactive_or_kids'}));
    if(!Array.isArray(product.supportedCountries)||!product.supportedCountries.includes('EC'))return res.end(JSON.stringify({ok:false,reason:'ecuador_not_supported'}));
    const colors=Array.isArray(item.variants)?item.variants:[];
    if(colors.length!==1)return res.end(JSON.stringify({ok:false,reason:'requires_one_selected_color_variant'}));
