@@ -539,7 +539,8 @@ async function saveVerifiedGelatoVariants(id,category,raw){
     try{
       for(const id of ids){const ok=await rpc('sdl_store_custom_edit',{p_secret:SESSION_SECRET,p_id:id,p_title:title,p_description:description,p_price:price});if(!ok)throw Error('save_failed')}
       const catalog=p.get('gelato_catalog')||'',color=p.get('gelato_base_color')||'',sizes=(p.get('gelato_sizes')||'').split(',').filter(x=>x.length<=24).slice(0,25);
-      if(catalog&&color){
+      const storeColor=p.get('gelato_store_color')||'';
+      if(catalog&&color&&!storeColor){
         const expected={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
         const items=await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET});
         const chosenId=p.get('gelato_target_id')||'';
@@ -552,7 +553,6 @@ async function saveVerifiedGelatoVariants(id,category,raw){
           if(!ok)return respond(res,503,noticePage('No se pudo guardar la configuración de Gelato.'));
         }
       }
-      const storeColor=p.get('gelato_store_color')||'';
       if(storeColor&&catalog&&color){
        const target=p.get('gelato_target_id')||ids[0];
        if(!ids.includes(target))return respond(res,400,noticePage('Selecciona un color válido del producto.'));
@@ -564,7 +564,7 @@ async function saveVerifiedGelatoVariants(id,category,raw){
         if(ids.includes(target)){try{await saveVerifiedGelatoVariants(target,(await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET})).items.find(x=>x.id===target)?.category||'',p.get('gelato_variant_uids'));}catch(error){console.error('Gelato variant verification failed',error?.message);}}
       }
       res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_updated#productos-registrados');return res.end();
-    }catch(e){return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
+    }catch(e){console.error('store_product_save_error',String(e&&e.message||e).slice(0,200));return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
    }
    if(p.get('action')==='create_product'){
     if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
