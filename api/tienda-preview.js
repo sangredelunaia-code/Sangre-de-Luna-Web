@@ -571,11 +571,13 @@ async function saveVerifiedGelatoVariants(id,category,raw){
        const ok=await rpc('sdl_store_gelato_color_save',{p_secret:SESSION_SECRET,p_id:target,p_store_color:storeColor,p_catalog:catalog,p_gelato_color:color,p_sizes:sizes});
        if(!ok)return respond(res,400,noticePage('El color no pertenece al registro seleccionado.'));
       }
+      let gelatoVerification=null;
       if(p.get('gelato_variant_uids')){
         const target=p.get('gelato_target_id')||ids[0];
-        if(ids.includes(target)){try{await saveVerifiedGelatoVariants(target,(await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET})).items.find(x=>x.id===target)?.category||'',p.get('gelato_variant_uids'));}catch(error){console.error('Gelato variant verification failed',error?.message);}}
+        if(ids.includes(target)){try{gelatoVerification=await saveVerifiedGelatoVariants(target,(await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET})).items.find(x=>x.id===target)?.category||'',p.get('gelato_variant_uids'));}catch(error){console.error('Gelato variant verification failed',error?.message);gelatoVerification={saved:0,reason:'verification_failed'};}}
       }
-      res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_updated#productos-registrados');return res.end();
+      const notice=gelatoVerification?(gelatoVerification.saved>0?'gelato_variants_saved':'gelato_variants_pending'):(catalog&&color?'gelato_selection_saved':'product_updated');
+      res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice='+notice+'#productos-registrados');return res.end();
     }catch(e){console.error('store_product_save_error',String(e&&e.message||e).slice(0,200));return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
    }
    if(p.get('action')==='create_product'){
