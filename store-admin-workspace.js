@@ -702,13 +702,17 @@
       values.forEach(v=>{const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=v;label.append(input,document.createTextNode(v));sizes.append(label)});
     });
     form.addEventListener('submit',()=>{
-      for(const name of ['gelato_catalog','gelato_base_color','gelato_sizes','gelato_variant_uids'])form.querySelector('[name="'+name+'"]')?.remove();
+      for(const name of ['gelato_catalog','gelato_base_color','gelato_sizes','gelato_variant_uids','gelato_selection_problem'])form.querySelector('[name="'+name+'"]')?.remove();
       if(catalog.value&&color.value){
         const selected=Array.from(sizes.querySelectorAll('input:checked')).map(i=>i.value);
         const matched=selected.map(size=>models.filter(m=>compatible(m)&&m.attributes?.GarmentSize===size));
         const exact=matched.filter(candidates=>candidates.length===1).map(candidates=>({size:candidates[0].attributes.GarmentSize,color:color.value,uid:candidates[0].uid}));
         if(exact.length){const h=document.createElement('input');h.type='hidden';h.name='gelato_variant_uids';h.value=JSON.stringify(exact);form.append(h)}
-        if(selected.length&&selected.length!==exact.length)status.textContent='Algunas tallas tienen múltiples modelos posibles; esas variantes no se vincularán hasta elegir modelo exacto.';
+        if(selected.length!==exact.length){
+          const reason=!modelSelect.value?'Selecciona un modelo de impresión concreto':!selected.length?'Marca las tallas que deseas verificar':'No existe una coincidencia única entre el modelo, el color y cada talla';
+          const h=document.createElement('input');h.type='hidden';h.name='gelato_selection_problem';h.value=reason;form.append(h);
+          status.textContent=reason+'. No se inventarán identificadores de fabricación.';
+        }
       }
 
       if(!catalog.value||!color.value)return;
