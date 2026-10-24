@@ -402,16 +402,17 @@ module.exports=async function handler(req,res){
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
   const catalog=String(req.query.catalog||'');
   const offset=Math.min(2000,Math.max(0,Math.floor(Number(req.query.offset)||0)));
+  const adultOnly=String(req.query.adult||'')==='1';
   if(!/^[a-z0-9-]{2,80}$/.test(catalog)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_catalog'}));}
   if(!process.env.GELATO_API_KEY)return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));
   try{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9500);
    let upstream;
-   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({limit:100,offset}),signal:controller.signal});}
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({limit:100,offset,...(adultOnly?{attributeFilters:{GarmentCut:['unisex','mens','womens','men','women','adult'],ProductStatus:['activated']}}:{})}),signal:controller.signal});}
    finally{clearTimeout(timer);}
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
-   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,offset,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),supportedCountries:Array.isArray(p.supportedCountries)?p.supportedCountries.filter(c=>c==='EC'||c==='US'):[],attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
+   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,offset,adultOnly,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),supportedCountries:Array.isArray(p.supportedCountries)?p.supportedCountries.filter(c=>c==='EC'||c==='US'):[],attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
   }catch(e){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
