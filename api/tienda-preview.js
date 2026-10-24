@@ -301,6 +301,21 @@ module.exports=async function handler(req,res){
    return res.end(JSON.stringify({connected:upstream.ok,httpStatus:upstream.status,provider:'Gelato',mode:'read_only',ordersEnabled:false}));
   }catch(e){return res.end(JSON.stringify({connected:false,reason:'connection_unavailable',provider:'Gelato',ordersEnabled:false}));}
  }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_catalogs'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+  if(!process.env.GELATO_API_KEY){return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));}
+  try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs',{headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Accept':'application/json'},signal:controller.signal});}
+   finally{clearTimeout(timer);}
+   if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
+   const payload=await upstream.json();
+   const catalogs=Array.isArray(payload)?payload:[];
+   return res.end(JSON.stringify({ok:true,mode:'read_only',ordersEnabled:false,catalogs:catalogs.slice(0,80).map(c=>({uid:String(c.catalogUid||'').slice(0,120),title:String(c.title||'').slice(0,120)}))}));
+  }catch(err){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
  const slug=String(req.query.slug||'');const defaults={camisetas:'/assets/chris.webp',sudaderas:'/assets/hero.webp',tazas:'/assets/logo-oficial.png',posteres:'/assets/admin-ciudadela-bg.webp',gorras:'/assets/logo-oficial.png',libretas:'/assets/admin-ciudadela-bg.webp',stickers:'/assets/logo-oficial.png',llaveros:'/assets/hero.webp',bolsas:'/assets/logo-oficial.png'};
