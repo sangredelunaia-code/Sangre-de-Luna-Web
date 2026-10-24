@@ -94,6 +94,13 @@
   gelatoPanel.style.cssText='margin:20px 0;padding:20px;border:1px solid #d5bb7e;border-radius:12px;background:#f8fafc;color:#102942';
   gelatoPanel.innerHTML='<h3 style="margin:0 0 8px">Proveedor Gelato · Verificación de conexión</h3><p style="margin:0 0 12px">Comprueba la conexión segura en modo consulta. Este botón no publica artículos, no cobra y no crea pedidos.</p><button type="button" id="sdl-verify-gelato" style="padding:11px 17px;border-radius:8px;border:0;background:#09243a;color:#fff;cursor:pointer;font-weight:700">Verificar conexión Gelato</button><p id="sdl-gelato-result" role="status" aria-live="polite" style="margin:12px 0 0">Sin verificar en esta sesión.</p>';
   sections['configuracion'].prepend(gelatoPanel);
+  const previewLink=document.createElement('a');
+  previewLink.href='/api/tienda-preview?action=private_showcase';
+  previewLink.target='_blank';previewLink.rel='noopener';
+  previewLink.textContent='👁 Ver tienda completa antes de publicar';
+  previewLink.style.cssText='display:inline-flex;margin:14px 0;padding:12px 17px;border-radius:9px;background:#123552;color:#fff;font-weight:700;text-decoration:none';
+  sections['configuracion'].prepend(previewLink);
+
   const catalogButton=document.createElement('button');
   catalogButton.type='button';
   catalogButton.textContent='Consultar catálogos disponibles en Gelato';
