@@ -404,6 +404,7 @@
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(colorSelect.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;colorSelect.append(o)}}
+        if(colors.length){colorSelect.disabled=false;colorSelect.value=colors[0];colorSelect.dispatchEvent(new Event('change'));}
         const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
         message.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){message.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
@@ -522,6 +523,7 @@
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(color.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)}}
+        if(colors.length){color.disabled=false;color.value=colors[0];color.dispatchEvent(new Event('change'));}
         const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
         status.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){status.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
