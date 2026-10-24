@@ -491,7 +491,7 @@ module.exports=async function handler(req,res){
  if(req.method!=='GET') {res.setHeader('Allow','GET, POST');return respond(res,405,loginPage(false));}
  try{return respond(res,200,(await isValidSession(req))?await catalogPage((req.query&&req.query.view)||'inicio',String((req.query&&req.query.collection)||'')):loginPage());}catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
 };
-+Number(p.price).toFixed(2)+' USD':'Precio por confirmar';\n    const badge=document.createElement('span');badge.className='pending';badge.textContent='Próximamente disponible · Compras desactivadas';\n    d.append(collection,h,desc,category,colors,price,badge);card.append(art,d);root.append(card);\n   });\n  }render();\n }catch(e){status.textContent='No se pudo cargar el catálogo. Vuelve a intentarlo más tarde.'}\n})();\n</script></body></html>");
++Number(p.price).toFixed(2)+' USD':'Precio por confirmar';\n    const badge=document.createElement('span');badge.className='pending';badge.textContent='Próximamente disponible · Compras desactivadas';\n    d.append(collection,h,desc,category,colors,price,badge);card.append(art,d);root.append(card);\n   });\n  }render();\n }catch(e){status.textContent='No se pudo cargar el catálogo. Vuelve a intentarlo más tarde.'}\n})();\n</script></body></html>";
   const inlineScript=(previewHtml.match(/<script>([\s\S]*?)<\/script>/)||[])[1]||'';
   const hash=crypto.createHash('sha256').update(inlineScript).digest('base64');
   res.setHeader('Content-Security-Policy',"default-src 'none'; script-src 'self' 'sha256-"+hash+"'; connect-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'");
