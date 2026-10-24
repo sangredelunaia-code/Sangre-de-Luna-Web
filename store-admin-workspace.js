@@ -94,6 +94,29 @@
   gelatoPanel.style.cssText='margin:20px 0;padding:20px;border:1px solid #d5bb7e;border-radius:12px;background:#f8fafc;color:#102942';
   gelatoPanel.innerHTML='<h3 style="margin:0 0 8px">Proveedor Gelato · Verificación de conexión</h3><p style="margin:0 0 12px">Comprueba la conexión segura en modo consulta. Este botón no publica artículos, no cobra y no crea pedidos.</p><button type="button" id="sdl-verify-gelato" style="padding:11px 17px;border-radius:8px;border:0;background:#09243a;color:#fff;cursor:pointer;font-weight:700">Verificar conexión Gelato</button><p id="sdl-gelato-result" role="status" aria-live="polite" style="margin:12px 0 0">Sin verificar en esta sesión.</p>';
   sections['configuracion'].prepend(gelatoPanel);
+  const catalogButton=document.createElement('button');
+  catalogButton.type='button';
+  catalogButton.textContent='Consultar catálogos disponibles en Gelato';
+  catalogButton.style.cssText='margin-top:12px;padding:10px 15px;border-radius:8px;border:1px solid #b48e4c;background:#fff;color:#102942;cursor:pointer;font-weight:700';
+  const catalogStatus=document.createElement('div');
+  catalogStatus.setAttribute('role','status');
+  catalogStatus.style.cssText='margin-top:12px;white-space:pre-wrap;font-size:14px';
+  gelatoPanel.append(catalogButton,catalogStatus);
+  catalogButton.addEventListener('click',async()=>{
+    catalogButton.disabled=true;catalogStatus.textContent='Consultando catálogo del proveedor…';
+    try{
+      const response=await fetch('/api/tienda-preview?action=gelato_catalogs',{credentials:'same-origin',cache:'no-store'});
+      const data=await response.json();
+      if(!data.ok){catalogStatus.textContent='No se pudo consultar Gelato: '+(data.reason||response.status);return;}
+      const list=data.catalogs||[];
+      catalogStatus.textContent='Gelato devuelve '+list.length+' catálogos (máximo 80). La disponibilidad de colores, tallas y envíos se verificará para cada producto; no se ha vinculado ningún SKU ni creado pedidos.';
+      const ul=document.createElement('ul');ul.style.cssText='max-height:220px;overflow:auto;margin:8px 0 0;padding-left:22px';
+      list.forEach(item=>{const li=document.createElement('li');li.textContent=item.title+' ('+item.uid+')';ul.append(li)});
+      catalogStatus.append(ul);
+    }catch(error){catalogStatus.textContent='Error de conexión. Vuelve a intentarlo desde la sesión privada.'}
+    finally{catalogButton.disabled=false}
+  });
+
   gelatoPanel.querySelector('#sdl-verify-gelato').addEventListener('click',async()=>{
     const button=gelatoPanel.querySelector('#sdl-verify-gelato'),output=gelatoPanel.querySelector('#sdl-gelato-result');
     button.disabled=true;output.textContent='Consultando a Gelato…';
