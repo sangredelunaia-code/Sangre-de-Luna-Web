@@ -6,7 +6,7 @@ const MAX_AGE = 8 * 60 * 60;
 const HASH = process.env.SDL_STORE_PREVIEW_KEY_SHA256 || '';
 const SESSION_SECRET = process.env.SDL_STORE_PREVIEW_SESSION_SECRET || '';
 const DB_URL=process.env.SDL_STORE_SUPABASE_URL||'',DB_KEY=process.env.SDL_STORE_SUPABASE_PUBLISHABLE_KEY||'';
-async function rpc(name,payload,timeoutMs=6000){const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),timeoutMs);try{const r=await fetch(DB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:DB_KEY,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctl.signal});if(!r.ok)throw Error('Credential service unavailable');return await r.json()}finally{clearTimeout(timeout)}}
+async function rpc(name,payload,timeoutMs=14000){const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),timeoutMs);try{const r=await fetch(DB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:DB_KEY,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctl.signal});if(!r.ok)throw Error('Credential service unavailable');return await r.json()}finally{clearTimeout(timeout)}}
 function rateKey(req){return crypto.createHmac('sha256',SESSION_SECRET).update(String(req.headers['x-forwarded-for']||req.headers['x-real-ip']||'unknown').split(',')[0].trim()).digest('hex')}
 
 function escapeHtml(s) {
@@ -17,7 +17,7 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b));
 }
 function createSession(version){const expiry=Date.now()+MAX_AGE*1000,payload=expiry+'.'+version,mac=crypto.createHmac('sha256',SESSION_SECRET).update('sdl-store:'+payload).digest('hex');return payload+'.'+mac}
-async function isValidSession(req){const pair=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='));if(!pair)return false;const m=pair.slice(COOKIE.length+1).match(/^(\d{13})\.(\d+)\.([a-f0-9]{64})$/);if(!m||Number(m[1])<Date.now()||Number(m[1])>Date.now()+MAX_AGE*1000)return false;const mac=crypto.createHmac('sha256',SESSION_SECRET).update('sdl-store:'+m[1]+'.'+m[2]).digest('hex');if(!safeEqual(mac,m[3]))return false;return Number(await rpc('sdl_store_version',{}))===Number(m[2])}
+async function isValidSession(req){const pair=String(req.headers.cookie||'').split(';').map(x=>x.trim()).find(x=>x.startsWith(COOKIE+'='));if(!pair)return false;const m=pair.slice(COOKIE.length+1).match(/^(\d{13})\.(\d+)\.([a-f0-9]{64})$/);if(!m||Number(m[1])<Date.now()||Number(m[1])>Date.now()+MAX_AGE*1000)return false;const mac=crypto.createHmac('sha256',SESSION_SECRET).update('sdl-store:'+m[1]+'.'+m[2]).digest('hex');if(!safeEqual(mac,m[3]))return false;return Number(await rpc('sdl_store_version',{},14000))===Number(m[2])}
 function page(title, body, showNavigation=false, collectionNames=null) {
   return `<!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -621,5 +621,5 @@ async function saveVerifiedGelatoVariants(id,category,raw){
   }catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
  }
  if(req.method!=='GET') {res.setHeader('Allow','GET, POST');return respond(res,405,loginPage(false));}
- try{return respond(res,200,(await isValidSession(req))?await catalogPage((req.query&&req.query.view)||'inicio',String((req.query&&req.query.collection)||'')):loginPage());}catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
+ try{const valid=await isValidSession(req);if(!valid)return respond(res,200,loginPage());try{return respond(res,200,await catalogPage((req.query&&req.query.view)||'inicio',String((req.query&&req.query.collection)||''));}catch(error){console.error('private_catalog_unavailable',String(error?.message||error).slice(0,180));return respond(res,503,noticePage('El catálogo privado no pudo cargarse temporalmente. Tu sesión y tus productos siguen protegidos. Vuelve a entrar para intentarlo otra vez.'));}}catch(e){console.error('store_session_check_failed',String(e?.message||e).slice(0,180));return respond(res,503,noticePage('La conexión de seguridad no respondió. No se han modificado tus productos. Intenta nuevamente.'));}
 };
