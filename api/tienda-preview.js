@@ -288,6 +288,37 @@ module.exports=async function handler(req,res){
  if(!DB_URL.startsWith('https://') || !DB_KEY || SESSION_SECRET.length<48) {
   return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
  }
+ // Vitrina pública de solo lectura. No checkout, pagos, carrito ni pedidos.
+ if(req.method==='GET'&&req.query&&req.query.action==='public_catalog'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  res.setHeader('Cache-Control','public, max-age=0, s-maxage=120');
+  try{
+   const rows=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
+   const items=(Array.isArray(rows)?rows:[]).filter(p=>/^SDL-NEW-[0-9]{8,16}$/.test(String(p.id||''))).slice(0,150).map(p=>({
+    id:String(p.id),title:String(p.title||'').slice(0,180),description:String(p.description||'').slice(0,900),
+    category:String(p.category||'Otros').slice(0,100),collection:String(p.collection||'Colección').slice(0,100),
+    price:Number(p.price)>0?Number(p.price):null,
+    colors:Array.isArray(p.variants)?p.variants.map(c=>String(c).slice(0,65)).slice(0,20):[],
+    hasImage:!!p.has_image||!!p.image_mime||!!p.image_base64,
+    saleEnabled:false,gelatoApproved:false
+   }));
+   return res.end(JSON.stringify({ok:true,mode:'exhibition_only',checkoutEnabled:false,ordersEnabled:false,count:items.length,items}));
+  }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'catalog_temporarily_unavailable'}));}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='public_image'){
+  const id=String(req.query.id||'');
+  if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)){res.statusCode=400;return res.end();}
+  try{
+   const rows=await rpc('sdl_store_custom_image_get',{p_secret:SESSION_SECRET,p_id:id});
+   if(!Array.isArray(rows)||!rows[0]){res.statusCode=404;return res.end();}
+   const mime=String(rows[0].mime||'');
+   if(!['image/png','image/jpeg','image/webp'].includes(mime)){res.statusCode=415;return res.end();}
+   const bytes=Buffer.from(String(rows[0].base64||''),'base64');
+   if(bytes.length>6000000){res.statusCode=413;return res.end();}
+   res.setHeader('Content-Type',mime);res.setHeader('Cache-Control','public, max-age=0, s-maxage=300');
+   return res.end(bytes);
+  }catch(e){res.statusCode=503;return res.end();}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='gelato_status'){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({connected:false,reason:'login_required'}));}
