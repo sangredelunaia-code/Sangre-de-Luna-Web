@@ -289,6 +289,209 @@ module.exports=async function handler(req,res){
   return respond(res,503,page('Configuración pendiente','<div class="hero"><h1>Estudio temporalmente cerrado</h1><p class="lead">El acceso privado se está configurando.</p></div>'));
  }
  // Vitrina pública de solo lectura. No checkout, pagos, carrito ni pedidos.
+ if(req.method==='GET'&&req.query&&req.query.action==='private_showcase'){
+  if(!(await isValidSession(req)))return respond(res,403,loginPage());
+  return respond(res,200,"<!doctype html>\n<html lang=\"es\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">\n<meta name=\"theme-color\" content=\"#07121f\"><meta name=\"robots\" content=\"noindex,nofollow\">\n<meta name=\"description\" content=\"Explora las colecciones oficiales de Sangre de Luna. Catálogo de exhibición; compras próximamente.\">\n<title>Tienda Oficial | Sangre de Luna</title><link rel=\"icon\" href=\"/assets/logo-oficial.png\">\n<style>\n:root{color-scheme:dark;--bg:#06101d;--gold:#d4b37b;--line:#304355;--ink:#eef5fc}\n*{box-sizing:border-box}body{margin:0;color:var(--ink);font:15px/1.6 system-ui,Segoe UI,sans-serif;background:radial-gradient(ellipse at 80% 0%,#17324b,transparent 40%),var(--bg)}\na{color:inherit}.wrap{width:min(1240px,92%);margin:auto}header{border-bottom:1px solid var(--line);padding:15px 0}header .wrap{display:flex;align-items:center;gap:16px}header img{width:65px;height:65px;object-fit:contain}header strong{font:700 20px Georgia,serif;letter-spacing:.06em}header a:last-child{margin-left:auto;text-decoration:none;color:var(--gold)}\n.hero{padding:68px 0 25px;text-align:center}.hero small{color:var(--gold);font-weight:800;letter-spacing:.22em}.hero h1{font:normal clamp(38px,6vw,69px) Georgia,serif;margin:12px 0}.hero p{color:#c1d1df;max-width:680px;margin:auto}\n.notice{margin:28px auto;padding:16px 20px;background:#10283a;border:1px solid var(--gold);border-radius:12px;color:#e8dfcd;text-align:center}\n.filters{display:flex;gap:10px;flex-wrap:wrap;margin:25px 0}.filters button{background:#10253a;color:#eaf5ff;border:1px solid #58718a;border-radius:40px;padding:9px 17px;cursor:pointer}.filters button.active{background:var(--gold);color:#102033;border-color:var(--gold)}\n.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:23px;margin:22px 0 70px}.card{background:#0c2032;border:1px solid #324c63;border-radius:16px;overflow:hidden}.art{height:310px;display:grid;place-items:center;background:#0b1927}.art img{width:100%;height:100%;object-fit:contain}.art .fallback{color:#adbdd0;font:30px Georgia,serif;text-align:center;padding:24px}.detail{padding:20px}.detail small{color:var(--gold)}.detail h2{font:25px Georgia,serif;margin:7px 0}.detail p{color:#c0cfdb}.price{font-size:20px;font-weight:800}.pending{display:block;background:#1b3646;color:#eee0c1;border:1px solid #8d744a;border-radius:9px;padding:10px;margin-top:16px;text-align:center}.meta{font-size:12px;color:#a5b8c8}\nfooter{border-top:1px solid var(--line);padding:28px;text-align:center;color:#94aec3}\n@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:580px){.grid{grid-template-columns:1fr}.art{height:300px}.hero{padding-top:45px}}\n</style></head><body>\n<header><div class=\"wrap\"><img src=\"/assets/logo-oficial.png\" alt=\"Logo Sangre de Luna\"><strong>SANGRE DE LUNA</strong><a href=\"/\">← Volver al universo</a></div></header>\n<main class=\"wrap\"><section class=\"hero\"><small>TIENDA OFICIAL · UNIVERSO LUNAR</small><h1>Las colecciones de la manada</h1><p>Descubre los diseños de Sangre de Luna. Estamos preparando la fabricación y los envíos internacionales.</p></section>\n<div class=\"notice\" role=\"status\"><strong>Catálogo de exhibición</strong> · Los productos aún no están disponibles para comprar. No se admiten pagos ni pedidos.</div>\n<div id=\"filters\" class=\"filters\" aria-label=\"Filtrar colecciones\"></div><p id=\"status\" role=\"status\">Cargando colecciones…</p><div id=\"products\" class=\"grid\"></div></main>\n<footer>© Sangre de Luna · Diseños oficiales · Ventas próximamente</footer>\n<script>\n(async()=>{\n const status=document.getElementById('status'),root=document.getElementById('products'),filters=document.getElementById('filters');\n try{\n  const response=await fetch('/api/tienda-preview?action=public_catalog',{cache:'no-store'});\n  if(!response.ok)throw Error('catalog');\n  const data=await response.json();if(!data.ok||!Array.isArray(data.items))throw Error('data');\n  const items=data.items;\n  const categories=['Todos',...new Set(items.map(p=>p.collection||'Colección'))];\n  let selected='Todos';\n  function render(){\n   filters.replaceChildren();root.replaceChildren();\n   categories.forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=c;b.className=selected===c?'active':'';b.onclick=()=>{selected=c;render()};filters.append(b)});\n   const visible=items.filter(p=>selected==='Todos'||p.collection===selected);\n   status.textContent=visible.length+' diseños en exhibición · producción y compatibilidad Gelato pendientes de validación';\n   visible.forEach(p=>{\n    const card=document.createElement('article');card.className='card';\n    const art=document.createElement('div');art.className='art';\n    if(p.hasImage){\n     const img=document.createElement('img');img.loading='lazy';img.alt='Diseño de '+p.title;img.src='/api/tienda-preview?action=public_image&id='+encodeURIComponent(p.id);\n     img.onerror=()=>{img.remove();const f=document.createElement('div');f.className='fallback';f.textContent='Sangre de Luna';art.append(f)};\n     art.append(img);\n    }else{const f=document.createElement('div');f.className='fallback';f.textContent='Sangre de Luna';art.append(f)}\n    const d=document.createElement('div');d.className='detail',collection=document.createElement('small');collection.textContent=p.collection;\n    const h=document.createElement('h2');h.textContent=p.title;\n    const desc=document.createElement('p');desc.textContent=p.description||'Diseño oficial de la colección Sangre de Luna.';\n    const category=document.createElement('div');category.className='meta';category.textContent=p.category;\n    const colors=document.createElement('div');colors.className='meta';colors.textContent=p.colors.length?'Colores de diseño: '+p.colors.join(', '):'Variantes por confirmar';\n    const price=document.createElement('p');price.className='price';price.textContent=p.price?'Precio de referencia: 
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  res.setHeader('Cache-Control','public, max-age=0, s-maxage=120');
+  try{
+   const rows=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
+   const items=(Array.isArray(rows)?rows:[]).filter(p=>/^SDL-NEW-[0-9]{8,16}$/.test(String(p.id||''))).slice(0,150).map(p=>({
+    id:String(p.id),title:String(p.title||'').slice(0,180),description:String(p.description||'').slice(0,900),
+    category:String(p.category||'Otros').slice(0,100),collection:String(p.collection||'Colección').slice(0,100),
+    price:Number(p.price)>0?Number(p.price):null,
+    colors:Array.isArray(p.variants)?p.variants.map(c=>String(c).slice(0,65)).slice(0,20):[],
+    hasImage:!!p.has_image||!!p.image_mime||!!p.image_base64,
+    saleEnabled:false,gelatoApproved:false
+   }));
+   return res.end(JSON.stringify({ok:true,mode:'exhibition_only',checkoutEnabled:false,ordersEnabled:false,count:items.length,items}));
+  }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'catalog_temporarily_unavailable'}));}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='public_image'){
+  const id=String(req.query.id||'');
+  if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)){res.statusCode=400;return res.end();}
+  try{
+   const rows=await rpc('sdl_store_custom_image_get',{p_secret:SESSION_SECRET,p_id:id});
+   if(!Array.isArray(rows)||!rows[0]){res.statusCode=404;return res.end();}
+   const mime=String(rows[0].mime||'');
+   if(!['image/png','image/jpeg','image/webp'].includes(mime)){res.statusCode=415;return res.end();}
+   const bytes=Buffer.from(String(rows[0].base64||''),'base64');
+   if(bytes.length>6000000){res.statusCode=413;return res.end();}
+   res.setHeader('Content-Type',mime);res.setHeader('Cache-Control','public, max-age=0, s-maxage=300');
+   return res.end(bytes);
+  }catch(e){res.statusCode=503;return res.end();}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_status'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({connected:false,reason:'login_required'}));}
+  const key=process.env.GELATO_API_KEY;
+  if(!key){return res.end(JSON.stringify({connected:false,reason:'key_not_available_in_deployment'}));}
+  try{
+   const controller=new AbortController();
+   const timer=setTimeout(()=>controller.abort(),6500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs',{method:'GET',headers:{'X-API-KEY':key,'Accept':'application/json'},signal:controller.signal});}finally{clearTimeout(timer);}
+   return res.end(JSON.stringify({connected:upstream.ok,httpStatus:upstream.status,provider:'Gelato',mode:'read_only',ordersEnabled:false}));
+  }catch(e){return res.end(JSON.stringify({connected:false,reason:'connection_unavailable',provider:'Gelato',ordersEnabled:false}));}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_catalogs'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+  if(!process.env.GELATO_API_KEY){return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));}
+  try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs',{headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Accept':'application/json'},signal:controller.signal});}
+   finally{clearTimeout(timer);}
+   if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
+   const payload=await upstream.json();
+   const candidates=Array.isArray(payload)?payload:[payload?.catalogs,payload?.items,payload?.data,payload?.results].find(Array.isArray);
+   const catalogs=Array.isArray(candidates)?candidates:[];
+   const responseShape=Array.isArray(payload)?'array':(payload&&typeof payload==='object'?'object':'other');
+   return res.end(JSON.stringify({ok:true,mode:'read_only',ordersEnabled:false,responseShape,responseFields:responseShape==='object'?Object.keys(payload).slice(0,12):[],totalCatalogs:catalogs.length,formatRecognized:Array.isArray(candidates),catalogs:catalogs.slice(0,80).map(c=>({uid:String(c.catalogUid||c.uid||'').slice(0,120),title:String(c.title||c.name||'').slice(0,120)}))}));
+  }catch(err){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_models'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+  const catalog=String(req.query.catalog||'');
+  if(!/^[a-z0-9-]{2,80}$/.test(catalog)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_catalog'}));}
+  if(!process.env.GELATO_API_KEY)return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));
+  try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({limit:30,offset:0}),signal:controller.signal});}
+   finally{clearTimeout(timer);}
+   if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
+   const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
+   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
+  }catch(e){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='cover'){
+ if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
+ const slug=String(req.query.slug||'');const defaults={camisetas:'/assets/chris.webp',sudaderas:'/assets/hero.webp',tazas:'/assets/logo-oficial.png',posteres:'/assets/admin-ciudadela-bg.webp',gorras:'/assets/logo-oficial.png',libretas:'/assets/admin-ciudadela-bg.webp',stickers:'/assets/logo-oficial.png',llaveros:'/assets/hero.webp',bolsas:'/assets/logo-oficial.png'};
+ if(!Object.prototype.hasOwnProperty.call(defaults,slug)&&!(slug.startsWith('collection:')&&slug.length<=91)){res.statusCode=404;return res.end();}
+ try{const rows=await rpc('sdl_store_cover_get',{p_secret:SESSION_SECRET,p_slug:slug});if(rows&&rows[0]){const bytes=Buffer.from(rows[0].base64,'base64');res.setHeader('Content-Type',rows[0].mime);return res.end(bytes);}}catch(e){}
+ res.statusCode=302;res.setHeader('Location',defaults[slug]||'/assets/admin-ciudadela-bg.webp');return res.end();
+ }
+ if(req.method==='GET'&&req.query&&req.query.action==='color_photo'){
+ if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
+ const id=String(req.query.id||''),color=String(req.query.color||'');
+ if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||color.length>60){res.statusCode=400;return res.end();}
+ try{const rows=await rpc('sdl_store_color_photo_get',{p_secret:SESSION_SECRET,p_id:id,p_color:color});if(!rows||!rows[0]){res.statusCode=404;return res.end();}const bytes=Buffer.from(rows[0].base64,'base64');res.setHeader('Content-Type',rows[0].mime);res.setHeader('Content-Length',String(bytes.length));return res.end(bytes);}catch(e){res.statusCode=503;return res.end();}
+}
+ if(req.method==='GET'&&req.query&&req.query.action==='image'){
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
+  const sku=String(req.query.sku||'');
+  if(!/^SDL-(ORI|PER)-[0-9]{3}$/.test(sku)&&!/^SDL-NEW-[0-9]{8,16}$/.test(sku)){res.statusCode=400;return res.end();}
+  try{const custom=/^SDL-NEW-[0-9]{8,16}$/.test(sku);const image=await rpc(custom?'sdl_store_custom_image_get':/^SDL-ORI-9[0-9]{2}$/.test(sku)?'sdl_store_variant_image_get':'sdl_store_image_get',custom?{p_secret:SESSION_SECRET,p_id:sku}:{p_secret:SESSION_SECRET,p_sku:sku});
+    if(!image||!image[0]){res.statusCode=404;return res.end();}
+    const bytes=Buffer.from(image[0].base64,'base64');
+    res.setHeader('Content-Type',image[0].mime);res.setHeader('Content-Length',String(bytes.length));return res.end(bytes);
+  }catch(e){res.statusCode=503;return res.end();}
+ }
+ if(req.method==='POST'){
+  // Vercel rewrites may set an internal Host differing from the browser Origin.
+  // Reject explicit cross-site browser submissions; session cookies remain SameSite=Strict,
+  // and a password change independently requires both the session and current password.
+  const fetchSite=String(req.headers['sec-fetch-site']||'').toLowerCase();
+  if(fetchSite==='cross-site')return respond(res,403,noticePage('Solicitud no autorizada.'));
+
+
+  const declaredSize=Number(req.headers['content-length']||0);
+  if(declaredSize>7200000) return respond(res,413,loginPage(true));
+  let data='';
+  try{
+   if(typeof req.body==='string') data=req.body;
+   else if(Buffer.isBuffer(req.body)) data=req.body.toString('utf8');
+   else if(req.body && typeof req.body==='object') data=new URLSearchParams(req.body).toString();
+   else for await (const part of req) {data+=part.toString('utf8');if(data.length>7200000)break;}
+   if(data.length>7200000) return respond(res,413,loginPage(true));
+   const p=new URLSearchParams(data);
+   if(p.get('action')==='upload_cover'){
+ if(Number(req.headers['content-length']||0)>7100000)return respond(res,413,noticePage('La imagen supera 5 MB.'));
+ if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+ const ok=await rpc('sdl_store_cover_save',{p_secret:SESSION_SECRET,p_slug:p.get('slug')||'',p_mime:p.get('mime')||'',p_base64:p.get('image')||''});res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:!!ok}));
+ }
+ if(p.get('action')==='upload_color_photo'){
+ if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+ const id=p.get('id')||'',color=p.get('color')||'',mime=p.get('mime')||'',image=p.get('image')||'';
+ if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||color.length>60||image.length>7000000){res.statusCode=400;res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:false}));}
+ try{const ok=await rpc('sdl_store_color_photo_save',{p_secret:SESSION_SECRET,p_id:id,p_color:color,p_mime:mime,p_base64:image});res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:!!ok}));}catch(e){res.statusCode=500;res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:false}));}
+}
+ if(p.get('action')==='upload_image'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    const sku=p.get('sku')||'';const custom=/^SDL-NEW-[0-9]{8,16}$/.test(sku);const ok=await rpc(custom?'sdl_store_custom_image_save':/^SDL-ORI-9[0-9]{2}$/.test(sku)?'sdl_store_variant_image_save':'sdl_store_image_save',custom?{p_secret:SESSION_SECRET,p_id:sku,p_mime:p.get('mime')||'',p_base64:p.get('image')||''}:{p_secret:SESSION_SECRET,p_sku:sku,p_mime:p.get('mime')||'',p_base64:p.get('image')||''});
+    res.setHeader('Content-Type','application/json; charset=utf-8');return res.end(JSON.stringify({ok:!!ok}));
+   }
+   if(p.get('action')==='edit_registered_product'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    const ids=(p.get('ids')||'').split(',').filter(x=>/^SDL-NEW-[0-9]{8,16}$/.test(x)).slice(0,25);
+    const title=(p.get('title')||'').trim(),description=(p.get('description')||'').trim(),price=Number(p.get('price'));
+    if(!ids.length||title.length<2||title.length>120||description.length>700||!Number.isFinite(price)||price<=0||price>10000)return respond(res,400,noticePage('Revisa los datos del producto.'));
+    try{
+      for(const id of ids){const ok=await rpc('sdl_store_custom_edit',{p_secret:SESSION_SECRET,p_id:id,p_title:title,p_description:description,p_price:price});if(!ok)throw Error('save_failed')}
+      res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_updated#productos-registrados');return res.end();
+    }catch(e){return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
+   }
+   if(p.get('action')==='create_product'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    let collection=p.get('collection')||'';const newCollectionName=(p.get('new_collection_name')||'').trim();if(collection==='__new__'){try{collection=await rpc('sdl_store_collection_create',{p_secret:SESSION_SECRET,p_name:newCollectionName});}catch(e){return respond(res,400,noticePage('No se pudo crear la colección: '+e.message));}}const validCollections=await rpc('sdl_store_collection_list',{p_secret:SESSION_SECRET});const category=p.get('category')||'',title=(p.get('title')||'').trim(),description=(p.get('description')||'').trim(),price=Number(p.get('price'));
+    const colors=(p.get('colors')||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,15);
+    if(!Array.isArray(validCollections)||!validCollections.includes(collection)||!['Camisetas','Sudaderas','Tazas','Pósteres','Gorras','Libretas','Stickers','Llaveros','Bolsas Tote'].includes(category)||title.length<2||title.length>120||description.length>700||!Number.isFinite(price)||price<=0||price>10000){if(String(req.headers.accept||'').includes('application/json')){res.statusCode=400;res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:false,code:'invalid_product_fields',message:'Revisa colección, tipo, nombre y precio del producto.'}));}return respond(res,400,noticePage('Revisa los datos del producto.'));}
+    const id='SDL-NEW-'+String(Date.now())+String(Math.floor(Math.random()*1000)).padStart(3,'0');
+    const ok=await rpc('sdl_store_custom_save',{p_secret:SESSION_SECRET,p_id:id,p_collection:collection,p_category:category,p_title:title,p_description:description,p_price:price,p_variants:colors});
+    if(!ok){if(String(req.headers.accept||'').includes('application/json')){res.statusCode=400;res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:false,code:'database_rejected',message:'La base de datos rechazó el registro. Comprueba los campos y vuelve a intentar.'}));}return respond(res,400,noticePage('No fue posible guardar el producto.'));}
+    if(String(req.headers.accept||'').includes('application/json')){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,id}));}res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_created#crear-producto');return res.end();
+   }
+   if(p.get('action')==='add_color'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    const name=(p.get('color_name')||'').trim();const parent=p.get('parent_sku')||'';
+    if(parent!=='SDL-ORI-001'||name.length<2||name.length>60)return respond(res,400,noticePage('Color inválido.'));
+    const colors=await rpc('sdl_store_variant_list',{p_admin_secret:SESSION_SECRET});
+    if(colors.some(v=>v.parent_sku===parent&&v.color_name.toLowerCase()===name.toLowerCase()))return respond(res,400,noticePage('Este color ya existe.'));
+    const taken=new Set(colors.map(v=>v.sku));let sku='';for(let n=900;n<=999;n++){const candidate='SDL-ORI-'+n;if(!taken.has(candidate)){sku=candidate;break;}}
+    if(!sku)return respond(res,400,noticePage('No hay más códigos disponibles.'));
+    const ok=await rpc('sdl_store_variant_save',{p_admin_secret:SESSION_SECRET,p_parent_sku:parent,p_color_name:name,p_sku:sku});
+    if(!ok)return respond(res,400,noticePage('No fue posible guardar el color.'));
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion#colores-camiseta');return res.end();
+   }
+   if(p.get('action')==='save_product'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
+    const sku=p.get('sku')||'',name=p.get('product_name')||'',description=p.get('product_description')||'',raw=p.get('retail_usd')||'';
+    const price=raw===''?null:Number(raw);
+    if(raw!==''&&!Number.isFinite(price))return respond(res,400,noticePage('Precio inválido.'));
+    const ok=await rpc('sdl_store_draft_save',{p_admin_secret:SESSION_SECRET,p_sku:sku,p_name:name,p_description:description,p_retail_usd:price});
+    if(!ok)return respond(res,400,noticePage('No fue posible guardar el producto. Revisa los datos.'));
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion');return res.end();
+   }
+   if(p.get('action')==='change_password'){
+    if(!(await isValidSession(req)))return respond(res,401,noticePage('La sesión expiró. Inicia sesión.'));
+    const current=p.get('current_password')||'',next=p.get('new_password')||'',confirm=p.get('confirm_password')||'';
+    if(next!==confirm||next.length<12||next.length>128||next===current)return respond(res,400,noticePage('Revisa las contraseñas.'));
+    const ok=await rpc('sdl_store_change',{p_current:current,p_next:next,p_rate_key:rateKey(req)});
+    if(!ok)return respond(res,401,noticePage('Contraseña actual incorrecta o demasiados intentos.'));
+    res.setHeader('Set-Cookie',COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return respond(res,200,noticePage('Contraseña actualizada. Las sesiones previas fueron invalidadas. Entra con la nueva clave.'));
+   }
+   if(p.get('action')==='logout'){
+    res.setHeader('Set-Cookie',COOKIE+'=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH);return res.end();
+   }
+   const pass=p.get('password')||'';
+   const check=await rpc('sdl_store_auth',{p_password:pass,p_rate_key:rateKey(req)});
+   if(check&&check[0]&&check[0].valid){
+    const session=createSession(check[0].credential_version);
+    res.setHeader('Set-Cookie',COOKIE+'='+session+'; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age='+MAX_AGE);
+    res.statusCode=303;res.setHeader('Location',PREVIEW_PATH);return res.end();
+   }
+   return respond(res,401,loginPage(true));
+  }catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
+ }
+ if(req.method!=='GET') {res.setHeader('Allow','GET, POST');return respond(res,405,loginPage(false));}
+ try{return respond(res,200,(await isValidSession(req))?await catalogPage((req.query&&req.query.view)||'inicio',String((req.query&&req.query.collection)||'')):loginPage());}catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
+};
++Number(p.price).toFixed(2)+' USD':'Precio por confirmar';\n    const badge=document.createElement('span');badge.className='pending';badge.textContent='Próximamente disponible · Compras desactivadas';\n    d.append(collection,h,desc,category,colors,price,badge);card.append(art,d);root.append(card);\n   });\n  }render();\n }catch(e){status.textContent='No se pudo cargar el catálogo. Vuelve a intentarlo más tarde.'}\n})();\n</script></body></html>");
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='public_catalog'){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   res.setHeader('Cache-Control','public, max-age=0, s-maxage=120');
