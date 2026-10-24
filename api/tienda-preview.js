@@ -621,5 +621,21 @@ async function saveVerifiedGelatoVariants(id,category,raw){
   }catch(e){return respond(res,503,noticePage('Servicio de seguridad temporalmente no disponible.'));}
  }
  if(req.method!=='GET') {res.setHeader('Allow','GET, POST');return respond(res,405,loginPage(false));}
- try{const valid=await isValidSession(req);if(!valid)return respond(res,200,loginPage());try{return respond(res,200,await catalogPage((req.query&&req.query.view)||'inicio',String((req.query&&req.query.collection)||''));}catch(error){console.error('private_catalog_unavailable',String(error?.message||error).slice(0,180));return respond(res,503,noticePage('El catálogo privado no pudo cargarse temporalmente. Tu sesión y tus productos siguen protegidos. Vuelve a entrar para intentarlo otra vez.'));}}catch(e){console.error('store_session_check_failed',String(e?.message||e).slice(0,180));return respond(res,503,noticePage('La conexión de seguridad no respondió. No se han modificado tus productos. Intenta nuevamente.'));}
+ try{
+  const valid=await isValidSession(req);
+  if(!valid)return respond(res,200,loginPage());
+  try{
+   const view=(req.query&&req.query.view)||'inicio';
+   const collection=String((req.query&&req.query.collection)||'');
+   const html=await catalogPage(view,collection);
+   return respond(res,200,html);
+  }catch(error){
+   console.error('private_catalog_unavailable',String(error&&error.message||error).slice(0,180));
+   return respond(res,503,noticePage('No se pudo cargar el catálogo privado. Intenta entrar de nuevo.'));
+  }
+ }catch(error){
+  console.error('store_session_check_failed',String(error&&error.message||error).slice(0,180));
+  return respond(res,503,noticePage('La conexión de seguridad no respondió. Intenta nuevamente.'));
+ }
+
 };
