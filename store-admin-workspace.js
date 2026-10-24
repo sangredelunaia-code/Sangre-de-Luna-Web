@@ -357,11 +357,15 @@
     const colorSelect=block.querySelector('#sdl-base-gelato-color'),sizes=block.querySelector('#sdl-real-size-options'),message=block.querySelector('#sdl-gelato-options-state');
     const categories={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
     let models=[],requestVersion=0;
+    const modelLabel=document.createElement('label');modelLabel.textContent='Modelo de fabricación Gelato ';
+    const modelSelect=document.createElement('select');modelSelect.style.cssText='width:100%;padding:10px;border:1px solid #a6bdcd;border-radius:8px';modelLabel.append(modelSelect);colorSelect.parentElement.before(modelLabel);
+    const const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
+    const compatible=p=>p.attributes?.GarmentColor===colorSelect.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     const garment=(p)=>p.attributes||{};
     const qualifies=(p)=>p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
     const refreshSizes=()=>{
       sizes.replaceChildren();
-      const options=[...new Set(models.filter(p=>String(garment(p).GarmentColor||'')===colorSelect.value).map(p=>String(garment(p).GarmentSize||'')).filter(Boolean))];
+      const options=[...new Set(models.filter(compatible).map(p=>String(garment(p).GarmentSize||'')).filter(Boolean))];
       if(!options.length){sizes.textContent='Este artículo no presenta tallas en la selección actual.';return}
       options.sort((a,b)=>['XS','S','M','L','XL','2XL','3XL','4XL','5XL'].indexOf(a)-['XS','S','M','L','XL','2XL','3XL','4XL','5XL'].indexOf(b));
       for(const size of options){const label=document.createElement('label');label.style.cssText='display:inline-flex;gap:6px;align-items:center;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=size;input.name='gelato_size';label.append(input,document.createTextNode(size));sizes.append(label)}
@@ -380,6 +384,10 @@
         }));
         if(version!==requestVersion)return;
         models=pages.flat().filter(qualifies);
+        modelSelect.replaceChildren();const choose=document.createElement('option');choose.value='';choose.textContent='Escoge el modelo concreto';modelSelect.append(choose);
+        const keys=[...new Set(models.map(modelKey))];
+        keys.forEach((key,i)=>{const opt=document.createElement('option');opt.value=key;const attrs=JSON.parse(key);opt.textContent=attrs.map(([k,v])=>k+': '+v).join(' · ').slice(0,220)||'Modelo '+(i+1);modelSelect.append(opt)});
+        modelSelect.addEventListener('change',refreshSizes);
         const colors=[...new Set(models.map(p=>String(garment(p).GarmentColor||'')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
         for(const color of colors){const o=document.createElement('option');o.value=color;o.textContent=color;colorSelect.append(o)}
         message.textContent=colors.length?colors.length+' colores base encontrados en Gelato. Elige uno para mostrar sus tallas.':'Gelato no proporcionó colores compatibles en esta consulta. No se asignará un modelo supuesto.';
@@ -390,7 +398,7 @@
     createForm.addEventListener('submit',()=>{
       const selected=Array.from(sizes.querySelectorAll('input:checked')).map(i=>i.value);
       createForm.querySelector('[name="gelato_variant_uids"]')?.remove();
-      const matched=selected.map(size=>models.filter(m=>m.attributes?.GarmentColor===colorSelect.value&&m.attributes?.GarmentSize===size));
+      const matched=selected.map(size=>models.filter(m=>compatible(m)&&m.attributes?.GarmentSize===size));
       const exact=matched.filter(c=>c.length===1).map(c=>({size:c[0].attributes.GarmentSize,color:colorSelect.value,uid:c[0].uid}));
       if(exact.length){const hidden=document.createElement('input');hidden.type='hidden';hidden.name='gelato_variant_uids';hidden.value=JSON.stringify(exact);createForm.append(hidden)}
       if(selected.length&&exact.length!==selected.length){message.textContent='Hay variantes con varios modelos posibles o sin coincidencias. Solo se verificarán los identificadores únicos; las demás tallas quedan pendientes de selección de modelo.';}
@@ -421,6 +429,11 @@
     }
     const catalog=area.querySelector('[data-gelato-catalog]'),color=area.querySelector('[data-gelato-color]'),sizes=area.querySelector('[data-gelato-sizes]'),status=area.querySelector('[data-gelato-state]');
     let models=[],version=0;
+    const modelLabel=document.createElement('label');modelLabel.textContent='Modelo concreto de Gelato ';
+    const modelSelect=document.createElement('select');modelLabel.append(modelSelect);area.insertBefore(modelLabel,color.parentElement);
+    const const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
+    const compatible=p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
+    modelSelect.addEventListener('change',()=>color.dispatchEvent(new Event('change')));
     catalog.addEventListener('change',async()=>{
       const current=++version;models=[];color.replaceChildren();color.disabled=true;sizes.textContent='Selecciona un color';status.textContent='Consultando Gelato…';
       if(!catalog.value){status.textContent='Elige una categoría.';return}
@@ -428,6 +441,8 @@
         const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const res=await fetch('/api/tienda-preview?action=gelato_models&catalog='+catalog.value+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await res.json();if(!data.ok)throw Error(data.reason);return data.products||[]}));
         if(current!==version)return;
         models=pages.flat().filter(p=>p.uid&&p.attributes?.ProductStatus==='activated'&&!['kids','children','youth'].includes(String(p.attributes?.GarmentCut||'').toLowerCase()));
+        modelSelect.replaceChildren();const initial=document.createElement('option');initial.value='';initial.textContent='Selecciona modelo de fabricación';modelSelect.append(initial);
+        [...new Set(models.map(modelKey))].forEach((key,i)=>{const opt=document.createElement('option');opt.value=key;opt.textContent=JSON.parse(key).map(([k,v])=>k+': '+v).join(' · ').slice(0,220)||'Modelo '+(i+1);modelSelect.append(opt)});
         const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
         [...new Set(models.map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
         color.disabled=!models.length;status.textContent=models.length+' variantes reales consultadas. Elige el color base y sus tallas.';
@@ -435,7 +450,7 @@
     });
     color.addEventListener('change',()=>{
       sizes.replaceChildren();
-      const values=[...new Set(models.filter(p=>p.attributes?.GarmentColor===color.value).map(p=>p.attributes?.GarmentSize).filter(Boolean))];
+      const values=[...new Set(models.filter(compatible).map(p=>p.attributes?.GarmentSize).filter(Boolean))];
       if(!values.length){sizes.textContent='No se encontraron tallas para este color.';return}
       values.forEach(v=>{const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=v;label.append(input,document.createTextNode(v));sizes.append(label)});
     });
@@ -443,7 +458,7 @@
       for(const name of ['gelato_catalog','gelato_base_color','gelato_sizes','gelato_variant_uids'])form.querySelector('[name="'+name+'"]')?.remove();
       if(catalog.value&&color.value){
         const selected=Array.from(sizes.querySelectorAll('input:checked')).map(i=>i.value);
-        const matched=selected.map(size=>models.filter(m=>m.attributes?.GarmentColor===color.value&&m.attributes?.GarmentSize===size));
+        const matched=selected.map(size=>models.filter(m=>compatible(m)&&m.attributes?.GarmentSize===size));
         const exact=matched.filter(candidates=>candidates.length===1).map(candidates=>({size:candidates[0].attributes.GarmentSize,color:color.value,uid:candidates[0].uid}));
         if(exact.length){const h=document.createElement('input');h.type='hidden';h.name='gelato_variant_uids';h.value=JSON.stringify(exact);form.append(h)}
         if(selected.length&&selected.length!==exact.length)status.textContent='Algunas tallas tienen múltiples modelos posibles; esas variantes no se vincularán hasta elegir modelo exacto.';
