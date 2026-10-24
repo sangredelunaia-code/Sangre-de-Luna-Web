@@ -467,6 +467,10 @@ async function saveVerifiedGelatoVariants(id,category,raw){
  try{const rows=await rpc('sdl_store_cover_get',{p_secret:SESSION_SECRET,p_slug:slug});if(rows&&rows[0]){const bytes=Buffer.from(rows[0].base64,'base64');res.setHeader('Content-Type',rows[0].mime);return res.end(bytes);}}catch(e){}
  res.statusCode=302;res.setHeader('Location',defaults[slug]||'/assets/admin-ciudadela-bg.webp');return res.end();
  }
+ if(req.method==='GET'&&req.query&&req.query.action==='label_logo'){
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
+  try{const rows=await rpc('sdl_store_print_asset_get',{p_secret:SESSION_SECRET,p_key:'neck-inner-logo'},15000);if(!rows?.[0]){res.statusCode=404;return res.end();}const bytes=Buffer.from(rows[0].base64,'base64');res.setHeader('Content-Type',rows[0].mime);res.setHeader('Cache-Control','private, no-store');return res.end(bytes)}catch(e){res.statusCode=503;return res.end()}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='color_photo'){
  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
  const id=String(req.query.id||''),color=String(req.query.color||'');
@@ -501,6 +505,11 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    else for await (const part of req) {data+=part.toString('utf8');if(data.length>7200000)break;}
    if(data.length>7200000) return respond(res,413,loginPage(true));
    const p=new URLSearchParams(data);
+   if(p.get('action')==='upload_label_logo'){
+    res.setHeader('Content-Type','application/json; charset=utf-8');
+    if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+    try{const ok=await rpc('sdl_store_print_asset_save',{p_secret:SESSION_SECRET,p_key:'neck-inner-logo',p_mime:p.get('mime')||'',p_base64:p.get('image')||''},15000);return res.end(JSON.stringify({ok:!!ok,status:ok?'saved_for_review':'invalid_file',sentToGelato:false}))}catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'storage_unavailable'}))}
+   }
    if(p.get('action')==='upload_cover'){
  if(Number(req.headers['content-length']||0)>7100000)return respond(res,413,noticePage('La imagen supera 5 MB.'));
  if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
