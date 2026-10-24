@@ -294,6 +294,29 @@ module.exports=async function handler(req,res){
   try{const html=await catalogPage('productos');return respond(res,200,html.replaceAll('Borrador · pendiente de aprobación','Vista previa · compras desactivadas'));}
   catch(e){return respond(res,503,noticePage('No fue posible cargar la vista previa. Inténtalo nuevamente.'));}
  }
+async function saveVerifiedGelatoVariants(id,category,raw){
+ const map={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'},catalog=map[category];
+ if(!catalog||!raw||!process.env.GELATO_API_KEY)return {saved:0,reason:'not_configured'};
+ let entries;try{entries=JSON.parse(raw)}catch(e){return {saved:0,reason:'bad_selection'};}
+ if(!Array.isArray(entries)||entries.length>20)return {saved:0,reason:'invalid_selection'};
+ const approved=[];let color='';
+ for(const entry of entries){
+  const uid=String(entry?.uid||''),size=String(entry?.size||''),requestedColor=String(entry?.color||'');
+  if(uid.length<8||uid.length>250||size.length>24||requestedColor.length>80||!size||!requestedColor||(color&&requestedColor!==color))continue;
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);
+  try{
+   const response=await fetch('https://product.gelatoapis.com/v3/products/'+encodeURIComponent(uid),{headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Accept':'application/json'},signal:controller.signal});
+   if(!response.ok)continue;
+   const model=await response.json(),a=model.attributes||{};
+   if(model.productUid!==uid||a.GarmentColor!==requestedColor||a.GarmentSize!==size||String(a.ProductStatus).toLowerCase()!=='activated'||/(kids|youth|child|infant|baby)/i.test(String(a.GarmentCut||'')))continue;
+   if(!Array.isArray(model.supportedCountries)||!model.supportedCountries.includes('EC'))continue;
+   color=requestedColor;approved.push({size,uid});
+  }catch(e){}finally{clearTimeout(timer);}
+ }
+ if(!approved.length)return {saved:0,reason:'no_verified_ec_variants'};
+ const saved=await rpc('sdl_store_gelato_variants_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_variants:approved});
+ return {saved:Number(saved)||0,requested:entries.length,reason:'pending_review'};
+}
  if(req.method==='GET'&&req.query&&req.query.action==='gelato_links'){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
@@ -508,6 +531,10 @@ module.exports=async function handler(req,res){
           if(!ok)return respond(res,503,noticePage('No se pudo guardar la configuración de Gelato.'));
         }
       }
+      if(p.get('gelato_variant_uids')){
+        const target=p.get('gelato_target_id')||ids[0];
+        if(ids.includes(target)){try{await saveVerifiedGelatoVariants(target,(await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET})).items.find(x=>x.id===target)?.category||'',p.get('gelato_variant_uids'));}catch(error){console.error('Gelato variant verification failed',error?.message);}}
+      }
       res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_updated#productos-registrados');return res.end();
     }catch(e){return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
    }
@@ -530,7 +557,9 @@ module.exports=async function handler(req,res){
         }
       }catch(error){console.error('Could not save preliminary Gelato options for product:',id);}
     }
-    if(String(req.headers.accept||'').includes('application/json')){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,id}));}res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_created#crear-producto');return res.end();
+    let variantVerification={saved:0,reason:'not_selected'};
+    if(p.get('gelato_variant_uids')){try{variantVerification=await saveVerifiedGelatoVariants(id,category,p.get('gelato_variant_uids'));}catch(error){variantVerification={saved:0,reason:'verification_failed'};}}
+    if(String(req.headers.accept||'').includes('application/json')){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({ok:true,id,variantVerification}));}res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_created#crear-producto');return res.end();
    }
    if(p.get('action')==='add_color'){
     if(!(await isValidSession(req)))return respond(res,401,noticePage('Debes iniciar sesión.'));
