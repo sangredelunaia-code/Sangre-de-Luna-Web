@@ -424,7 +424,7 @@
       const row=document.createElement('label');row.textContent='Registro específico del diseño ';
       const selector=document.createElement('select');selector.name='gelato_target_id';selector.required=false;
       const blank=document.createElement('option');blank.value='';blank.textContent='Selecciona un registro para Gelato';selector.append(blank);
-      ids.forEach((id,i)=>{const opt=document.createElement('option');opt.value=id;opt.textContent=({ 'SDL-NEW-1791835993474996':'Azul Nocturno', 'SDL-NEW-1791836652799947':'Blanco Lunar · Dorado Arena · Gris Oscuro · Gris Plata · Verde Oliva' }[id]||'Registro '+(i+1))+' · '+id;selector.append(opt)});
+      ids.forEach((id,i)=>{const opt=document.createElement('option');opt.value=id;opt.textContent=({ 'SDL-NEW-1791835993474996':'Azul Nocturno', 'SDL-NEW-1791836652799947':'Blanco Lunar, Dorado Arena, Gris Oscuro, Gris Plata y Verde Oliva' }[id]||'Versión '+(i+1));selector.append(opt)});
       row.append(selector);area.insertBefore(row,area.firstChild);
     }
     const catalog=area.querySelector('[data-gelato-catalog]'),color=area.querySelector('[data-gelato-color]'),sizes=area.querySelector('[data-gelato-sizes]'),status=area.querySelector('[data-gelato-state]');
