@@ -367,8 +367,9 @@
       const cut=a.GarmentCut==='unisex'?'Unisex':a.GarmentCut||'';
       const quality=a.GarmentQuality==='classic'?'Clásica':a.GarmentQuality||'';
       const collar=a.GarmentSubcategory==='crewneck'?'Cuello redondo':a.GarmentSubcategory||'';
-      const print=a.GarmentPrint?' · Impresión: '+a.GarmentPrint:'';
-      return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+print+' · Opción '+(i+1);
+      const print=String(a.GarmentPrint||'');
+      const detail=print.includes('inlbl')?' · Etiqueta interior':print.includes('bk')?' · Incluye espalda':print.includes('shsl')?' · Incluye manga':' · Impresión básica';
+      return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+detail+' · Variante '+(i+1);
     };
     const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
     const compatible=p=>p.attributes?.GarmentColor===colorSelect.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
@@ -481,8 +482,9 @@
       const cut=a.GarmentCut==='unisex'?'Unisex':a.GarmentCut||'';
       const quality=a.GarmentQuality==='classic'?'Clásica':a.GarmentQuality||'';
       const collar=a.GarmentSubcategory==='crewneck'?'Cuello redondo':a.GarmentSubcategory||'';
-      const print=a.GarmentPrint?' · Impresión: '+a.GarmentPrint:'';
-      return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+print+' · Opción '+(i+1);
+      const print=String(a.GarmentPrint||'');
+      const detail=print.includes('inlbl')?' · Etiqueta interior':print.includes('bk')?' · Incluye espalda':print.includes('shsl')?' · Incluye manga':' · Impresión básica';
+      return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+detail+' · Variante '+(i+1);
     };
     const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
     const compatible=p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
