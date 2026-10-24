@@ -215,6 +215,7 @@
         const wanted=colors.map(clean);
         const matches=adult.filter(p=>catalog==='mugs'||!wanted.length||wanted.some(color=>clean(p.attributes?.GarmentColor)===color||(colorEquivalences[color]||[]).includes(clean(p.attributes?.GarmentColor))));
         const candidate=matches.find(p=>(p.supportedCountries||[]).includes('EC'))||matches[0]||adult.find(p=>(p.supportedCountries||[]).includes('EC'))||adult[0]||null;
+        const colorAvailable=colors.map(color=>{const norm=clean(color);return {color,match:adult.find(p=>clean(p.attributes?.GarmentColor)===norm||(colorEquivalences[norm]||[]).includes(clean(p.attributes?.GarmentColor)))}});
         const colorChecked=colors.length===1&&candidate&&(catalog==='mugs'||clean(candidate.attributes?.GarmentColor)===wanted[0]||(colorEquivalences[wanted[0]]||[]).includes(clean(candidate.attributes?.GarmentColor)));
         const ecuadorVerified=!!candidate&&(candidate.supportedCountries||[]).includes('EC');
         const eligible=!!candidate&&colorChecked&&ecuadorVerified;
@@ -229,11 +230,12 @@
         const line=document.createElement('div');line.style.cssText='padding:12px;margin:7px 0;border:1px solid #d1dae3;border-radius:9px';
         const name=document.createElement('strong');name.textContent=item.title+' · '+item.category;line.append(name);
         const detail=document.createElement('p');detail.style.margin='5px 0';detail.textContent=candidate?'Modelo de referencia: '+candidate.uid+' · color Gelato: '+(candidate.attributes?.GarmentColor||'sin dato')+' · talla: '+(candidate.attributes?.GarmentSize||'sin dato'):'Sin modelo de referencia para esta categoría';line.append(detail);
+        if(colors.length>1){const variants=document.createElement('p');variants.style.cssText='font-size:12px;margin:6px 0';variants.textContent='Coincidencias por color en la muestra: '+colorAvailable.map(x=>x.color+' → '+(x.match?x.match.attributes.GarmentColor+' (talla '+x.match.attributes.GarmentSize+')':'sin coincidencia todavía')).join(' · ')+'. Cada color y talla necesita su propio identificador de fabricación.';line.append(variants)}
         const info=document.createElement('p');info.style.margin='5px 0';info.textContent=eligible?'Coincidencia verificada para revisión y aprobación.':'Pendiente: '+reason;line.append(info);
         if(catalog&&adult.length){
           const suggest=document.createElement('p');suggest.style.cssText='font-size:12px;color:#465969;margin:5px 0';
           const observed=[...new Set(adult.map(p=>p.attributes?.GarmentColor).filter(Boolean))].slice(0,20);
-          suggest.textContent='Colores disponibles en la muestra de Gelato: '+(observed.join(', ')||'no proporcionados')+'. '+(colors.length?'Colores registrados: '+colors.join(', ')+'.':'Define el color en la ficha antes de aprobar.');
+          suggest.textContent='Primeros colores encontrados (no son todos los disponibles): '+(observed.join(', ')||'no proporcionados')+'. '+(colors.length?'Colores registrados: '+colors.join(', ')+'.':'Define el color en la ficha antes de aprobar.');
           line.append(suggest);
         }
         if(eligible){
