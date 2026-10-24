@@ -319,7 +319,7 @@ module.exports=async function handler(req,res){
    if(!item||category!==catalog){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'category_mismatch'}));}
    const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),9000);
    let response;
-   try{response=await fetch('https://product.gelatoapis.com/v3/catalogs/'+catalog+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({limit:100,offset:0}),signal:ctl.signal});}finally{clearTimeout(timeout);}
+   try{response=await fetch('https://product.gelatoapis.com/v3/catalogs/'+catalog+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({attributeFilters:{ProductStatus:['activated'],State:['published']},limit:100,offset:0}),signal:ctl.signal});}finally{clearTimeout(timeout);}
    if(!response.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+response.status}));
    const payload=await response.json(),product=(payload.products||[]).find(p=>p.productUid===uid);
    if(!product)return res.end(JSON.stringify({ok:false,reason:'uid_not_verified_in_page'}));
@@ -406,7 +406,7 @@ module.exports=async function handler(req,res){
   try{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9500);
    let upstream;
-   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({limit:30,offset:0}),signal:controller.signal});}
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({attributeFilters:{ProductStatus:['activated'],State:['published']},limit:100,offset:0}),signal:controller.signal});}
    finally{clearTimeout(timer);}
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
