@@ -359,7 +359,7 @@
     let models=[],requestVersion=0;
     const modelLabel=document.createElement('label');modelLabel.textContent='Modelo de fabricación Gelato ';
     const modelSelect=document.createElement('select');modelSelect.style.cssText='width:100%;padding:10px;border:1px solid #a6bdcd;border-radius:8px';modelLabel.append(modelSelect);colorSelect.parentElement.before(modelLabel);
-    const const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
+    const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
     const compatible=p=>p.attributes?.GarmentColor===colorSelect.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     const garment=(p)=>p.attributes||{};
     const qualifies=(p)=>p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
@@ -431,7 +431,7 @@
     let models=[],version=0;
     const modelLabel=document.createElement('label');modelLabel.textContent='Modelo concreto de Gelato ';
     const modelSelect=document.createElement('select');modelLabel.append(modelSelect);area.insertBefore(modelLabel,color.parentElement);
-    const const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
+    const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
     const compatible=p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     modelSelect.addEventListener('change',()=>color.dispatchEvent(new Event('change')));
     catalog.addEventListener('change',async()=>{
