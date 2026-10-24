@@ -289,7 +289,7 @@
       const response=await fetch('/api/tienda-preview?action=gelato_links',{credentials:'same-origin',cache:'no-store'});
       const data=await response.json();if(!data.ok)throw Error('sin datos');
       const total=(data.items||[]).length,approved=(data.links||[]).length;
-      countLine.textContent=total+' productos guardados · '+approved+' vinculaciones aprobadas · '+Math.max(0,total-approved)+' pendientes';
+      countLine.textContent=data.linksAvailable===false?total+' productos guardados · Estado de las vinculaciones temporalmente no disponible':total+' productos guardados · '+approved+' vinculaciones aprobadas · '+Math.max(0,total-approved)+' pendientes';
     }catch(e){countLine.textContent='Tus diseños siguen guardados. No se pudo consultar su estado en este momento.'}
   };
   updateCount();
