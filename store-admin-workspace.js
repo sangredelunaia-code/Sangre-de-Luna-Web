@@ -197,23 +197,25 @@
       const approved=new Set((listing.links||[]).map(l=>l.product_id));
       const items=(listing.items||[]).filter(p=>!approved.has(p.id));
       const catalogs={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
-      const cache={};
+      const cache={},catalogErrors={};
       for(const type of [...new Set(items.map(p=>catalogs[p.category]).filter(Boolean))]){
         bulkStatus.textContent='Consultando el catálogo de Gelato: '+type+'…';
-        try{const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await response.json();return data.ok?(data.products||[]):[]}));cache[type]=pages.flat()}catch(e){cache[type]=[]}
+        try{const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await response.json();if(!data.ok)throw Error(data.reason||'Error del proveedor');return data.products||[]}));cache[type]=pages.flat()}catch(e){cache[type]=[];catalogErrors[type]=String(e.message||e)}
       }
       for(const item of items){
         const catalog=catalogs[item.category],colors=item.colors||[];
         const available=cache[catalog]||[];
-        const adult=available.filter(p=>p.uid&&String(p.attributes?.ProductStatus||'').toLowerCase()==='activated'&&String(p.attributes?.State||'').toLowerCase()==='published'&&String(p.attributes?.GarmentCut||'').toLowerCase()!=='kids');
+        const adult=available.filter(p=>p.uid&&String(p.attributes?.ProductStatus||'').toLowerCase()==='activated'&&(!p.attributes?.State||String(p.attributes.State).toLowerCase()==='published')&&String(p.attributes?.GarmentCut||'').toLowerCase()!=='kids');
         const wanted=colors.map(clean);
         const matches=adult.filter(p=>catalog==='mugs'||!wanted.length||wanted.some(color=>clean(p.attributes?.GarmentColor)===color||(colorEquivalences[color]||[]).includes(clean(p.attributes?.GarmentColor))));
-        const candidate=matches[0]||adult[0]||null;
+        const candidate=matches.find(p=>(p.supportedCountries||[]).includes('EC'))||matches[0]||adult.find(p=>(p.supportedCountries||[]).includes('EC'))||adult[0]||null;
         const colorChecked=colors.length===1&&candidate&&(catalog==='mugs'||clean(candidate.attributes?.GarmentColor)===wanted[0]||(colorEquivalences[wanted[0]]||[]).includes(clean(candidate.attributes?.GarmentColor)));
         const ecuadorVerified=!!candidate&&(candidate.supportedCountries||[]).includes('EC');
         const eligible=!!candidate&&colorChecked&&ecuadorVerified;
         let reason=!catalog?'Categoría todavía no compatible con la búsqueda automática.':
-          !adult.length?'Gelato no devolvió variantes adultas activas en esta búsqueda.':
+          catalogErrors[catalog]?'Error al consultar Gelato: '+catalogErrors[catalog]:
+          !available.length?'Gelato no devolvió productos en las páginas consultadas.':
+          !adult.length?'Se consultaron '+available.length+' modelos, pero ninguno cumple los filtros de activación y corte adulto.':
           !colors.length?'Falta seleccionar los colores del diseño.':
           colors.length>1?'Tiene varios colores: se deben asociar individualmente.':
           !colorChecked?'No se confirmó coincidencia del color solicitado.':
@@ -229,7 +231,7 @@
         }
         bulkResults.append(line);
       }
-      bulkStatus.textContent='Análisis de hasta 500 modelos por categoría terminado. '+proposals.length+' recomendaciones; '+(items.length-proposals.length)+' fichas requieren revisión. Ninguna aprobación se ha guardado aún.';
+      bulkStatus.textContent='Consulta Gelato: '+Object.entries(cache).map(([tipo,modelos])=>tipo+' '+modelos.length+' modelos'+(catalogErrors[tipo]?' (error: '+catalogErrors[tipo]+')':'')).join(' · ')+'. Análisis terminado. '+proposals.length+' recomendaciones; '+(items.length-proposals.length)+' fichas requieren revisión. Ninguna aprobación se ha guardado aún.';
       bulkApprove.disabled=proposals.length===0;
     }catch(e){bulkStatus.textContent='No se pudo completar el análisis: '+e.message}
     finally{bulkReview.disabled=false}
