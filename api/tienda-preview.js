@@ -407,7 +407,7 @@ module.exports=async function handler(req,res){
   try{
    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9500);
    let upstream;
-   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({attributeFilters:{ProductStatus:['activated'],State:['published']},limit:100,offset:0}),signal:controller.signal});}
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({limit:100,offset}),signal:controller.signal});}
    finally{clearTimeout(timer);}
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
