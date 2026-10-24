@@ -512,6 +512,44 @@
       ids.forEach((id,i)=>{const opt=document.createElement('option');opt.value=id;opt.textContent=({ 'SDL-NEW-1791835993474996':'Azul Nocturno', 'SDL-NEW-1791836652799947':'Blanco Lunar, Dorado Arena, Gris Oscuro, Gris Plata y Verde Oliva' }[id]||'Versión '+(i+1));selector.append(opt)});
       row.append(selector);area.insertBefore(row,area.firstChild);
     }
+    const colorChoice=document.createElement('label');colorChoice.textContent='Color comercial de esta camiseta ';
+    const shirtColor=document.createElement('select');shirtColor.name='gelato_store_color';
+    shirtColor.style.cssText='display:block;width:100%;max-width:100%;box-sizing:border-box;padding:7px;margin:5px 0 12px';
+    colorChoice.append(shirtColor);
+    area.insertBefore(colorChoice,area.querySelector('[data-gelato-catalog]').parentElement);
+    const storeColors={
+      'SDL-NEW-1791835993474996':['Azul Nocturno'],
+      'SDL-NEW-1791836652799947':['Blanco Lunar','Dorado Arena','Gris Oscuro','Gris Plata','Verde Oliva']
+    };
+    const targetChoice=form.querySelector('[name="gelato_target_id"]');
+    const fillShirtColors=()=>{
+      shirtColor.replaceChildren();
+      const records=targetChoice?.value?[targetChoice.value]:ids;
+      for(const id of records){for(const name of storeColors[id]||[]){
+       const opt=document.createElement('option');opt.value=name;opt.textContent=name;opt.dataset.target=id;shirtColor.append(opt);
+      }}
+      if(!shirtColor.options.length){const opt=document.createElement('option');opt.value='';opt.textContent='Sin colores identificados';shirtColor.append(opt)}
+    };
+    targetChoice?.addEventListener('change',fillShirtColors);fillShirtColors();
+    const statusGrid=document.createElement('div');statusGrid.style.cssText='margin:12px 0;padding:10px;border:1px solid #c5d4df;border-radius:8px;font-size:12px;line-height:1.8';
+    statusGrid.textContent='Comprobando el estado de los colores…';area.append(statusGrid);
+    fetch('/api/tienda-preview?action=gelato_color_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
+      if(!data.ok)throw Error('status');
+      const config=data.configs||[];statusGrid.replaceChildren();
+      for(const id of ids)for(const name of storeColors[id]||[]){
+       const match=config.find(c=>c.product_id===id&&c.store_color===name);
+       const line=document.createElement('div');
+       line.textContent=name+' — '+(match?'Configuración guardada ('+match.gelato_color+', '+(match.sizes||[]).join('/')+'). Pendiente de validación':'Sin configurar');
+       statusGrid.append(line);
+      }
+    }).catch(()=>{statusGrid.textContent='No se pudo cargar el estado. Tus diseños siguen guardados.'});
+    form.addEventListener('submit',()=>{
+      const field=form.querySelector('[name="gelato_store_color"]');
+      if(field&&field.value&&targetChoice){
+       const option=field.selectedOptions[0];
+       if(option?.dataset.target)targetChoice.value=option.dataset.target;
+      }
+    });
     const selectedCategory=String(form.closest('.sdl-reg-card')?.querySelector('.sdl-reg-content > p')?.textContent||'');
     const catalog=area.querySelector('[data-gelato-catalog]'),color=area.querySelector('[data-gelato-color]'),sizes=area.querySelector('[data-gelato-sizes]'),status=area.querySelector('[data-gelato-state]');
     if(selectedCategory.includes('Camisetas'))catalog.value='t-shirts';else if(selectedCategory.includes('Sudaderas'))catalog.value='sweatshirts';else if(selectedCategory.includes('Tazas'))catalog.value='mugs';
