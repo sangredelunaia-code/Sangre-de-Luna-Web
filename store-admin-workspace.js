@@ -142,6 +142,45 @@
     }catch(e){out.textContent='No se pudo consultar la categoría. Verifica la sesión e inténtalo otra vez.'}
     finally{button.disabled=false}
   });
+  // Vinculación persistente: la primera recomendación requiere aprobación explícita.
+  const linkPanel=document.createElement('section');
+  linkPanel.style.cssText='margin-top:20px;padding:18px;border:1px solid #b5904c;border-radius:12px;background:#f3f6f9';
+  linkPanel.innerHTML='<h3 style="margin:0 0 8px">Vincular diseños existentes con Gelato</h3><p>Selecciona un diseño. Se recomienda la primera variante adulta activada con color compatible; debes aprobarla antes de guardarla. No se generan pedidos.</p><select id="sdl-link-item" style="max-width:100%;padding:10px"></select> <button id="sdl-link-find" type="button" style="padding:10px 12px;background:#132d44;color:white;border:0;border-radius:8px">Recomendar modelo</button><div id="sdl-link-output" role="status" style="margin-top:14px"></div>';
+  gelatoPanel.append(linkPanel);
+  const itemSelect=linkPanel.querySelector('#sdl-link-item'),linkOutput=linkPanel.querySelector('#sdl-link-output');
+  let linkItems=[];
+  async function loadLinkItems(){
+   try{
+    const r=await fetch('/api/tienda-preview?action=gelato_links',{credentials:'same-origin',cache:'no-store'}),d=await r.json();
+    if(!d.ok)throw Error(d.reason);
+    linkItems=d.items||[];itemSelect.replaceChildren();
+    linkItems.forEach(p=>{const opt=document.createElement('option');opt.value=p.id;const linked=(d.links||[]).find(l=>l.product_id===p.id);opt.textContent=(linked?'✓ ':'○ ')+p.title+' — '+p.category+(linked?' (vinculado)':'');itemSelect.append(opt)});
+    linkOutput.textContent=(d.links||[]).length+' de '+linkItems.length+' productos personalizados con un modelo aprobado. Impresión y envíos siguen pendientes de validación.';
+   }catch(e){linkOutput.textContent='No se pudo consultar la vinculación guardada.'}
+  }
+  loadLinkItems();
+  linkPanel.querySelector('#sdl-link-find').addEventListener('click',async()=>{
+   const item=linkItems.find(p=>p.id===itemSelect.value),catalog={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'}[item?.category];
+   linkOutput.replaceChildren();
+   if(!item||!catalog){linkOutput.textContent='Esta categoría aún requiere revisión manual de modelos.';return;}
+   if(item.colors.length!==1){linkOutput.textContent='Para vincular un modelo exacto, el producto debe tener un solo color seleccionado. Colores registrados: '+(item.colors.join(', ')||'ninguno')+'. Conservamos las variantes sin modificarlas.';return;}
+   const btn=linkPanel.querySelector('#sdl-link-find');btn.disabled=true;linkOutput.textContent='Buscando variantes compatibles en Gelato…';
+   try{
+    const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+encodeURIComponent(catalog),{credentials:'same-origin',cache:'no-store'});
+    const data=await response.json();if(!data.ok)throw Error(data.reason);
+    const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+    const aliases={blancolunar:['white'],grisplata:['sportgrey','ash','heathergrey'],grisoscuro:['darkheather','charcoal'],azulnocturno:['navy'],verdeoliva:['militarygreen','olive'],doradoarena:['sand']};
+    const wanted=normalize(item.colors[0]);
+    const candidate=(data.products||[]).find(p=>{const a=p.attributes||{},color=normalize(a.GarmentColor);return p.uid&&String(a.ProductStatus||'').toLowerCase()==='activated'&&String(a.State||'').toLowerCase()==='published'&&String(a.GarmentCut||'').toLowerCase()!=='kids'&&(catalog==='mugs'||color===wanted||(aliases[wanted]||[]).includes(color))});
+    if(!candidate){linkOutput.textContent='No se encontró una variante adulta, activa y de color coincidente en los primeros 30 resultados. No se aprobará ningún producto incorrecto.';return;}
+    linkOutput.replaceChildren();
+    const description=document.createElement('p');description.textContent='Modelo recomendado: '+candidate.uid+' · color: '+(candidate.attributes.GarmentColor||'no aplica')+' · talla: '+(candidate.attributes.GarmentSize||'no aplica');linkOutput.append(description);
+    const approve=document.createElement('button');approve.type='button';approve.textContent='Aprobar y guardar esta vinculación';approve.style.cssText='padding:10px 16px;border-radius:8px;background:#153650;color:white;border:0;cursor:pointer';
+    approve.onclick=async()=>{approve.disabled=true;try{const res=await fetch('/api/tienda-preview?action=approve_gelato_link',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:item.id,catalog,uid:candidate.uid})});const result=await res.json();linkOutput.textContent=result.ok?'✓ Identificador de Gelato guardado en Supabase. Impresión, costos y envíos pendientes; compras desactivadas.':'No se aprobó: '+(result.reason||res.status);if(result.ok)await loadLinkItems();}catch(e){linkOutput.textContent='No fue posible guardar la vinculación.'}};
+    linkOutput.append(approve);
+   }catch(e){linkOutput.textContent='Consulta no completada: '+e.message}
+   finally{btn.disabled=false}
+  });
   gelatoPanel.querySelector('#sdl-verify-gelato').addEventListener('click',async()=>{
     const button=gelatoPanel.querySelector('#sdl-verify-gelato'),output=gelatoPanel.querySelector('#sdl-gelato-result');
     button.disabled=true;output.textContent='Consultando a Gelato…';
