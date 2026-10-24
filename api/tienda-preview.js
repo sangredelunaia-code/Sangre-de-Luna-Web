@@ -298,8 +298,10 @@ module.exports=async function handler(req,res){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
   try{
-   const [items,links]=await Promise.all([rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET}),rpc('sdl_store_gelato_link_list',{p_secret:SESSION_SECRET})]);
-   return res.end(JSON.stringify({ok:true,items:(items||[]).map(p=>({id:p.id,title:p.title,category:p.category,collection:p.collection,colors:Array.isArray(p.variants)?p.variants:[]})),links:links||[],ordersEnabled:false}));
+   const items=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET});
+   let links=[],linksAvailable=true;
+   try{links=await rpc('sdl_store_gelato_link_list',{p_secret:SESSION_SECRET});}catch(error){linksAvailable=false;}
+   return res.end(JSON.stringify({ok:true,items:(items||[]).map(p=>({id:p.id,title:p.title,category:p.category,collection:p.collection,colors:Array.isArray(p.variants)?p.variants:[]})),links:links||[],linksAvailable,ordersEnabled:false}));
   }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'db_unavailable'}));}
  }
  if(req.method==='POST'&&req.query&&req.query.action==='approve_gelato_link'){
