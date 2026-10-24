@@ -117,6 +117,24 @@
     finally{catalogButton.disabled=false}
   });
 
+  const modelExplorer=document.createElement('div');
+  modelExplorer.style.cssText='margin-top:20px;padding:15px;border:1px solid #d4dce5;border-radius:10px;background:#fff';
+  modelExplorer.innerHTML='<h4 style="margin:0 0 8px">Explorar modelos físicos de Gelato</h4><p style="margin:0 0 12px">Selecciona una categoría para consultar los primeros 30 modelos. No cambia productos ni crea pedidos.</p><label for="sdl-gelato-category">Catálogo</label> <select id="sdl-gelato-category" style="padding:8px;max-width:100%"><option value="t-shirts">Camisetas (T-shirts)</option><option value="sweatshirts">Sudaderas (Sweatshirts)</option><option value="mugs">Tazas (Mugs)</option></select> <button id="sdl-gelato-search" type="button" style="padding:9px 14px;background:#09243a;color:white;border:0;border-radius:7px;cursor:pointer">Consultar modelos</button><div id="sdl-gelato-model-results" role="status" aria-live="polite" style="margin-top:12px"></div>';
+  gelatoPanel.append(modelExplorer);
+  modelExplorer.querySelector('#sdl-gelato-search').addEventListener('click',async()=>{
+    const button=modelExplorer.querySelector('#sdl-gelato-search'),out=modelExplorer.querySelector('#sdl-gelato-model-results'),catalog=modelExplorer.querySelector('#sdl-gelato-category').value;
+    button.disabled=true;out.textContent='Buscando modelos reales de Gelato…';
+    try{
+      const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+encodeURIComponent(catalog),{credentials:'same-origin',cache:'no-store'});
+      const data=await response.json();
+      if(!data.ok){out.textContent='Consulta no completada: '+(data.reason||response.status)+'. No se cambió ningún producto.';return;}
+      out.textContent='Modelos recibidos: '+data.returned+' (primera página). Comprueba colores, tallas y disponibilidad antes de asociarlos.';
+      const list=document.createElement('ol');list.style.cssText='max-height:380px;overflow:auto;padding-left:22px';
+      (data.products||[]).forEach(p=>{const li=document.createElement('li');li.style.marginBottom='12px';const title=document.createElement('strong');title.textContent=p.uid;li.append(title);const meta=document.createElement('div');meta.textContent=Object.entries(p.attributes||{}).map(([key,value])=>key+': '+value).join(' · ');li.append(meta);list.append(li)});
+      out.append(list);
+    }catch(e){out.textContent='No se pudo consultar la categoría. Verifica la sesión e inténtalo otra vez.'}
+    finally{button.disabled=false}
+  });
   gelatoPanel.querySelector('#sdl-verify-gelato').addEventListener('click',async()=>{
     const button=gelatoPanel.querySelector('#sdl-verify-gelato'),output=gelatoPanel.querySelector('#sdl-gelato-result');
     button.disabled=true;output.textContent='Consultando a Gelato…';
