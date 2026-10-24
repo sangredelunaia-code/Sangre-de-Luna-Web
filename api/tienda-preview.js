@@ -294,6 +294,47 @@ module.exports=async function handler(req,res){
   try{const html=await catalogPage('productos');return respond(res,200,html.replaceAll('Borrador · pendiente de aprobación','Vista previa · compras desactivadas'));}
   catch(e){return respond(res,503,noticePage('No fue posible cargar la vista previa. Inténtalo nuevamente.'));}
  }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_links'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+  try{
+   const [items,links]=await Promise.all([rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET}),rpc('sdl_store_gelato_link_list',{p_secret:SESSION_SECRET})]);
+   return res.end(JSON.stringify({ok:true,items:(items||[]).map(p=>({id:p.id,title:p.title,category:p.category,collection:p.collection,colors:Array.isArray(p.variants)?p.variants:[]})),links:links||[],ordersEnabled:false}));
+  }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'db_unavailable'}));}
+ }
+ if(req.method==='POST'&&req.query&&req.query.action==='approve_gelato_link'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+  const source=String(req.headers.origin||'');
+  const expected='https://'+String(req.headers.host||'');
+  if(source!==expected){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'invalid_origin'}));}
+  let raw='';try{for await(const chunk of req){raw+=chunk.toString();if(raw.length>5000)break;}}catch(e){}
+  if(raw.length>5000){res.statusCode=413;return res.end(JSON.stringify({ok:false,reason:'too_large'}));}
+  let input;try{input=JSON.parse(raw)}catch(e){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'bad_request'}));}
+  const id=String(input.id||''),catalog=String(input.catalog||''),uid=String(input.uid||'');
+  if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||!['t-shirts','sweatshirts','mugs'].includes(catalog)||uid.length<10||uid.length>250){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_product'}));}
+  try{
+   const items=await rpc('sdl_store_custom_list',{p_secret:SESSION_SECRET}),item=items.find(x=>x.id===id);
+   const category={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'}[item?.category];
+   if(!item||category!==catalog){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'category_mismatch'}));}
+   const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),9000);
+   let response;
+   try{response=await fetch('https://product.gelatoapis.com/v3/catalogs/'+catalog+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json'},body:JSON.stringify({limit:100,offset:0}),signal:ctl.signal});}finally{clearTimeout(timeout);}
+   if(!response.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+response.status}));
+   const payload=await response.json(),product=(payload.products||[]).find(p=>p.productUid===uid);
+   if(!product)return res.end(JSON.stringify({ok:false,reason:'uid_not_verified_in_page'}));
+   const a=product.attributes||{},status=String(a.ProductStatus||'').toLowerCase(),state=String(a.State||'').toLowerCase(),cut=String(a.GarmentCut||'').toLowerCase();
+   if(status!=='activated'||state!=='published'||cut==='kids')return res.end(JSON.stringify({ok:false,reason:'inactive_or_kids'}));
+   const colors=Array.isArray(item.variants)?item.variants:[];
+   if(colors.length!==1)return res.end(JSON.stringify({ok:false,reason:'requires_one_selected_color_variant'}));
+   const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+   const color=normalize(colors[0]),providerColor=normalize(a.GarmentColor);
+   const alternatives={'blancolunar':['white'],'grisplata':['sportgrey','ash','heathergrey'],'grisoscuro':['darkheather','charcoal'],'azulnocturno':['navy'],'verdeoliva':['militarygreen','olive'],'doradoarena':['sand']};
+   if(catalog!=='mugs'&&(!providerColor||!(color===providerColor||(alternatives[color]||[]).includes(providerColor))))return res.end(JSON.stringify({ok:false,reason:'color_requires_review',providerColor:a.GarmentColor||''}));
+   const ok=await rpc('sdl_store_gelato_link_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_uid:uid,p_attributes:a});
+   return res.end(JSON.stringify({ok:!!ok,productId:id,productUid:uid,status:'mapping_approved_print_and_shipping_pending',ordersEnabled:false}));
+  }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'verification_unavailable'}));}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='public_catalog'){
   if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
   res.setHeader('Content-Type','application/json; charset=utf-8');
