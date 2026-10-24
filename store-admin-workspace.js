@@ -607,6 +607,27 @@
       }
     });
   }
+  // Logo oficial para etiqueta interior: archivo independiente de las fotos del producto.
+  const labelLogoPanel=document.createElement('section');
+  labelLogoPanel.style.cssText='box-sizing:border-box;max-width:100%;padding:14px;border:1px solid #bed1df;border-radius:10px;margin:14px 0;background:#f5f8fc;color:#16314c;overflow:hidden';
+  labelLogoPanel.innerHTML='<h3 style="margin:0 0 8px">Logotipo para etiqueta interior</h3><p style="margin:0 0 8px">Carga el logotipo de Sangre de Luna que irá dentro del cuello. Se conservará como archivo privado para revisar su tamaño y las especificaciones de impresión de Gelato. No se envía todavía a fabricar.</p><label style="display:block">Archivo PNG, JPG o WebP (máximo 2 MB)<input type="file" accept="image/png,image/jpeg,image/webp" data-neck-logo style="display:block;width:100%;max-width:100%;box-sizing:border-box;margin-top:8px"></label><img data-neck-preview alt="Vista previa del logotipo de la etiqueta" style="display:block;max-width:180px;max-height:140px;object-fit:contain;margin-top:12px" hidden><button type="button" data-neck-save style="margin-top:10px;padding:9px 14px;background:#173a56;color:white;border:0;border-radius:7px">Guardar logotipo de etiqueta</button><p data-neck-status role="status" style="font-size:13px">Pendiente de cargar o verificar.</p>';
+  const logoFile=labelLogoPanel.querySelector('[data-neck-logo]'),logoPreview=labelLogoPanel.querySelector('[data-neck-preview]'),logoStatus=labelLogoPanel.querySelector('[data-neck-status]');
+  logoPreview.src='/api/tienda-preview?action=label_logo';
+  logoPreview.onload=()=>{logoPreview.hidden=false;logoStatus.textContent='Logotipo guardado anteriormente. Puedes reemplazarlo.'};
+  logoPreview.onerror=()=>{logoPreview.hidden=true};
+  labelLogoPanel.querySelector('[data-neck-save]').addEventListener('click',async()=>{
+    const file=logoFile.files?.[0];if(!file){logoStatus.textContent='Selecciona primero el archivo del logotipo.';return}
+    if(file.size>2000000||!['image/png','image/jpeg','image/webp'].includes(file.type)){logoStatus.textContent='Archivo no válido: utiliza PNG, JPG o WebP de hasta 2 MB.';return}
+    const button=labelLogoPanel.querySelector('[data-neck-save]');button.disabled=true;logoStatus.textContent='Guardando el logotipo de forma privada…';
+    try{
+      const image=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=reject;reader.readAsDataURL(file)});
+      const params=new URLSearchParams({action:'upload_label_logo',mime:file.type,image});
+      const response=await fetch('/api/tienda-preview',{method:'POST',body:params,credentials:'same-origin',headers:{Accept:'application/json'}});
+      const data=await response.json();if(!response.ok||!data.ok)throw Error(data.reason||'No se pudo guardar');
+      logoPreview.src='/api/tienda-preview?action=label_logo&v='+Date.now();logoStatus.textContent='Logotipo guardado. Pendiente de validar con Gelato; no se ha enviado a fabricar.';
+    }catch(e){logoStatus.textContent='No se pudo guardar: '+e.message}finally{button.disabled=false}
+  });
+  sections['productos-registrados']?.append(labelLogoPanel);
   function show(id){
    if(!sections[id])id='admin-resumen';
    Object.entries(sections).forEach(([key,el])=>{const visible=key===id;el.classList.toggle('sdl-v2-visible',visible);if(el.tagName==='DETAILS')el.open=visible});
