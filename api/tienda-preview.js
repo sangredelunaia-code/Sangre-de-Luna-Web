@@ -308,7 +308,7 @@ module.exports=async function handler(req,res){
   const source=String(req.headers.origin||'');
   const expected='https://'+String(req.headers.host||'');
   if(source!==expected){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'invalid_origin'}));}
-  let raw='';try{for await(const chunk of req){raw+=chunk.toString();if(raw.length>5000)break;}}catch(e){}
+  let raw='';try{if(typeof req.body==='string')raw=req.body;else if(Buffer.isBuffer(req.body))raw=req.body.toString('utf8');else if(req.body&&typeof req.body==='object')raw=JSON.stringify(req.body);else for await(const chunk of req){raw+=chunk.toString();if(raw.length>5000)break;}}catch(e){}
   if(raw.length>5000){res.statusCode=413;return res.end(JSON.stringify({ok:false,reason:'too_large'}));}
   let input;try{input=JSON.parse(raw)}catch(e){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'bad_request'}));}
   const id=String(input.id||''),catalog=String(input.catalog||''),uid=String(input.uid||'');
