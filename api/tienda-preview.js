@@ -6,7 +6,7 @@ const MAX_AGE = 8 * 60 * 60;
 const HASH = process.env.SDL_STORE_PREVIEW_KEY_SHA256 || '';
 const SESSION_SECRET = process.env.SDL_STORE_PREVIEW_SESSION_SECRET || '';
 const DB_URL=process.env.SDL_STORE_SUPABASE_URL||'',DB_KEY=process.env.SDL_STORE_SUPABASE_PUBLISHABLE_KEY||'';
-async function rpc(name,payload){const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),6000);try{const r=await fetch(DB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:DB_KEY,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctl.signal});if(!r.ok)throw Error('Credential service unavailable');return await r.json()}finally{clearTimeout(timeout)}}
+async function rpc(name,payload,timeoutMs=6000){const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),timeoutMs);try{const r=await fetch(DB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:DB_KEY,'Content-Type':'application/json'},body:JSON.stringify(payload),signal:ctl.signal});if(!r.ok)throw Error('Credential service unavailable');return await r.json()}finally{clearTimeout(timeout)}}
 function rateKey(req){return crypto.createHmac('sha256',SESSION_SECRET).update(String(req.headers['x-forwarded-for']||req.headers['x-real-ip']||'unknown').split(',')[0].trim()).digest('hex')}
 
 function escapeHtml(s) {
@@ -464,13 +464,13 @@ async function saveVerifiedGelatoVariants(id,category,raw){
  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
  const id=String(req.query.id||''),color=String(req.query.color||'');
  if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||color.length>60){res.statusCode=400;return res.end();}
- try{const rows=await rpc('sdl_store_color_photo_get',{p_secret:SESSION_SECRET,p_id:id,p_color:color});if(!rows||!rows[0]){res.statusCode=404;return res.end();}const bytes=Buffer.from(rows[0].base64,'base64');res.setHeader('Content-Type',rows[0].mime);res.setHeader('Content-Length',String(bytes.length));return res.end(bytes);}catch(e){res.statusCode=503;return res.end();}
+ try{const rows=await rpc('sdl_store_color_photo_get',{p_secret:SESSION_SECRET,p_id:id,p_color:color},18000);if(!rows||!rows[0]){res.statusCode=404;return res.end();}const bytes=Buffer.from(rows[0].base64,'base64');res.setHeader('Content-Type',rows[0].mime);res.setHeader('Content-Length',String(bytes.length));return res.end(bytes);}catch(e){res.statusCode=503;return res.end();}
 }
  if(req.method==='GET'&&req.query&&req.query.action==='image'){
   if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
   const sku=String(req.query.sku||'');
   if(!/^SDL-(ORI|PER)-[0-9]{3}$/.test(sku)&&!/^SDL-NEW-[0-9]{8,16}$/.test(sku)){res.statusCode=400;return res.end();}
-  try{const custom=/^SDL-NEW-[0-9]{8,16}$/.test(sku);const image=await rpc(custom?'sdl_store_custom_image_get':/^SDL-ORI-9[0-9]{2}$/.test(sku)?'sdl_store_variant_image_get':'sdl_store_image_get',custom?{p_secret:SESSION_SECRET,p_id:sku}:{p_secret:SESSION_SECRET,p_sku:sku});
+  try{const custom=/^SDL-NEW-[0-9]{8,16}$/.test(sku);const image=await rpc(custom?'sdl_store_custom_image_get':/^SDL-ORI-9[0-9]{2}$/.test(sku)?'sdl_store_variant_image_get':'sdl_store_image_get',custom?{p_secret:SESSION_SECRET,p_id:sku}:{p_secret:SESSION_SECRET,p_sku:sku},18000);
     if(!image||!image[0]){res.statusCode=404;return res.end();}
     const bytes=Buffer.from(image[0].base64,'base64');
     res.setHeader('Content-Type',image[0].mime);res.setHeader('Content-Length',String(bytes.length));return res.end(bytes);
