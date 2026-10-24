@@ -486,6 +486,22 @@
   pilot.innerHTML='<h3 style="margin:0 0 6px">Producto de referencia · Origen de la Manada — Azul Nocturno</h3><p style="margin:0 0 10px">Continuaremos con Gelato y sus áreas de impresión verificables. Todos los modelos seleccionables requieren etiqueta interior.</p><ol style="padding-left:22px;margin:0 0 12px"><li><b>Proveedor AOP:</b> por confirmar compatibilidad y envíos a Ecuador</li><li><b>Plantilla de fabricación:</b> pendiente de obtener del proveedor elegido</li><li><b>Arte imprimible:</b> pendiente de preparar sobre esa plantilla; las fotos actuales son mockups</li><li><b>Prueba y costos:</b> pendiente de validar</li></ol><p style="font-weight:700;margin:0 0 9px">Estado: configuración de Gelato pendiente de validación</p><a href="https://www.printful.com/es/print-on-demand" target="_blank" rel="noopener" style="display:inline-block;padding:10px 13px;border-radius:7px;background:#183c58;color:white;text-decoration:none">Consultar proveedor AOP</a><p style="font-size:12px;margin:10px 0 0">Usaremos exclusivamente impresión por zonas de Gelato. La selección no activa pedidos ni cobros. No se crean pedidos ni cobros.</p>';
   sections['productos-registrados'].prepend(pilot);
   const existingForms=Array.from(sections['productos-registrados'].querySelectorAll('form')).filter(form=>form.querySelector('[name="action"][value="edit_registered_product"]'));
+  // Modo piloto seguro: las fichas restantes siguen guardadas y accesibles desde el respaldo desplegable.
+  const pilotId='SDL-NEW-1791835993474996';
+  const pilotForm=existingForms.find(f=>(f.querySelector('[name="ids"]')?.value||'').split(',').includes(pilotId));
+  if(pilotForm){
+    const backup=document.createElement('details');backup.id='sdl-other-products-backup';
+    backup.style.cssText='margin:18px 0;border:1px solid #bfd0dd;border-radius:10px;padding:12px;max-width:100%;box-sizing:border-box';
+    const summary=document.createElement('summary');summary.textContent='Otros productos guardados · Mostrar solo cuando los necesite';
+    summary.style.cssText='cursor:pointer;font-weight:650;color:#264966';backup.append(summary);
+    const nonPilot=existingForms.filter(f=>f!==pilotForm);
+    nonPilot.forEach(f=>{const card=f.closest('.sdl-reg-card')||f;backup.append(card)});
+    const pilotCard=pilotForm.closest('.sdl-reg-card')||pilotForm;
+    pilotCard.before(backup);
+    pilotCard.style.border='2px solid #547e9b';
+    const badge=document.createElement('p');badge.textContent='PRODUCTO PILOTO · configurar primero este producto';badge.style.cssText='font-weight:750;color:#164362;padding:9px;background:#e6f3fb;border-radius:8px';
+    pilotCard.prepend(badge);
+  }
   for(const form of existingForms){
     const area=document.createElement('fieldset');area.style.cssText='display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:12px;margin:12px 0';
     area.innerHTML='<legend>Configurar fabricación en Gelato</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
