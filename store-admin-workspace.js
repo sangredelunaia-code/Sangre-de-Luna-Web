@@ -395,7 +395,7 @@
       if(!catalogUid){message.textContent='Selecciona primero la categoría.';return}
       const index=requestVersion;const btn=searchBox.querySelector('button');btn.disabled=true;message.textContent='Buscando '+chosen+' en Gelato…';
       try{
-        const batches=await Promise.all([0,100,200].map(async offset=>{
+        const batches=await Promise.all(Array.from({length:10},(_,i)=>i*100).map(async offset=>{
           const response=await fetch('/api/tienda-preview?action=gelato_models&adult=1&catalog='+encodeURIComponent(catalogUid)+'&color='+encodeURIComponent(chosen)+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});
           const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');return data.products||[];
         }));
@@ -404,7 +404,7 @@
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(colorSelect.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;colorSelect.append(o)}}
-        if(colors.length){colorSelect.disabled=false;colorSelect.value=colors[0];colorSelect.dispatchEvent(new Event('change'));}
+        if(colors.length){colorSelect.disabled=false;colorSelect.value=colors[0];modelSelect.value='';colorSelect.dispatchEvent(new Event('change'));}
         const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
         message.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){message.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
@@ -514,7 +514,7 @@
       if(!catalogUid){status.textContent='Selecciona primero la categoría.';return}
       const index=version;const btn=searchBox.querySelector('button');btn.disabled=true;status.textContent='Buscando '+chosen+' en Gelato…';
       try{
-        const batches=await Promise.all([0,100,200].map(async offset=>{
+        const batches=await Promise.all(Array.from({length:10},(_,i)=>i*100).map(async offset=>{
           const response=await fetch('/api/tienda-preview?action=gelato_models&adult=1&catalog='+encodeURIComponent(catalogUid)+'&color='+encodeURIComponent(chosen)+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});
           const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');return data.products||[];
         }));
@@ -523,7 +523,7 @@
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(color.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)}}
-        if(colors.length){color.disabled=false;color.value=colors[0];color.dispatchEvent(new Event('change'));}
+        if(colors.length){color.disabled=false;color.value=colors[0];modelSelect.value='';color.dispatchEvent(new Event('change'));}
         const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
         status.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){status.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
@@ -531,7 +531,7 @@
     color.addEventListener('change',()=>{
       sizes.replaceChildren();
       const values=[...new Set(models.filter(compatible).map(p=>p.attributes?.GarmentSize).filter(Boolean))];
-      if(!values.length){sizes.textContent='No se encontraron tallas para este color.';return}
+      if(!values.length){sizes.textContent='No se encontraron tallas en el modelo consultado. Prueba otro modelo de fabricación.';return}
       values.forEach(v=>{const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=v;label.append(input,document.createTextNode(v));sizes.append(label)});
     });
     form.addEventListener('submit',()=>{
