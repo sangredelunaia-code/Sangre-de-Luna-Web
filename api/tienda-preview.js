@@ -317,6 +317,11 @@ async function saveVerifiedGelatoVariants(id,category,raw){
  const saved=await rpc('sdl_store_gelato_variants_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_variants:approved});
  return {saved:Number(saved)||0,requested:entries.length,reason:'pending_review'};
 }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_print_status'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false}));}
+  try{const files=await rpc('sdl_store_print_files_status',{p_secret:SESSION_SECRET});return res.end(JSON.stringify({ok:true,files:files||[],sentToGelato:false}));}catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'unavailable'}))}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='gelato_color_status'){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false}));}
@@ -510,6 +515,13 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    else for await (const part of req) {data+=part.toString('utf8');if(data.length>7200000)break;}
    if(data.length>7200000) return respond(res,413,loginPage(true));
    const p=new URLSearchParams(data);
+   if(p.get('action')==='upload_gelato_print_file'){
+    res.setHeader('Content-Type','application/json; charset=utf-8');
+    if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+    const id=p.get('id')||'',area=p.get('area')||'',mime=p.get('mime')||'',image=p.get('image')||'';
+    if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||image.length>2700000){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_file'}));}
+    try{const ok=await rpc('sdl_store_print_file_save',{p_secret:SESSION_SECRET,p_id:id,p_area:area,p_mime:mime,p_base64:image},15000);return res.end(JSON.stringify({ok:!!ok,awaitingPrintValidation:true,providerSent:false}));}catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'storage_unavailable'}))}
+   }
    if(p.get('action')==='upload_label_logo'){
     res.setHeader('Content-Type','application/json; charset=utf-8');
     if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
