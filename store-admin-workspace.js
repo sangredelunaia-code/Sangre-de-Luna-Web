@@ -147,6 +147,44 @@
     }catch(error){output.textContent='No se pudo completar la comprobación. Revisa la conexión y vuelve a intentarlo.'}
     finally{button.disabled=false}
   });
+  // Recomendación conservadora: solo variantes con UID y atributos verificables.
+  const creationSection=sections['crear-producto'];
+  const createForm=creationSection.querySelector('form[action]');
+  if(createForm){
+    const recommendation=document.createElement('section');
+    recommendation.id='sdl-auto-gelato-match';
+    recommendation.style.cssText='grid-column:1/-1;padding:18px;border:1px solid #b5904c;border-radius:12px;background:#edf3f8;color:#122942';
+    recommendation.innerHTML='<h3 style="margin:0 0 6px">Gelato · recomendación automática</h3><p style="margin:0 0 12px">Elige una categoría, color y talla en la ficha. Se buscan modelos reales de Gelato; la primera recomendación requiere aprobación. No se guarda aún ninguna vinculación comercial ni se generan pedidos.</p><button type="button" id="sdl-auto-find" style="padding:10px 15px;background:#09243a;color:white;border:0;border-radius:7px;cursor:pointer">Buscar modelo compatible</button><div id="sdl-auto-results" role="status" aria-live="polite" style="margin-top:12px"></div>';
+    createForm.append(recommendation);
+    const categoryMap={'camisetas':'t-shirts','sudaderas':'sweatshirts','tazas':'mugs'};
+    const findInputs=()=>({category:createForm.querySelector('[name="category"]')?.value||'',color:createForm.querySelector('[name="color"]')?.value||'',size:createForm.querySelector('[name="size"]')?.value||''});
+    const btn=recommendation.querySelector('#sdl-auto-find'),result=recommendation.querySelector('#sdl-auto-results');
+    const recommendationState={approved:null};
+    createForm.addEventListener('change',()=>{recommendationState.approved=null;result.textContent='La ficha cambió. Comprueba de nuevo la compatibilidad antes de aprobar un modelo.'});
+    btn.addEventListener('click',async()=>{
+      const info=findInputs(),catalog=categoryMap[String(info.category).toLowerCase()];
+      recommendationState.approved=null;
+      if(!catalog){result.textContent='Aún no hay búsqueda automática disponible para esta categoría. No se asociará ningún modelo.';return;}
+      btn.disabled=true;result.textContent='Consultando modelos en Gelato…';
+      try{
+        const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+encodeURIComponent(catalog),{credentials:'same-origin',cache:'no-store'});
+        const data=await response.json();
+        if(!data.ok){result.textContent='Gelato no pudo verificarse: '+(data.reason||response.status);return;}
+        const desired=[info.color,info.size].map(x=>String(x).trim().toLowerCase()).filter(Boolean);
+        if(!desired.length){result.textContent='Selecciona primero el color y la talla. No se puede certificar una variante sin esos datos.';return;}
+        const candidates=(data.products||[]).filter(p=>p.uid&&desired.every(value=>Object.values(p.attributes||{}).some(attribute=>String(attribute).toLowerCase()===value)));
+        if(!candidates.length){result.textContent='Ningún modelo de la primera página coincide exactamente con los atributos elegidos. No se hizo ninguna vinculación. Ajusta la selección o comprueba el catálogo completo.';return;}
+        const model=candidates[0];
+        result.replaceChildren();
+        const title=document.createElement('p');title.textContent='Primera coincidencia exacta (pendiente de revisar impresión y envíos): '+model.uid;result.append(title);
+        const details=document.createElement('p');details.textContent=Object.entries(model.attributes||{}).map(([k,v])=>k+': '+v).join(' · ');result.append(details);
+        const approve=document.createElement('button');approve.type='button';approve.textContent='Aprobar esta recomendación para revisión';approve.style.cssText='padding:10px 14px;border:1px solid #b5904c;border-radius:7px;background:white;color:#102942;cursor:pointer';
+        approve.addEventListener('click',()=>{recommendationState.approved=model.uid;const note=document.createElement('p');note.textContent='✓ Recomendación revisada en esta sesión. Aún NO se guarda como vínculo de producción ni se publica el artículo.';result.append(note);approve.disabled=true});
+        result.append(approve);
+      }catch(e){result.textContent='No fue posible consultar a Gelato. No se hizo ninguna vinculación.'}
+      finally{btn.disabled=false}
+    });
+  }
   function show(id){
    if(!sections[id])id='admin-resumen';
    Object.entries(sections).forEach(([key,el])=>{const visible=key===id;el.classList.toggle('sdl-v2-visible',visible);if(el.tagName==='DETAILS')el.open=visible});
