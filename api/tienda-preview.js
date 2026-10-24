@@ -291,7 +291,7 @@ module.exports=async function handler(req,res){
  // Vitrina pública de solo lectura. No checkout, pagos, carrito ni pedidos.
  if(req.method==='GET'&&req.query&&req.query.action==='private_showcase'){
   if(!(await isValidSession(req)))return respond(res,403,loginPage());
-  try{return respond(res,200,await catalogPage('productos'));}
+  try{const html=await catalogPage('productos');return respond(res,200,html.replaceAll('Borrador · pendiente de aprobación','Vista previa · compras desactivadas'));}
   catch(e){return respond(res,503,noticePage('No fue posible cargar la vista previa. Inténtalo nuevamente.'));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='public_catalog'){
