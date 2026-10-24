@@ -204,23 +204,27 @@
       }
       for(const item of items){
         const catalog=catalogs[item.category],colors=item.colors||[];
-        let reason='',candidate=null;
-        if(!catalog)reason='Categoría pendiente de validación.';
-        else if(colors.length!==1)reason=colors.length?'Tiene varios colores: deben configurarse por variante.':'No tiene un color definido.';
-        else {
-          const wanted=clean(colors[0]);
-          candidate=(cache[catalog]||[]).find(p=>{
-            const a=p.attributes||{},color=clean(a.GarmentColor);
-            return !!p.uid&&String(a.ProductStatus||'').toLowerCase()==='activated'&&String(a.State||'').toLowerCase()==='published'&&String(a.GarmentCut||'').toLowerCase()!=='kids'&&(p.supportedCountries||[]).includes('EC')&&(catalog==='mugs'||color===wanted||(colorEquivalences[wanted]||[]).includes(color));
-          });
-          if(!candidate)reason='No se encontró un modelo verificable en el primer lote de Gelato.';
-        }
+        const available=cache[catalog]||[];
+        const adult=available.filter(p=>p.uid&&String(p.attributes?.ProductStatus||'').toLowerCase()==='activated'&&String(p.attributes?.State||'').toLowerCase()==='published'&&String(p.attributes?.GarmentCut||'').toLowerCase()!=='kids');
+        const wanted=colors.map(clean);
+        const matches=adult.filter(p=>catalog==='mugs'||!wanted.length||wanted.some(color=>clean(p.attributes?.GarmentColor)===color||(colorEquivalences[color]||[]).includes(clean(p.attributes?.GarmentColor))));
+        const candidate=matches[0]||adult[0]||null;
+        const colorChecked=colors.length===1&&candidate&&(catalog==='mugs'||clean(candidate.attributes?.GarmentColor)===wanted[0]||(colorEquivalences[wanted[0]]||[]).includes(clean(candidate.attributes?.GarmentColor)));
+        const ecuadorVerified=!!candidate&&(candidate.supportedCountries||[]).includes('EC');
+        const eligible=!!candidate&&colorChecked&&ecuadorVerified;
+        let reason=!catalog?'Categoría todavía no compatible con la búsqueda automática.':
+          !adult.length?'Gelato no devolvió variantes adultas activas en esta búsqueda.':
+          !colors.length?'Falta seleccionar los colores del diseño.':
+          colors.length>1?'Tiene varios colores: se deben asociar individualmente.':
+          !colorChecked?'No se confirmó coincidencia del color solicitado.':
+          !ecuadorVerified?'Falta confirmar el envío a Ecuador para esta variante.':'';
         const line=document.createElement('div');line.style.cssText='padding:12px;margin:7px 0;border:1px solid #d1dae3;border-radius:9px';
         const name=document.createElement('strong');name.textContent=item.title+' · '+item.category;line.append(name);
-        const detail=document.createElement('p');detail.style.margin='5px 0';detail.textContent=candidate?'Modelo: '+candidate.uid+' · talla: '+(candidate.attributes.GarmentSize||'sin talla'):'Revisión necesaria: '+reason;line.append(detail);
-        if(candidate){
+        const detail=document.createElement('p');detail.style.margin='5px 0';detail.textContent=candidate?'Modelo de referencia: '+candidate.uid+' · color Gelato: '+(candidate.attributes?.GarmentColor||'sin dato')+' · talla: '+(candidate.attributes?.GarmentSize||'sin dato'):'Sin modelo de referencia para esta categoría';line.append(detail);
+        const info=document.createElement('p');info.style.margin='5px 0';info.textContent=eligible?'Coincidencia verificada para revisión y aprobación.':'Pendiente: '+reason;line.append(info);
+        if(eligible){
           const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=true;checkbox.setAttribute('aria-label','Aprobar recomendación para '+item.title);
-          const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:8px';label.append(checkbox,document.createTextNode('Incluir esta recomendación en la aprobación'));line.append(label);
+          const label=document.createElement('label');label.style.cssText='display:flex;align-items:center;gap:8px';label.append(checkbox,document.createTextNode('Incluir en la aprobación conjunta'));line.append(label);
           proposals.push({item,catalog,candidate,checkbox});
         }
         bulkResults.append(line);
