@@ -318,6 +318,22 @@ module.exports=async function handler(req,res){
    return res.end(JSON.stringify({ok:true,mode:'read_only',ordersEnabled:false,responseShape,responseFields:responseShape==='object'?Object.keys(payload).slice(0,12):[],totalCatalogs:catalogs.length,formatRecognized:Array.isArray(candidates),catalogs:catalogs.slice(0,80).map(c=>({uid:String(c.catalogUid||c.uid||'').slice(0,120),title:String(c.title||c.name||'').slice(0,120)}))}));
   }catch(err){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
  }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_models'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+  const catalog=String(req.query.catalog||'');
+  if(!/^[a-z0-9-]{2,80}$/.test(catalog)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_catalog'}));}
+  if(!process.env.GELATO_API_KEY)return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));
+  try{
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9500);
+   let upstream;
+   try{upstream=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog)+'/products:search',{method:'POST',headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({limit:30,offset:0}),signal:controller.signal});}
+   finally{clearTimeout(timer);}
+   if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
+   const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
+   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
+  }catch(e){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
  const slug=String(req.query.slug||'');const defaults={camisetas:'/assets/chris.webp',sudaderas:'/assets/hero.webp',tazas:'/assets/logo-oficial.png',posteres:'/assets/admin-ciudadela-bg.webp',gorras:'/assets/logo-oficial.png',libretas:'/assets/admin-ciudadela-bg.webp',stickers:'/assets/logo-oficial.png',llaveros:'/assets/hero.webp',bolsas:'/assets/logo-oficial.png'};
