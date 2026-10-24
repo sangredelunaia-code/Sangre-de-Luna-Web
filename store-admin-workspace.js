@@ -109,7 +109,7 @@
       const data=await response.json();
       if(!data.ok){catalogStatus.textContent='No se pudo consultar Gelato: '+(data.reason||response.status);return;}
       const list=data.catalogs||[];
-      catalogStatus.textContent='Gelato devuelve '+list.length+' catálogos (máximo 80). La disponibilidad de colores, tallas y envíos se verificará para cada producto; no se ha vinculado ningún SKU ni creado pedidos.';
+      catalogStatus.textContent=data.formatRecognized===false?'La API respondió correctamente, pero el formato de la respuesta no coincide con el esperado. Campos recibidos: '+(data.responseFields||[]).join(', ')+'. No se vinculó ningún producto.':data.totalCatalogs===0?'La API respondió correctamente y su lista de catálogos está vacía (0). Revisa la cuenta y permisos de la API con Gelato. No se vinculó ningún producto.':'Gelato devuelve '+data.totalCatalogs+' catálogos (mostrando máximo 80). Falta validar colores, tallas y envíos por producto. No se crearon pedidos.';
       const ul=document.createElement('ul');ul.style.cssText='max-height:220px;overflow:auto;margin:8px 0 0;padding-left:22px';
       list.forEach(item=>{const li=document.createElement('li');li.textContent=item.title+' ('+item.uid+')';ul.append(li)});
       catalogStatus.append(ul);
