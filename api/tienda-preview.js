@@ -427,6 +427,7 @@ async function saveVerifiedGelatoVariants(id,category,raw){
   const catalog=String(req.query.catalog||'');
   const offset=Math.min(2000,Math.max(0,Math.floor(Number(req.query.offset)||0)));
   const adultOnly=String(req.query.adult||'')==='1';
+  const requestedColor=String(req.query.color||'').trim().toLowerCase();
   if(!/^[a-z0-9-]{2,80}$/.test(catalog)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_catalog'}));}
   if(!process.env.GELATO_API_KEY)return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));
   try{
@@ -434,11 +435,17 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    let upstream;
    try{
     let filters={};
-    if(adultOnly){
+    if(adultOnly||requestedColor){
      const catalogResponse=await fetch('https://product.gelatoapis.com/v3/catalogs/'+encodeURIComponent(catalog),{headers:{'X-API-KEY':process.env.GELATO_API_KEY,'Accept':'application/json'},signal:controller.signal});
      if(!catalogResponse.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_catalog_http_'+catalogResponse.status}));
      const metadata=await catalogResponse.json(),attrs=Array.isArray(metadata.productAttributes)?metadata.productAttributes:[];
      const attr=key=>attrs.find(a=>a.productAttributeUid===key);
+     if(requestedColor){
+      const available=(attr('GarmentColor')?.values||[]).map(v=>String(v.productAttributeValueUid||''));
+      const matching=available.filter(v=>v.toLowerCase()===requestedColor||v.toLowerCase().replace(/[-_]/g,' ').includes(requestedColor));
+      if(!matching.length)return res.end(JSON.stringify({ok:true,products:[],returned:0,colorNotFound:true}));
+      filters.GarmentColor=matching.slice(0,12);
+     }
      const cuts=(attr('GarmentCut')?.values||[]).map(v=>v.productAttributeValueUid).filter(v=>!/(kids|child|youth|baby|toddler|infant)/i.test(String(v)));
      if(attr('GarmentCut')&&cuts.length===0)return res.end(JSON.stringify({ok:false,reason:'no_adult_cut_in_catalog'}));
      if(cuts.length)filters.GarmentCut=cuts;
