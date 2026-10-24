@@ -580,9 +580,10 @@ async function saveVerifiedGelatoVariants(id,category,raw){
         const target=p.get('gelato_target_id')||ids[0];
         if(ids.includes(target)){try{gelatoVerification=await saveVerifiedGelatoVariants(target,(await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET})).items.find(x=>x.id===target)?.category||'',p.get('gelato_variant_uids'));}catch(error){console.error('Gelato variant verification failed',error?.message);gelatoVerification={saved:0,reason:'verification_failed'};}}
       }
-      const notice=gelatoVerification?(gelatoVerification.saved>0?'gelato_variants_saved':'gelato_variants_pending'):(catalog&&color?'gelato_selection_saved':'product_updated');
+      const selectionProblem=String(p.get('gelato_selection_problem')||'').slice(0,170);
+      const notice=gelatoVerification?(gelatoVerification.saved>0?'gelato_variants_saved':'gelato_variants_pending'):(selectionProblem?'gelato_selection_incomplete':catalog&&color?'gelato_selection_saved':'product_updated');
       const issueList=(gelatoVerification?.issues||[]).slice(0,10).map(x=>String(x.size).slice(0,8)+':'+String(x.reason).slice(0,35)).join(',');
-      res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice='+notice+(issueList?'&gelato_issues='+encodeURIComponent(issueList):'')+'#productos-registrados');return res.end();
+      res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice='+notice+(issueList?'&gelato_issues='+encodeURIComponent(issueList):'')+(selectionProblem?'&gelato_problem='+encodeURIComponent(selectionProblem):'')+'#productos-registrados');return res.end();
     }catch(e){console.error('store_product_save_error',String(e&&e.message||e).slice(0,200));return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
    }
    if(p.get('action')==='create_product'){
