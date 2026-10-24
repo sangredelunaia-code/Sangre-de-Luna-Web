@@ -405,6 +405,14 @@
     const area=document.createElement('fieldset');area.style.cssText='grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:14px;margin:12px 0';
     area.innerHTML='<legend>Opciones de Gelato para este producto</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camisetas</option><option value="sweatshirts">Sudaderas</option><option value="mugs">Tazas</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
     form.append(area);
+    const ids=(form.querySelector('[name="ids"]')?.value||'').split(',').filter(Boolean);
+    if(ids.length>1){
+      const row=document.createElement('label');row.textContent='Registro específico del diseño ';
+      const selector=document.createElement('select');selector.name='gelato_target_id';selector.required=false;
+      const blank=document.createElement('option');blank.value='';blank.textContent='Selecciona un registro para Gelato';selector.append(blank);
+      ids.forEach((id,i)=>{const opt=document.createElement('option');opt.value=id;opt.textContent='Versión '+(i+1)+' · '+id;selector.append(opt)});
+      row.append(selector);area.insertBefore(row,area.firstChild);
+    }
     const catalog=area.querySelector('[data-gelato-catalog]'),color=area.querySelector('[data-gelato-color]'),sizes=area.querySelector('[data-gelato-sizes]'),status=area.querySelector('[data-gelato-state]');
     let models=[],version=0;
     catalog.addEventListener('change',async()=>{
