@@ -325,6 +325,7 @@ module.exports=async function handler(req,res){
    if(!product)return res.end(JSON.stringify({ok:false,reason:'uid_not_verified_in_page'}));
    const a=product.attributes||{},status=String(a.ProductStatus||'').toLowerCase(),state=String(a.State||'').toLowerCase(),cut=String(a.GarmentCut||'').toLowerCase();
    if(status!=='activated'||state!=='published'||cut==='kids')return res.end(JSON.stringify({ok:false,reason:'inactive_or_kids'}));
+   if(!Array.isArray(product.supportedCountries)||!product.supportedCountries.includes('EC'))return res.end(JSON.stringify({ok:false,reason:'ecuador_not_supported'}));
    const colors=Array.isArray(item.variants)?item.variants:[];
    if(colors.length!==1)return res.end(JSON.stringify({ok:false,reason:'requires_one_selected_color_variant'}));
    const normalize=v=>String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
@@ -409,7 +410,7 @@ module.exports=async function handler(req,res){
    finally{clearTimeout(timer);}
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
-   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
+   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),supportedCountries:Array.isArray(p.supportedCountries)?p.supportedCountries.filter(c=>c==='EC'||c==='US'):[],attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
   }catch(e){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
