@@ -485,6 +485,23 @@
     const area=document.createElement('fieldset');area.style.cssText='display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:12px;margin:12px 0';
     area.innerHTML='<legend>Opciones de Gelato para este producto</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
     form.append(area);
+    const saveGelato=document.createElement('button');
+    saveGelato.type='button';saveGelato.textContent='Guardar selección de Gelato';
+    saveGelato.style.cssText='display:block;width:100%;padding:12px;background:#16496a;color:white;font-weight:700;border:0;border-radius:8px;margin-top:12px;cursor:pointer;box-sizing:border-box';
+    const saveHint=document.createElement('p');
+    saveHint.style.cssText='font-size:12px;margin:7px 0;color:#325470';
+    saveHint.textContent='Guarda la selección como borrador privado. No realiza pedidos ni envía archivos a Gelato.';
+    area.append(saveGelato,saveHint);
+    saveGelato.addEventListener('click',()=>{
+      const id=form.querySelector('[name="gelato_target_id"]');
+      if(id&&!id.value){saveHint.textContent='Primero elige el registro de color que quieres configurar.';return}
+      const sel=area.querySelector('[data-gelato-catalog]'),base=area.querySelector('[data-gelato-color]');
+      if(!sel?.value||!base?.value){saveHint.textContent='Selecciona la categoría y el color real de Gelato antes de guardar.';return}
+      const options=area.querySelectorAll('[data-gelato-sizes] input:checked');
+      if(!options.length){saveHint.textContent='Marca al menos una talla para guardar la selección.';return}
+      saveHint.textContent='Guardando datos del producto y configuración de Gelato…';
+      form.requestSubmit();
+    });
     form.style.minWidth='0';form.style.maxWidth='100%';form.style.boxSizing='border-box';
     area.querySelectorAll('select,input').forEach(el=>{el.style.maxWidth='100%';el.style.minWidth='0';el.style.boxSizing='border-box'});
     const ids=(form.querySelector('[name="ids"]')?.value||'').split(',').filter(Boolean);
