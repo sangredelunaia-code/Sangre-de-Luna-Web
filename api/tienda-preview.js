@@ -312,8 +312,10 @@ module.exports=async function handler(req,res){
    finally{clearTimeout(timer);}
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const payload=await upstream.json();
-   const catalogs=Array.isArray(payload)?payload:[];
-   return res.end(JSON.stringify({ok:true,mode:'read_only',ordersEnabled:false,catalogs:catalogs.slice(0,80).map(c=>({uid:String(c.catalogUid||'').slice(0,120),title:String(c.title||'').slice(0,120)}))}));
+   const candidates=Array.isArray(payload)?payload:[payload?.catalogs,payload?.items,payload?.data,payload?.results].find(Array.isArray);
+   const catalogs=Array.isArray(candidates)?candidates:[];
+   const responseShape=Array.isArray(payload)?'array':(payload&&typeof payload==='object'?'object':'other');
+   return res.end(JSON.stringify({ok:true,mode:'read_only',ordersEnabled:false,responseShape,responseFields:responseShape==='object'?Object.keys(payload).slice(0,12):[],totalCatalogs:catalogs.length,formatRecognized:Array.isArray(candidates),catalogs:catalogs.slice(0,80).map(c=>({uid:String(c.catalogUid||c.uid||'').slice(0,120),title:String(c.title||c.name||'').slice(0,120)}))}));
   }catch(err){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
