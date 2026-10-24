@@ -202,10 +202,16 @@
         bulkStatus.textContent='Consultando el catálogo de Gelato: '+type+'…';
         try{const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await response.json();if(!data.ok)throw Error(data.reason||'Error del proveedor');return data.products||[]}));cache[type]=pages.flat()}catch(e){cache[type]=[];catalogErrors[type]=String(e.message||e)}
       }
+      const stats=Object.entries(cache).map(([category,rows])=>{const sample=rows.slice(0,4).map(p=>({uid:p.uid,attributes:p.attributes}));const activated=rows.filter(p=>Object.entries(p.attributes||{}).some(([k,v])=>k.toLowerCase()==='productstatus'&&String(v).toLowerCase()==='activated')).length;const missing=rows.filter(p=>!Object.keys(p.attributes||{}).some(k=>k.toLowerCase()==='productstatus')).length;return {category,total:rows.length,activated,missing,sample}});
+      const diagnosticDetails=document.createElement('details');diagnosticDetails.style.cssText='padding:12px;border:1px solid #aab9c7;border-radius:8px;margin:8px 0';
+      const heading=document.createElement('summary');heading.textContent='Diagnóstico de datos de Gelato (ver por qué no hay coincidencias)';diagnosticDetails.append(heading);
+      stats.forEach(st=>{const line=document.createElement('p');line.textContent=st.category+': '+st.total+' registros; '+st.activated+' marcados como activos; '+st.missing+' sin campo de estado. Ejemplos: '+st.sample.map(p=>p.uid+' | '+JSON.stringify(p.attributes).slice(0,240)).join(' / ');diagnosticDetails.append(line)});
+      bulkResults.append(diagnosticDetails);
       for(const item of items){
         const catalog=catalogs[item.category],colors=item.colors||[];
         const available=cache[catalog]||[];
-        const adult=available.filter(p=>p.uid&&String(p.attributes?.ProductStatus||'').toLowerCase()==='activated'&&(!p.attributes?.State||String(p.attributes.State).toLowerCase()==='published')&&String(p.attributes?.GarmentCut||'').toLowerCase()!=='kids');
+        const getAttr=(p,key)=>{const a=p.attributes||{},k=Object.keys(a).find(k=>k.toLowerCase()===key.toLowerCase());return k?String(a[k]).trim():''};
+        const adult=available.filter(p=>p.uid&&getAttr(p,'ProductStatus').toLowerCase()==='activated'&&(!getAttr(p,'State')||getAttr(p,'State').toLowerCase()==='published')&&!['kids','children','youth'].includes(getAttr(p,'GarmentCut').toLowerCase()));
         const wanted=colors.map(clean);
         const matches=adult.filter(p=>catalog==='mugs'||!wanted.length||wanted.some(color=>clean(p.attributes?.GarmentColor)===color||(colorEquivalences[color]||[]).includes(clean(p.attributes?.GarmentColor))));
         const candidate=matches.find(p=>(p.supportedCountries||[]).includes('EC'))||matches[0]||adult.find(p=>(p.supportedCountries||[]).includes('EC'))||adult[0]||null;
