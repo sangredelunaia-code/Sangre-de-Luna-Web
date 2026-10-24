@@ -345,6 +345,56 @@
       finally{btn.disabled=false}
     });
   }
+  // Opciones del proveedor directamente en Nuevo producto; consulta real y sin pedidos.
+  if(createForm){
+    const categorySelect=createForm.querySelector('[name="category"]');
+    const block=document.createElement('section');block.id='sdl-gelato-product-options';
+    block.style.cssText='grid-column:1/-1;padding:18px;border:1px solid #bed0df;border-radius:12px;background:#f4f8fc;color:#16314c';
+    block.innerHTML='<h3 style="margin:0 0 8px">Opciones reales de Gelato</h3><p>Elige el color base y las tallas disponibles para el tipo de producto. Los modelos se consultan al proveedor. No se hacen pedidos ni se publica el artículo.</p><label style="display:block;margin:8px 0">Color base de Gelato <select id="sdl-base-gelato-color" style="width:100%;padding:10px;border:1px solid #a6bdcd;border-radius:8px"><option value="">Selecciona la categoría primero</option></select></label><fieldset style="margin:12px 0;padding:12px;border:1px solid #afc5d5;border-radius:9px"><legend>Tallas reales de Gelato para ese color</legend><div id="sdl-real-size-options">Selecciona un color base.</div></fieldset><p id="sdl-gelato-options-state" role="status">Consultando opciones…</p><small>El artículo se guarda como borrador. La vinculación definitiva y los archivos de impresión requieren aprobación posterior.</small>';
+    const before=createForm.querySelector('#sdl-auto-gelato-match');
+    if(before)createForm.insertBefore(block,before);else createForm.append(block);
+    if(before)before.hidden=true;
+    const colorSelect=block.querySelector('#sdl-base-gelato-color'),sizes=block.querySelector('#sdl-real-size-options'),message=block.querySelector('#sdl-gelato-options-state');
+    const categories={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
+    let models=[],requestVersion=0;
+    const garment=(p)=>p.attributes||{};
+    const qualifies=(p)=>p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
+    const refreshSizes=()=>{
+      sizes.replaceChildren();
+      const options=[...new Set(models.filter(p=>String(garment(p).GarmentColor||'')===colorSelect.value).map(p=>String(garment(p).GarmentSize||'')).filter(Boolean))];
+      if(!options.length){sizes.textContent='Este artículo no presenta tallas en la selección actual.';return}
+      options.sort((a,b)=>['XS','S','M','L','XL','2XL','3XL','4XL','5XL'].indexOf(a)-['XS','S','M','L','XL','2XL','3XL','4XL','5XL'].indexOf(b));
+      for(const size of options){const label=document.createElement('label');label.style.cssText='display:inline-flex;gap:6px;align-items:center;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=size;input.name='gelato_size';label.append(input,document.createTextNode(size));sizes.append(label)}
+      message.textContent=options.length+' tallas encontradas para el color '+colorSelect.value+'. Verifica el modelo antes de aprobar fabricación.';
+    };
+    colorSelect.addEventListener('change',refreshSizes);
+    async function refreshGelato(){
+      const version=++requestVersion,category=categories[categorySelect?.value];
+      models=[];colorSelect.replaceChildren();sizes.textContent='';message.textContent='Consultando el catálogo real de Gelato…';
+      const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona un color base';colorSelect.append(placeholder);
+      if(!category){message.textContent='Esta categoría no está enlazada todavía a productos de Gelato. El artículo solo se guardará como borrador.';return}
+      try{
+        const pages=await Promise.all([0,100,200,300,400].map(async offset=>{
+          const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+category+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});
+          const data=await response.json();if(!data.ok)throw Error(data.reason||'No se pudo consultar Gelato');return data.products||[];
+        }));
+        if(version!==requestVersion)return;
+        models=pages.flat().filter(qualifies);
+        const colors=[...new Set(models.map(p=>String(garment(p).GarmentColor||'')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+        for(const color of colors){const o=document.createElement('option');o.value=color;o.textContent=color;colorSelect.append(o)}
+        message.textContent=colors.length?colors.length+' colores base encontrados en Gelato. Elige uno para mostrar sus tallas.':'Gelato no proporcionó colores compatibles en esta consulta. No se asignará un modelo supuesto.';
+      }catch(e){if(version===requestVersion)message.textContent='No se pudo consultar Gelato: '+e.message+'. Revisa la conexión; no se seleccionarán variantes inventadas.'}
+    }
+    categorySelect?.addEventListener('change',refreshGelato);
+    refreshGelato();
+    createForm.addEventListener('submit',()=>{
+      const selected=Array.from(sizes.querySelectorAll('input:checked')).map(i=>i.value);
+      const internal=createForm.querySelector('#sdl-gelato-draft-details')||document.createElement('input');
+      internal.type='hidden';internal.id='sdl-gelato-draft-details';internal.name='gelato_configuration_reference';
+      internal.value=JSON.stringify({catalog:categories[categorySelect?.value]||'',color:colorSelect.value,sizes:selected});
+      if(!internal.parentNode)createForm.append(internal);
+    });
+  }
   function show(id){
    if(!sections[id])id='admin-resumen';
    Object.entries(sections).forEach(([key,el])=>{const visible=key===id;el.classList.toggle('sdl-v2-visible',visible);if(el.tagName==='DETAILS')el.open=visible});
