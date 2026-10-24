@@ -494,6 +494,17 @@ module.exports=async function handler(req,res){
     if(!ids.length||title.length<2||title.length>120||description.length>700||!Number.isFinite(price)||price<=0||price>10000)return respond(res,400,noticePage('Revisa los datos del producto.'));
     try{
       for(const id of ids){const ok=await rpc('sdl_store_custom_edit',{p_secret:SESSION_SECRET,p_id:id,p_title:title,p_description:description,p_price:price});if(!ok)throw Error('save_failed')}
+      const catalog=p.get('gelato_catalog')||'',color=p.get('gelato_base_color')||'',sizes=(p.get('gelato_sizes')||'').split(',').filter(x=>x.length<=24).slice(0,25);
+      if(catalog&&color){
+        const expected={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
+        const items=await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET});
+        for(const id of ids){
+          const item=(items.items||[]).find(x=>x.id===id);
+          if(!item||expected[item.category]!==catalog)return respond(res,400,noticePage('La categoría de Gelato no coincide con el producto.'));
+          const ok=await rpc('sdl_store_gelato_draft_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_sizes:sizes});
+          if(!ok)return respond(res,503,noticePage('No se pudo guardar la configuración de Gelato.'));
+        }
+      }
       res.statusCode=303;res.setHeader('Location',PREVIEW_PATH+'/administracion?notice=product_updated#productos-registrados');return res.end();
     }catch(e){return respond(res,503,noticePage('No se pudieron guardar los cambios del producto.'))}
    }
