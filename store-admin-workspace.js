@@ -382,6 +382,32 @@
       for(const size of options){const label=document.createElement('label');label.style.cssText='display:inline-flex;gap:6px;align-items:center;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=size;input.name='gelato_size';label.append(input,document.createTextNode(size));sizes.append(label)}
       message.textContent=options.length+' tallas encontradas para el color '+colorSelect.value+'. Verifica el modelo antes de aprobar fabricación.';
     };
+    const searchBox=document.createElement('div');
+    searchBox.style.cssText='display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0';
+    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="flex:1;min-width:180px;padding:9px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="padding:9px;background:#163c58;color:white;border:0;border-radius:7px">Buscar en Gelato</button>';
+    colorSelect.parentElement.before(searchBox);
+    searchBox.querySelector('button').addEventListener('click',async()=>{
+      const term=searchBox.querySelector('input').value.trim().toLowerCase();
+      const aliases={'azul marino':'navy','azul nocturno':'navy','negro':'black','blanco':'white','gris carbon':'charcoal','gris carbón':'charcoal'};
+      const chosen=aliases[term]||term;
+      if(chosen.length<2){message.textContent='Escribe un color para buscar.';return}
+      const catalogUid=categories[categorySelect?.value];
+      if(!catalogUid){message.textContent='Selecciona primero la categoría.';return}
+      const index=requestVersion;const btn=searchBox.querySelector('button');btn.disabled=true;message.textContent='Buscando '+chosen+' en Gelato…';
+      try{
+        const batches=await Promise.all([0,100,200].map(async offset=>{
+          const response=await fetch('/api/tienda-preview?action=gelato_models&adult=1&catalog='+encodeURIComponent(catalogUid)+'&color='+encodeURIComponent(chosen)+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});
+          const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');return data.products||[];
+        }));
+        if(index!==requestVersion)return;
+        const incoming=batches.flat().filter(p=>p.uid);
+        const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
+        const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
+        for(const v of colors){if(!Array.from(colorSelect.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;colorSelect.append(o)}}
+        const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
+        message.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
+      }catch(e){message.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
+    });
     colorSelect.addEventListener('change',refreshSizes);
     async function refreshGelato(){
       const version=++requestVersion,category=categories[categorySelect?.value];
@@ -469,6 +495,32 @@
         [...new Set(models.map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
         color.disabled=!models.length;status.textContent=models.length+' variantes reales consultadas. Elige el color base y sus tallas.';
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
+    });
+    const searchBox=document.createElement('div');
+    searchBox.style.cssText='display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0';
+    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="flex:1;min-width:180px;padding:9px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="padding:9px;background:#163c58;color:white;border:0;border-radius:7px">Buscar en Gelato</button>';
+    color.parentElement.before(searchBox);
+    searchBox.querySelector('button').addEventListener('click',async()=>{
+      const term=searchBox.querySelector('input').value.trim().toLowerCase();
+      const aliases={'azul marino':'navy','azul nocturno':'navy','negro':'black','blanco':'white','gris carbon':'charcoal','gris carbón':'charcoal'};
+      const chosen=aliases[term]||term;
+      if(chosen.length<2){status.textContent='Escribe un color para buscar.';return}
+      const catalogUid=catalog.value;
+      if(!catalogUid){status.textContent='Selecciona primero la categoría.';return}
+      const index=version;const btn=searchBox.querySelector('button');btn.disabled=true;status.textContent='Buscando '+chosen+' en Gelato…';
+      try{
+        const batches=await Promise.all([0,100,200].map(async offset=>{
+          const response=await fetch('/api/tienda-preview?action=gelato_models&adult=1&catalog='+encodeURIComponent(catalogUid)+'&color='+encodeURIComponent(chosen)+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});
+          const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');return data.products||[];
+        }));
+        if(index!==version)return;
+        const incoming=batches.flat().filter(p=>p.uid);
+        const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
+        const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
+        for(const v of colors){if(!Array.from(color.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)}}
+        const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
+        status.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
+      }catch(e){status.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
     });
     color.addEventListener('change',()=>{
       sizes.replaceChildren();
