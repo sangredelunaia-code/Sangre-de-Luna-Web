@@ -372,6 +372,34 @@
       return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+detail+' · Variante '+(i+1);
     };
     const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
+    const simplifiedPrintType=key=>{
+      const a=Object.fromEntries(JSON.parse(key)),code=String(a.GarmentPrint||'').toLowerCase();
+      const inner=code.includes('inlbl'),both=code.startsWith('4-4'),front=code.startsWith('4-0');
+      const sleeves=code.includes('shsll')&&code.includes('shslr');
+      return inner&&both&&sleeves?'amplia':inner&&front&&!sleeves?'frontal':null;
+    };
+    const simplePrintLabel=(key)=>{
+      const type=simplifiedPrintType(key);
+      return type==='amplia'?'Frente + espalda + ambas mangas + etiqueta interior (lo más cercano a AOP)':type==='frontal'?'Frente + etiqueta interior':'No compatible con las dos opciones';
+    };
+    const refreshPrintOptions=()=>{
+      const prior=modelSelect.value;
+      modelSelect.replaceChildren();
+      const first=document.createElement('option');first.value='';first.textContent='Elige tipo de impresión';modelSelect.append(first);
+      const seen=new Set();
+      for(const key of [...new Set(models.map(modelKey))]){
+        const type=simplifiedPrintType(key);
+        if(!type)continue;
+        const a=Object.fromEntries(JSON.parse(key));
+        const garment=[a.ApparelManufacturer&&a.ApparelManufacturer!=='none'?String(a.ApparelManufacturer).toUpperCase():'Fabricante no indicado',a.ApparelManufacturerSKU&&a.ApparelManufacturerSKU!=='none'?a.ApparelManufacturerSKU:'',a.GarmentCut||''].filter(Boolean).join(' ');
+        const name=type+'|'+garment;
+        if(seen.has(name))continue;
+        seen.add(name);
+        const option=document.createElement('option');option.value=key;option.textContent=simplePrintLabel(key)+' — '+garment;modelSelect.append(option);
+      }
+      if([...modelSelect.options].some(o=>o.value===prior))modelSelect.value=prior;
+    };
+
     const compatible=p=>p.attributes?.GarmentColor===colorSelect.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     const garment=(p)=>p.attributes||{};
     const qualifies=(p)=>p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
@@ -406,7 +434,7 @@
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(colorSelect.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;colorSelect.append(o)}}
         if(colors.length){colorSelect.disabled=false;colorSelect.value=colors[0];modelSelect.value='';colorSelect.dispatchEvent(new Event('change'));}
-        const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
+        refreshPrintOptions();
         message.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){message.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
     });
@@ -424,8 +452,7 @@
         if(version!==requestVersion)return;
         models=pages.flat().filter(qualifies);
         modelSelect.replaceChildren();const choose=document.createElement('option');choose.value='';choose.textContent='Escoge el modelo concreto';modelSelect.append(choose);
-        const keys=[...new Set(models.map(modelKey))];
-        keys.forEach((key,i)=>{const opt=document.createElement('option');opt.value=key;const attrs=JSON.parse(key);opt.textContent=humanModelName(key,i);modelSelect.append(opt)});
+        refreshPrintOptions();
         modelSelect.addEventListener('change',refreshSizes);
         const colors=[...new Set(models.map(p=>String(garment(p).GarmentColor||'')).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
         for(const color of colors){const o=document.createElement('option');o.value=color;o.textContent=color;colorSelect.append(o)}
@@ -487,6 +514,34 @@
       return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+detail+' · Variante '+(i+1);
     };
     const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
+    const simplifiedPrintType=key=>{
+      const a=Object.fromEntries(JSON.parse(key)),code=String(a.GarmentPrint||'').toLowerCase();
+      const inner=code.includes('inlbl'),both=code.startsWith('4-4'),front=code.startsWith('4-0');
+      const sleeves=code.includes('shsll')&&code.includes('shslr');
+      return inner&&both&&sleeves?'amplia':inner&&front&&!sleeves?'frontal':null;
+    };
+    const simplePrintLabel=(key)=>{
+      const type=simplifiedPrintType(key);
+      return type==='amplia'?'Frente + espalda + ambas mangas + etiqueta interior (lo más cercano a AOP)':type==='frontal'?'Frente + etiqueta interior':'No compatible con las dos opciones';
+    };
+    const refreshPrintOptions=()=>{
+      const prior=modelSelect.value;
+      modelSelect.replaceChildren();
+      const first=document.createElement('option');first.value='';first.textContent='Elige tipo de impresión';modelSelect.append(first);
+      const seen=new Set();
+      for(const key of [...new Set(models.map(modelKey))]){
+        const type=simplifiedPrintType(key);
+        if(!type)continue;
+        const a=Object.fromEntries(JSON.parse(key));
+        const garment=[a.ApparelManufacturer&&a.ApparelManufacturer!=='none'?String(a.ApparelManufacturer).toUpperCase():'Fabricante no indicado',a.ApparelManufacturerSKU&&a.ApparelManufacturerSKU!=='none'?a.ApparelManufacturerSKU:'',a.GarmentCut||''].filter(Boolean).join(' ');
+        const name=type+'|'+garment;
+        if(seen.has(name))continue;
+        seen.add(name);
+        const option=document.createElement('option');option.value=key;option.textContent=simplePrintLabel(key)+' — '+garment;modelSelect.append(option);
+      }
+      if([...modelSelect.options].some(o=>o.value===prior))modelSelect.value=prior;
+    };
+
     const compatible=p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     modelSelect.addEventListener('change',()=>color.dispatchEvent(new Event('change')));
     catalog.addEventListener('change',async()=>{
@@ -497,7 +552,7 @@
         if(current!==version)return;
         models=pages.flat().filter(p=>p.uid&&p.attributes?.ProductStatus==='activated'&&!['kids','children','youth'].includes(String(p.attributes?.GarmentCut||'').toLowerCase()));
         modelSelect.replaceChildren();const initial=document.createElement('option');initial.value='';initial.textContent='Selecciona modelo de fabricación';modelSelect.append(initial);
-        [...new Set(models.map(modelKey))].forEach((key,i)=>{const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,i);modelSelect.append(opt)});
+        refreshPrintOptions();
         const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
         [...new Set(models.map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
         color.disabled=!models.length;status.textContent=models.length+' variantes reales consultadas. Elige el color base y sus tallas.';
@@ -526,7 +581,7 @@
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(color.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)}}
         if(colors.length){color.disabled=false;color.value=colors[0];modelSelect.value='';color.dispatchEvent(new Event('change'));}
-        const all=[...new Set(models.map(modelKey))];for(const key of all){if(!Array.from(modelSelect.options).some(o=>o.value===key)){const opt=document.createElement('option');opt.value=key;opt.textContent=humanModelName(key,modelSelect.options.length);modelSelect.append(opt)}}
+        refreshPrintOptions();
         status.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){status.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
     });
