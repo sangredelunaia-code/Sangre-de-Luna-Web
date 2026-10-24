@@ -498,7 +498,10 @@ module.exports=async function handler(req,res){
       if(catalog&&color){
         const expected={'Camisetas':'t-shirts','Sudaderas':'sweatshirts','Tazas':'mugs'};
         const items=await rpc('sdl_store_gelato_overview',{p_secret:SESSION_SECRET});
-        for(const id of ids){
+        const chosenId=p.get('gelato_target_id')||'';
+        const targets=chosenId&&ids.includes(chosenId)?[chosenId]:(ids.length===1?ids:[]);
+        if(!targets.length)return respond(res,400,noticePage('Selecciona el registro y color concreto para Gelato.'));
+        for(const id of targets){
           const item=(items.items||[]).find(x=>x.id===id);
           if(!item||expected[item.category]!==catalog)return respond(res,400,noticePage('La categoría de Gelato no coincide con el producto.'));
           const ok=await rpc('sdl_store_gelato_draft_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_sizes:sizes});
