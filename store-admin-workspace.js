@@ -383,8 +383,8 @@
       message.textContent=options.length+' tallas encontradas para el color '+colorSelect.value+'. Verifica el modelo antes de aprobar fabricación.';
     };
     const searchBox=document.createElement('div');
-    searchBox.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;max-width:100%;min-width:0;margin:12px 0;box-sizing:border-box;overflow:hidden';
-    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="white-space:nowrap;min-width:0;padding:10px 12px;background:#163c58;color:white;border:0;border-radius:7px;cursor:pointer">Buscar en Gelato</button>';
+    searchBox.style.cssText='display:flex;flex-direction:column;gap:8px;align-items:stretch;width:100%;max-width:100%;min-width:0;margin:12px 0;box-sizing:border-box;overflow:hidden';
+    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="display:block;width:100%;max-width:100%;box-sizing:border-box;white-space:normal;padding:10px 12px;background:#163c58;color:white;border:0;border-radius:7px;cursor:pointer">Buscar en Gelato</button>';
     colorSelect.parentElement.before(searchBox);
     searchBox.querySelector('button').addEventListener('click',async()=>{
       const term=searchBox.querySelector('input').value.trim().toLowerCase();
@@ -453,9 +453,11 @@
   // Edición de productos registrados: mismos colores y tallas reales de Gelato.
   const existingForms=Array.from(sections['productos-registrados'].querySelectorAll('form')).filter(form=>form.querySelector('[name="action"][value="edit_registered_product"]'));
   for(const form of existingForms){
-    const area=document.createElement('fieldset');area.style.cssText='grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:14px;margin:12px 0';
-    area.innerHTML='<legend>Opciones de Gelato para este producto</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camisetas</option><option value="sweatshirts">Sudaderas</option><option value="mugs">Tazas</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
+    const area=document.createElement('fieldset');area.style.cssText='display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:12px;margin:12px 0';
+    area.innerHTML='<legend>Opciones de Gelato para este producto</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
     form.append(area);
+    form.style.minWidth='0';form.style.maxWidth='100%';form.style.boxSizing='border-box';
+    area.querySelectorAll('select,input').forEach(el=>{el.style.maxWidth='100%';el.style.minWidth='0';el.style.boxSizing='border-box'});
     const ids=(form.querySelector('[name="ids"]')?.value||'').split(',').filter(Boolean);
     if(ids.length>1){
       const row=document.createElement('label');row.textContent='Registro específico del diseño ';
@@ -464,7 +466,9 @@
       ids.forEach((id,i)=>{const opt=document.createElement('option');opt.value=id;opt.textContent=({ 'SDL-NEW-1791835993474996':'Azul Nocturno', 'SDL-NEW-1791836652799947':'Blanco Lunar, Dorado Arena, Gris Oscuro, Gris Plata y Verde Oliva' }[id]||'Versión '+(i+1));selector.append(opt)});
       row.append(selector);area.insertBefore(row,area.firstChild);
     }
+    const selectedCategory=String(form.closest('.sdl-reg-card')?.querySelector('.sdl-reg-content > p')?.textContent||'');
     const catalog=area.querySelector('[data-gelato-catalog]'),color=area.querySelector('[data-gelato-color]'),sizes=area.querySelector('[data-gelato-sizes]'),status=area.querySelector('[data-gelato-state]');
+    if(selectedCategory.includes('Camisetas'))catalog.value='t-shirts';else if(selectedCategory.includes('Sudaderas'))catalog.value='sweatshirts';else if(selectedCategory.includes('Tazas'))catalog.value='mugs';
     let models=[],version=0;
     const modelLabel=document.createElement('label');modelLabel.textContent='Modelo concreto de Gelato ';
     const modelSelect=document.createElement('select');modelLabel.append(modelSelect);area.insertBefore(modelLabel,color.parentElement);
@@ -497,8 +501,8 @@
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
     });
     const searchBox=document.createElement('div');
-    searchBox.style.cssText='display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;width:100%;max-width:100%;min-width:0;margin:12px 0;box-sizing:border-box;overflow:hidden';
-    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="white-space:nowrap;min-width:0;padding:10px 12px;background:#163c58;color:white;border:0;border-radius:7px;cursor:pointer">Buscar en Gelato</button>';
+    searchBox.style.cssText='display:flex;flex-direction:column;gap:8px;align-items:stretch;width:100%;max-width:100%;min-width:0;margin:12px 0;box-sizing:border-box;overflow:hidden';
+    searchBox.innerHTML='<input type="search" placeholder="Buscar color: navy, azul marino, negro…" aria-label="Buscar color en todo Gelato" style="display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:10px;border:1px solid #a4bed4;border-radius:7px"><button type="button" style="display:block;width:100%;max-width:100%;box-sizing:border-box;white-space:normal;padding:10px 12px;background:#163c58;color:white;border:0;border-radius:7px;cursor:pointer">Buscar en Gelato</button>';
     color.parentElement.before(searchBox);
     searchBox.querySelector('button').addEventListener('click',async()=>{
       const term=searchBox.querySelector('input').value.trim().toLowerCase();
