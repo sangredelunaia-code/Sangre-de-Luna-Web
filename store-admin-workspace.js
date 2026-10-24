@@ -480,6 +480,11 @@
     });
   }
   // Edición de productos registrados: mismos colores y tallas reales de Gelato.
+  // Piloto AOP: flujo único y honesto, sin habilitar ventas.
+  const pilot=document.createElement('section');
+  pilot.id='sdl-aop-pilot';pilot.style.cssText='border:1px solid #b2c7d8;border-radius:12px;padding:16px;background:#f1f6fb;color:#16314c;margin:0 0 18px;max-width:100%;box-sizing:border-box';
+  pilot.innerHTML='<h3 style="margin:0 0 6px">Camiseta piloto · Origen de la Manada — Azul Nocturno</h3><p style="margin:0 0 10px">Trabajaremos primero con esta camiseta. El diseño original es integral (AOP). Sus fotografías y datos comerciales se conservan.</p><ol style="padding-left:22px;margin:0 0 12px"><li><b>Proveedor AOP:</b> por confirmar compatibilidad y envíos a Ecuador</li><li><b>Plantilla de fabricación:</b> pendiente de obtener del proveedor elegido</li><li><b>Arte imprimible:</b> pendiente de preparar sobre esa plantilla; las fotos actuales son mockups</li><li><b>Prueba y costos:</b> pendiente de validar</li></ol><p style="font-weight:700;margin:0 0 9px">Estado: evaluación de proveedor · No listo para vender</p><a href="https://www.printful.com/es/print-on-demand" target="_blank" rel="noopener" style="display:inline-block;padding:10px 13px;border-radius:7px;background:#183c58;color:white;text-decoration:none">Consultar proveedor AOP</a><p style="font-size:12px;margin:10px 0 0">La integración anterior con Gelato queda conservada como alternativa para diseños impresos por zonas, pero no se debe usar como sustituto automático de AOP. No se crean pedidos ni cobros.</p>';
+  sections['productos-registrados'].prepend(pilot);
   const existingForms=Array.from(sections['productos-registrados'].querySelectorAll('form')).filter(form=>form.querySelector('[name="action"][value="edit_registered_product"]'));
   for(const form of existingForms){
     const area=document.createElement('fieldset');area.style.cssText='display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:12px;margin:12px 0';
