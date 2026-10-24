@@ -317,6 +317,11 @@ async function saveVerifiedGelatoVariants(id,category,raw){
  const saved=await rpc('sdl_store_gelato_variants_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_variants:approved});
  return {saved:Number(saved)||0,requested:entries.length,reason:'pending_review'};
 }
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_color_status'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false}));}
+  try{return res.end(JSON.stringify({ok:true,configs:await rpc('sdl_store_gelato_color_list',{p_secret:SESSION_SECRET})}));}catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false}));}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='gelato_links'){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
@@ -546,6 +551,13 @@ async function saveVerifiedGelatoVariants(id,category,raw){
           const ok=await rpc('sdl_store_gelato_draft_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_sizes:sizes});
           if(!ok)return respond(res,503,noticePage('No se pudo guardar la configuración de Gelato.'));
         }
+      }
+      const storeColor=p.get('gelato_store_color')||'';
+      if(storeColor&&catalog&&color){
+       const target=p.get('gelato_target_id')||ids[0];
+       if(!ids.includes(target))return respond(res,400,noticePage('Selecciona un color válido del producto.'));
+       const ok=await rpc('sdl_store_gelato_color_save',{p_secret:SESSION_SECRET,p_id:target,p_store_color:storeColor,p_catalog:catalog,p_gelato_color:color,p_sizes:sizes});
+       if(!ok)return respond(res,400,noticePage('El color no pertenece al registro seleccionado.'));
       }
       if(p.get('gelato_variant_uids')){
         const target=p.get('gelato_target_id')||ids[0];
