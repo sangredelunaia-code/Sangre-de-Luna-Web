@@ -483,7 +483,7 @@
   const existingForms=Array.from(sections['productos-registrados'].querySelectorAll('form')).filter(form=>form.querySelector('[name="action"][value="edit_registered_product"]'));
   for(const form of existingForms){
     const area=document.createElement('fieldset');area.style.cssText='display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;grid-column:1/-1;border:1px solid #abc4d8;border-radius:10px;padding:12px;margin:12px 0';
-    area.innerHTML='<legend>Opciones de Gelato para este producto</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
+    area.innerHTML='<legend>Configurar fabricación en Gelato</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
     form.append(area);
     const saveGelato=document.createElement('button');
     saveGelato.type='button';saveGelato.textContent='Guardar selección de Gelato';
@@ -519,7 +519,11 @@
     area.insertBefore(colorChoice,area.querySelector('[data-gelato-catalog]').parentElement);
     const storeColors={
       'SDL-NEW-1791835993474996':['Azul Nocturno'],
-      'SDL-NEW-1791836652799947':['Blanco Lunar','Dorado Arena','Gris Oscuro','Gris Plata','Verde Oliva']
+      'SDL-NEW-1791836652799947':['Blanco Lunar'],
+      'SDL-NEW-1792868400001':['Dorado Arena'],
+      'SDL-NEW-1792868400002':['Gris Oscuro'],
+      'SDL-NEW-1792868400003':['Gris Plata'],
+      'SDL-NEW-1792868400004':['Verde Oliva']
     };
     const targetChoice=form.querySelector('[name="gelato_target_id"]');
     const fillShirtColors=()=>{
