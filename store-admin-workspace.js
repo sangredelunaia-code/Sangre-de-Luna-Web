@@ -847,7 +847,19 @@
   show(location.hash.slice(1));
  };
  // Restore one visible panel when switching sections; keep all Gelato setup code untouched.
- const safeInit=()=>{installStableNavigation();try{boot()}catch(e){console.error('sdl_panel_init_error',e?.message)}};
+ const safeInit=()=>{
+  try{boot()}catch(e){
+   console.error('sdl_panel_init_error',e?.stack||e?.message);
+   const p=document.getElementById('productos-registrados');
+   if(p&&!document.getElementById('sdl-panel-init-warning')){
+    const x=document.createElement('p');x.id='sdl-panel-init-warning';
+    x.style.cssText='padding:14px;margin:8px 0;background:#fff1d9;color:#5d390e;border:2px solid #c89444;border-radius:10px;font-weight:600';
+    x.textContent='La interfaz ampliada de Gelato no pudo iniciar: '+String(e?.message||'error desconocido')+'. Tus productos y archivos están conservados.';
+    p.prepend(x);
+   }
+  }
+  try{installStableNavigation()}catch(e){console.error('sdl_navigation_error',e?.message)}
+ };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',safeInit);else safeInit();
 })();
 ;(()=>{function wire(){const browser=document.querySelector('.sdl-store-collection-browser');if(!browser||browser.dataset.wired)return;browser.dataset.wired='1';const grid=browser.querySelector('.sdl-collection-grid');const screens=[...browser.querySelectorAll('.sdl-col-screen')];const reset=()=>{grid.hidden=false;screens.forEach(x=>{x.hidden=true;x.querySelectorAll('.sdl-category-content').forEach(y=>y.hidden=true);x.querySelectorAll('.sdl-category-tile').forEach(y=>y.hidden=false)})};browser.addEventListener('click',e=>{const open=e.target.closest('[data-sdl-col]');if(open){const index=Number(open.dataset.sdlCol);reset();grid.hidden=true;if(screens[index])screens[index].hidden=false;return}if(e.target.closest('.sdl-col-back')){reset();return}const category=e.target.closest('.sdl-cat-open');if(category){const screen=category.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>x.hidden=true);const tile=category.closest('.sdl-category-tile');tile.hidden=false;tile.querySelector('.sdl-cat-open').hidden=true;tile.querySelector('.sdl-category-content').hidden=false;screen.querySelector('.sdl-category-grid').style.display='block';return}if(e.target.closest('.sdl-cat-back')){const screen=e.target.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>{x.hidden=false;x.querySelector('.sdl-cat-open').hidden=false;x.querySelector('.sdl-category-content').hidden=true});screen.querySelector('.sdl-category-grid').style.display='grid'}})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();
