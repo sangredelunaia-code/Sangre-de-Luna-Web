@@ -563,15 +563,45 @@
     const help=document.createElement('p');help.style.fontSize='12px';help.textContent='Elige un archivo para cada zona que quieras actualizar. Las zonas ya guardadas permanecen intactas si no eliges un nuevo archivo.';
     const existing=document.createElement('p'),uploadMessage=document.createElement('p');
     existing.style.fontSize='12px';uploadMessage.style.fontSize='12px';
+    const masterWrap=document.createElement('section');
+    masterWrap.style.cssText='border:2px solid #2778a9;border-radius:10px;padding:14px;margin:12px 0;background:#f4f9fe';
+    const masterTitle=document.createElement('strong');masterTitle.textContent='PDF maestro de fabricación · hasta 100 MB';
+    const masterNote=document.createElement('p');masterNote.style.cssText='font-size:12px';masterNote.textContent='Sube un solo PDF con ficha técnica, diseños, mangas y etiqueta. El archivo se conserva privado; no activa ventas ni se envía al fabricante.';
+    const masterPicker=document.createElement('input');masterPicker.type='file';masterPicker.accept='.pdf,application/pdf';masterPicker.style.cssText='display:block;width:100%;max-width:100%;margin:12px 0';
+    const masterButton=document.createElement('button');masterButton.type='button';masterButton.textContent='Subir PDF maestro';masterButton.style.cssText='background:#14577b;color:white;padding:11px 18px;border:0;border-radius:7px;cursor:pointer';
+    const masterStatus=document.createElement('p');masterStatus.setAttribute('role','status');masterStatus.style.cssText='font-size:12px;color:#23465f';
+    masterWrap.append(masterTitle,masterNote,masterPicker,masterButton,masterStatus);
+    masterButton.addEventListener('click',async()=>{
+      const file=masterPicker.files?.[0];
+      if(!file){masterStatus.textContent='Selecciona un PDF.';return}
+      if(file.size>104857600||file.size<100||!file.name.toLowerCase().endsWith('.pdf')||file.type&&file.type!=='application/pdf'){masterStatus.textContent='Solo PDF de hasta 100 MB.';return}
+      const header=await file.slice(0,5).text();
+      if(header!=='%PDF-'){masterStatus.textContent='El archivo no contiene una cabecera PDF válida.';return}
+      if(!/^SDL-NEW-[0-9]{8,16}$/.test(productId)){masterStatus.textContent='Guarda primero el producto para asignarle un código válido.';return}
+      masterButton.disabled=true;masterStatus.textContent='Solicitando almacenamiento privado...';
+      try{
+       const init=await fetch('/api/tienda-preview',{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},body:new URLSearchParams({action:'create_master_pdf_upload',id:productId,size:String(file.size),filename:file.name})});
+       const data=await init.json();
+       if(!init.ok||!data.ok)throw Error(data.reason||'No se pudo iniciar la subida.');
+       masterStatus.textContent='Subiendo documento original ('+(file.size/1048576).toFixed(1)+' MB)...';
+       const sent=await fetch(data.uploadUrl,{method:'PUT',headers:{'Content-Type':'application/pdf'},body:file});
+       if(!sent.ok)throw Error('El almacenamiento rechazó el archivo ('+sent.status+').');
+       masterStatus.textContent='PDF guardado en almacenamiento privado. Pendiente de revisión técnica; no publicado ni enviado a fabricación.';
+       masterPicker.value='';
+      }catch(e){masterStatus.textContent='No se pudo guardar el PDF: '+String(e.message||e)+'. Los documentos anteriores siguen intactos.';}
+      finally{masterButton.disabled=false}
+    });
+    const legacy=document.createElement('details');legacy.style.cssText='margin-top:12px';
+    const legacyTitle=document.createElement('summary');legacyTitle.textContent='Archivos individuales anteriores (respaldo)';legacy.append(legacyTitle);
     const fileInputs=new Map();
-    artwork.append(title,help);
+    artwork.append(title,help,masterWrap,legacy);
     for(const [key,label] of areaNames){
       const row=document.createElement('label');row.style.cssText='display:block;border-top:1px solid #d5e1e9;padding:9px 0;font-size:12px';
       const name=document.createElement('strong');name.textContent=label;name.style.display='block';
       const picker=document.createElement('input');picker.type='file';picker.accept='image/png,image/jpeg,image/webp';picker.style.cssText='display:block;width:100%;max-width:100%;margin-top:5px;box-sizing:border-box';
-      row.append(name,picker);artwork.append(row);fileInputs.set(key,picker);
+      row.append(name,picker);legacy.append(row);fileInputs.set(key,picker);
     }
-    artwork.append(existing,uploadMessage);area.append(artwork);
+    legacy.append(existing,uploadMessage);area.append(artwork);
     let uploadedAreas=new Set();
     const updateExisting=()=>{existing.textContent='Guardados: '+(areaNames.filter(([key])=>uploadedAreas.has(key)).map(([,name])=>name).join(', ')||'ninguno')+' · Pendientes de validación técnica'};
     fetch('/api/tienda-preview?action=gelato_print_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
