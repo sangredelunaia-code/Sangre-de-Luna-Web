@@ -433,7 +433,7 @@
       modelSelect.replaceChildren();
       const first=document.createElement('option');first.value='';first.textContent='Elige tipo de impresión';modelSelect.append(first);
       const seen=new Set();
-      for(const key of [...new Set(models.filter(availableInCountry).map(modelKey))]){
+      for(const key of [...new Set(models.filter(qualifies).filter(availableInCountry).map(modelKey))]){
         const type=simplifiedPrintType(key);
         if(!type)continue;
         const a=Object.fromEntries(JSON.parse(key));
@@ -448,7 +448,7 @@
 
     const compatible=p=>p.attributes?.GarmentColor===colorSelect.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     const garment=(p)=>p.attributes||{};
-    const qualifies=(p)=>p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
+    const qualifies=(p)=>Array.isArray(p.supportedCountries)&&['EC','US','CA','ES','MX','CO','PE','CL','GB'].every(c=>p.supportedCountries.includes(c))&&p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
     const refreshSizes=()=>{
       sizes.replaceChildren();
       const options=[...new Set(models.filter(compatible).map(p=>String(garment(p).GarmentSize||'')).filter(Boolean))];
@@ -699,13 +699,15 @@
       return type==='amplia'?'Frente + espalda + ambas mangas + etiqueta interior':type==='dos_caras'?'Frente + espalda + etiqueta interior':type==='frontal'?'Frente + etiqueta interior':'No disponible';
     };
     // Solo modelos Gelato que admiten Ecuador, Estados Unidos y al menos un mercado internacional habitual.
-    const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&['EC','US'].every(c=>p.supportedCountries.includes(c))&&['CA','ES','MX','CO','PE','CL','GB'].some(c=>p.supportedCountries.includes(c));
+    const requiredDestinations=['EC','US','CA','ES','MX','CO','PE','CL','GB'];
+    const extraDestinations=['FR','DE','IT','AU','BR'];
+    const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&requiredDestinations.every(c=>p.supportedCountries.includes(c));
     const refreshPrintOptions=()=>{
       const prior=modelSelect.value;
       modelSelect.replaceChildren();
       const first=document.createElement('option');first.value='';first.textContent='Elige tipo de impresión';modelSelect.append(first);
       const seen=new Set();
-      for(const key of [...new Set(models.filter(servesEcuadorAndAbroad).map(modelKey))]){
+      for(const key of [...new Set(models.filter(servesEcuadorAndAbroad).sort((a,b)=>extraDestinations.filter(c=>b.supportedCountries.includes(c)).length-extraDestinations.filter(c=>a.supportedCountries.includes(c)).length).map(modelKey))]){
         const type=simplifiedPrintType(key);
         if(!type)continue;
         const a=Object.fromEntries(JSON.parse(key));
@@ -731,7 +733,7 @@
         refreshPrintOptions();
         const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
         [...new Set(models.filter(servesEcuadorAndAbroad).map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
-        status.textContent=models.filter(servesEcuadorAndAbroad).length+' variantes compatibles con Ecuador, Estados Unidos y otros destinos habituales. La disponibilidad por país se comprueba por separado. Elige modelo, color y tallas.';
+        status.textContent=models.filter(servesEcuadorAndAbroad).length+' variantes que incluyen los 9 destinos exigidos (Ecuador, Estados Unidos, Canadá, España, México, Colombia, Perú, Chile y Reino Unido). '+(models.some(servesEcuadorAndAbroad)?'Se priorizan además Francia, Alemania, Italia, Australia y Brasil cuando estén admitidos.':'No se encontró todavía un modelo que cumpla todos los destinos; no se mostrará un fabricante incompatible.');
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
     });
     const searchBox=document.createElement('div');
