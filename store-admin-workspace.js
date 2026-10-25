@@ -818,6 +818,35 @@
   window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
   show(location.hash.slice(1));
  };
+ // Recuperación de navegación independiente de los controles de Gelato.
+ const ensureNavigation=()=>{
+   const summary=document.getElementById('admin-resumen');
+   const content=document.querySelector('.sdl-admin-content');
+   if(!summary||!content)return;
+   const sections=['admin-resumen','colecciones-admin','crear-coleccion','crear-producto','productos-registrados','portadas-categorias','configuracion'];
+   const openScreen=id=>{
+     if(!sections.includes(id))id='admin-resumen';
+     sections.forEach(name=>{
+       const el=document.getElementById(name);if(!el)return;
+       el.classList.toggle('sdl-v2-visible',name===id);
+       if(el.tagName==='DETAILS')el.open=name===id;
+       if(name===id)el.style.setProperty('display','block','important');
+       else el.style.removeProperty('display');
+     });
+     const header=document.getElementById('sdl-store-workspace-v2');
+     const title=header?.querySelector('#sdl-v2-title');
+     if(title)title.textContent=({'admin-resumen':'Resumen general','productos-registrados':'Productos registrados','crear-producto':'Nuevo producto','configuracion':'Configuración avanzada'})[id]||'Tienda oficial';
+   };
+   document.addEventListener('click',event=>{
+     const a=event.target.closest?.('a[href^="#"]');if(!a)return;
+     const id=a.getAttribute('href').slice(1);
+     if(id==='admin-resumen'&&document.getElementById('admin-resumen')){
+       event.preventDefault();history.replaceState(null,'','#admin-resumen');openScreen(id);
+     }
+   },true);
+   if(!document.querySelector('.sdl-v2-visible'))openScreen(location.hash.slice(1)||'admin-resumen');
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureNavigation);else ensureNavigation();
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
 ;(()=>{function wire(){const browser=document.querySelector('.sdl-store-collection-browser');if(!browser||browser.dataset.wired)return;browser.dataset.wired='1';const grid=browser.querySelector('.sdl-collection-grid');const screens=[...browser.querySelectorAll('.sdl-col-screen')];const reset=()=>{grid.hidden=false;screens.forEach(x=>{x.hidden=true;x.querySelectorAll('.sdl-category-content').forEach(y=>y.hidden=true);x.querySelectorAll('.sdl-category-tile').forEach(y=>y.hidden=false)})};browser.addEventListener('click',e=>{const open=e.target.closest('[data-sdl-col]');if(open){const index=Number(open.dataset.sdlCol);reset();grid.hidden=true;if(screens[index])screens[index].hidden=false;return}if(e.target.closest('.sdl-col-back')){reset();return}const category=e.target.closest('.sdl-cat-open');if(category){const screen=category.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>x.hidden=true);const tile=category.closest('.sdl-category-tile');tile.hidden=false;tile.querySelector('.sdl-cat-open').hidden=true;tile.querySelector('.sdl-category-content').hidden=false;screen.querySelector('.sdl-category-grid').style.display='block';return}if(e.target.closest('.sdl-cat-back')){const screen=e.target.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>{x.hidden=false;x.querySelector('.sdl-cat-open').hidden=false;x.querySelector('.sdl-category-content').hidden=true});screen.querySelector('.sdl-category-grid').style.display='grid'}})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();
