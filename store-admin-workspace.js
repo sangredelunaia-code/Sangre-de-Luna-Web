@@ -803,27 +803,15 @@
     }catch(e){logoStatus.textContent='No se pudo guardar: '+e.message}finally{button.disabled=false}
   });
   sections['productos-registrados']?.append(labelLogoPanel);
-  function show(id){
-   if(!sections[id])id='admin-resumen';
-   Object.entries(sections).forEach(([key,el])=>{const visible=key===id;el.classList.toggle('sdl-v2-visible',visible);if(el.tagName==='DETAILS')el.open=visible});
-   header.querySelector('h1').textContent=names[id];
-   header.querySelector('p').textContent=id==='colecciones-admin'?'Selecciona una colección y después una categoría para editar.':id==='crear-coleccion'?'Diseña una colección. El guardado estará disponible cuando se habilite la función.':id==='crear-producto'?'Completa la ficha del producto y consulta las funciones disponibles.':'Gestiona esta sección sin desplegables adicionales.';
-   header.querySelector('.sdl-v2-primary').hidden=id==='crear-producto';
-   sidebar.querySelectorAll('nav a[href^="#"]').forEach(a=>a.classList.toggle('sdl-v2-current',a.getAttribute('href')==='#'+id));
-   if(id==='colecciones-admin')resetCollections();
-   window.scrollTo({top:0,behavior:'instant'});
-  }
-  sidebar.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(sections[id]){e.preventDefault();history.replaceState(null,'','#'+id);show(id)}});
-  main.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(sections[id]){e.preventDefault();history.replaceState(null,'','#'+id);show(id)}});
-  window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
-  show(location.hash.slice(1));
  };
  // Navegación independiente: funciona aunque falle la inicialización de formularios Gelato.
  const ensureNavigation=()=>{
    const ids=['admin-resumen','colecciones-admin','crear-coleccion','crear-producto','productos-registrados','portadas-categorias','configuracion'];
    const labels={'admin-resumen':'Resumen general','colecciones-admin':'Colecciones y productos','crear-coleccion':'Nueva colección','crear-producto':'Nuevo producto','productos-registrados':'Productos registrados','portadas-categorias':'Portadas de categorías','configuracion':'Configuración avanzada'};
    const main=document.querySelector('.sdl-admin-content'),sidebar=document.querySelector('.sdl-admin-sidebar');
-   if(!main||!sidebar)return;
+   if(!main||!sidebar||sidebar.dataset.sdlNavFixed==='1')return;
+   sidebar.dataset.sdlNavFixed='1';
+   const navStyle=document.createElement('style');navStyle.textContent='.sdl-admin-content .sdl-v2-screen:not(.sdl-v2-visible){display:none!important}.sdl-admin-content .sdl-v2-screen.sdl-v2-visible{display:block!important}';document.head.append(navStyle);
    const openScreen=id=>{
      if(!ids.includes(id))id='admin-resumen';
      for(const key of ids){
@@ -849,10 +837,11 @@
      event.preventDefault();event.stopImmediatePropagation();
      history.replaceState(null,'','#'+id);openScreen(id);
    },true);
+   main.addEventListener('click',event=>{const a=event.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!ids.includes(id))return;event.preventDefault();history.replaceState(null,'','#'+id);openScreen(id)});
    window.addEventListener('hashchange',()=>openScreen(location.hash.slice(1)));
    openScreen(location.hash.slice(1)||'admin-resumen');
  };
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureNavigation);else ensureNavigation();
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+ const initialize=()=>{ensureNavigation();try{boot()}catch(error){console.error('store_admin_boot_error',error?.message)}};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initialize);else initialize();
 })();
 ;(()=>{function wire(){const browser=document.querySelector('.sdl-store-collection-browser');if(!browser||browser.dataset.wired)return;browser.dataset.wired='1';const grid=browser.querySelector('.sdl-collection-grid');const screens=[...browser.querySelectorAll('.sdl-col-screen')];const reset=()=>{grid.hidden=false;screens.forEach(x=>{x.hidden=true;x.querySelectorAll('.sdl-category-content').forEach(y=>y.hidden=true);x.querySelectorAll('.sdl-category-tile').forEach(y=>y.hidden=false)})};browser.addEventListener('click',e=>{const open=e.target.closest('[data-sdl-col]');if(open){const index=Number(open.dataset.sdlCol);reset();grid.hidden=true;if(screens[index])screens[index].hidden=false;return}if(e.target.closest('.sdl-col-back')){reset();return}const category=e.target.closest('.sdl-cat-open');if(category){const screen=category.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>x.hidden=true);const tile=category.closest('.sdl-category-tile');tile.hidden=false;tile.querySelector('.sdl-cat-open').hidden=true;tile.querySelector('.sdl-category-content').hidden=false;screen.querySelector('.sdl-category-grid').style.display='block';return}if(e.target.closest('.sdl-cat-back')){const screen=e.target.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>{x.hidden=false;x.querySelector('.sdl-cat-open').hidden=false;x.querySelector('.sdl-category-content').hidden=true});screen.querySelector('.sdl-category-grid').style.display='grid'}})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();
