@@ -228,7 +228,7 @@
       const cache={},catalogErrors={};
       for(const type of [...new Set(items.map(p=>catalogs[p.category]).filter(Boolean))]){
         bulkStatus.textContent='Consultando el catálogo de Gelato: '+type+'…';
-        try{const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await response.json();if(!data.ok)throw Error(data.reason||'Error del proveedor');return data.products||[]}));cache[type]=pages.flat();if(!cache[type].length)catalogErrors[type]='Gelato no devolvió modelos para los filtros adultos; se requiere revisar los valores del catálogo.'}catch(e){cache[type]=[];catalogErrors[type]=String(e.message||e)}
+        try{const pages=await Promise.all([0,100].map(async offset=>{const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+type+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await response.json();if(!data.ok)throw Error(data.reason||'Error del proveedor');return data.products||[]}));cache[type]=pages.flat();if(!cache[type].length)catalogErrors[type]='Gelato no devolvió modelos para los filtros adultos; se requiere revisar los valores del catálogo.'}catch(e){cache[type]=[];catalogErrors[type]=String(e.message||e)}
       }
       const stats=Object.entries(cache).map(([category,rows])=>{const sample=rows.slice(0,4).map(p=>({uid:p.uid,attributes:p.attributes}));const activated=rows.filter(p=>Object.entries(p.attributes||{}).some(([k,v])=>k.toLowerCase()==='productstatus'&&String(v).toLowerCase()==='activated')).length;const missing=rows.filter(p=>!Object.keys(p.attributes||{}).some(k=>k.toLowerCase()==='productstatus')).length;return {category,total:rows.length,activated,missing,sample}});
       const diagnosticDetails=document.createElement('details');diagnosticDetails.style.cssText='padding:12px;border:1px solid #aab9c7;border-radius:8px;margin:8px 0';
@@ -470,10 +470,13 @@
       if(!catalogUid){message.textContent='Selecciona primero la categoría.';return}
       const index=requestVersion;const btn=searchBox.querySelector('button');btn.disabled=true;message.textContent='Buscando '+chosen+' en Gelato…';
       try{
-        const batches=await Promise.all(Array.from({length:10},(_,i)=>i*100).map(async offset=>{
+        const batches=[];
+        for(const offset of [0,100,200]){
           const response=await fetch('/api/tienda-preview?action=gelato_models&adult=1&catalog='+encodeURIComponent(catalogUid)+'&color='+encodeURIComponent(chosen)+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});
-          const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');return data.products||[];
-        }));
+          const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');
+          batches.push(data.products||[]);
+          if((data.products||[]).length<100)break;
+        }
         if(index!==requestVersion)return;
         const incoming=batches.flat().filter(p=>p.uid);
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
@@ -491,7 +494,7 @@
       const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona un color base';colorSelect.append(placeholder);
       if(!category){message.textContent='Esta categoría no está enlazada todavía a productos de Gelato. El artículo solo se guardará como borrador.';return}
       try{
-        const pages=await Promise.all([0,100,200,300,400].map(async offset=>{
+        const pages=await Promise.all([0,100].map(async offset=>{
           const response=await fetch('/api/tienda-preview?action=gelato_models&catalog='+category+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});
           const data=await response.json();if(!data.ok)throw Error(data.reason||'No se pudo consultar Gelato');return data.products||[];
         }));
@@ -719,7 +722,7 @@
       const current=++version;models=[];color.replaceChildren();color.disabled=true;sizes.textContent='Selecciona un color';status.textContent='Consultando Gelato…';
       if(!catalog.value){status.textContent='Elige una categoría.';return}
       try{
-        const pages=await Promise.all([0,100,200,300,400].map(async offset=>{const res=await fetch('/api/tienda-preview?action=gelato_models&catalog='+catalog.value+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await res.json();if(!data.ok)throw Error(data.reason);return data.products||[]}));
+        const pages=await Promise.all([0,100].map(async offset=>{const res=await fetch('/api/tienda-preview?action=gelato_models&catalog='+catalog.value+'&adult=1&offset='+offset,{credentials:'same-origin',cache:'no-store'});const data=await res.json();if(!data.ok)throw Error(data.reason);return data.products||[]}));
         if(current!==version)return;
         models=pages.flat().filter(p=>p.uid&&p.attributes?.ProductStatus==='activated'&&!['kids','children','youth'].includes(String(p.attributes?.GarmentCut||'').toLowerCase()));
         modelSelect.replaceChildren();const initial=document.createElement('option');initial.value='';initial.textContent='Selecciona modelo de fabricación';modelSelect.append(initial);
