@@ -818,33 +818,39 @@
   window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
   show(location.hash.slice(1));
  };
- // Recuperación de navegación independiente de los controles de Gelato.
+ // Navegación independiente: funciona aunque falle la inicialización de formularios Gelato.
  const ensureNavigation=()=>{
-   const summary=document.getElementById('admin-resumen');
-   const content=document.querySelector('.sdl-admin-content');
-   if(!summary||!content)return;
-   const sections=['admin-resumen','colecciones-admin','crear-coleccion','crear-producto','productos-registrados','portadas-categorias','configuracion'];
+   const ids=['admin-resumen','colecciones-admin','crear-coleccion','crear-producto','productos-registrados','portadas-categorias','configuracion'];
+   const labels={'admin-resumen':'Resumen general','colecciones-admin':'Colecciones y productos','crear-coleccion':'Nueva colección','crear-producto':'Nuevo producto','productos-registrados':'Productos registrados','portadas-categorias':'Portadas de categorías','configuracion':'Configuración avanzada'};
+   const main=document.querySelector('.sdl-admin-content'),sidebar=document.querySelector('.sdl-admin-sidebar');
+   if(!main||!sidebar)return;
    const openScreen=id=>{
-     if(!sections.includes(id))id='admin-resumen';
-     sections.forEach(name=>{
-       const el=document.getElementById(name);if(!el)return;
-       el.classList.toggle('sdl-v2-visible',name===id);
-       if(el.tagName==='DETAILS')el.open=name===id;
-       if(name===id)el.style.setProperty('display','block','important');
-       else el.style.removeProperty('display');
-     });
-     const header=document.getElementById('sdl-store-workspace-v2');
-     const title=header?.querySelector('#sdl-v2-title');
-     if(title)title.textContent=({'admin-resumen':'Resumen general','productos-registrados':'Productos registrados','crear-producto':'Nuevo producto','configuracion':'Configuración avanzada'})[id]||'Tienda oficial';
-   };
-   document.addEventListener('click',event=>{
-     const a=event.target.closest?.('a[href^="#"]');if(!a)return;
-     const id=a.getAttribute('href').slice(1);
-     if(id==='admin-resumen'&&document.getElementById('admin-resumen')){
-       event.preventDefault();history.replaceState(null,'','#admin-resumen');openScreen(id);
+     if(!ids.includes(id))id='admin-resumen';
+     for(const key of ids){
+       const node=document.getElementById(key);if(!node)continue;
+       const active=key===id;
+       node.classList.add('sdl-v2-screen');
+       node.classList.toggle('sdl-v2-visible',active);
+       if(node.tagName==='DETAILS')node.open=active;
+       node.style.setProperty('display',active?'block':'none','important');
      }
+     const header=document.getElementById('sdl-store-workspace-v2');
+     if(header){
+       const heading=header.querySelector('#sdl-v2-title'),subtitle=header.querySelector('#sdl-v2-subtitle');
+       if(heading)heading.textContent=labels[id];
+       if(subtitle)subtitle.textContent='Administra esta sección de Sangre de Luna.';
+     }
+     sidebar.querySelectorAll('a[href^="#"]').forEach(a=>a.classList.toggle('sdl-v2-current',a.getAttribute('href')==='#'+id));
+   };
+   sidebar.addEventListener('click',event=>{
+     const a=event.target.closest('a[href^="#"]');
+     if(!a)return;
+     const id=a.getAttribute('href').slice(1);if(!ids.includes(id))return;
+     event.preventDefault();event.stopImmediatePropagation();
+     history.replaceState(null,'','#'+id);openScreen(id);
    },true);
-   if(!document.querySelector('.sdl-v2-visible'))openScreen(location.hash.slice(1)||'admin-resumen');
+   window.addEventListener('hashchange',()=>openScreen(location.hash.slice(1)));
+   openScreen(location.hash.slice(1)||'admin-resumen');
  };
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ensureNavigation);else ensureNavigation();
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
