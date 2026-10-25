@@ -55,7 +55,81 @@
   ],
   "testMatrix": {
     "expectedCombinations": 162,
-    "verifiedCombinations": 0
+    "verifiedCombinations": 0,
+    "catalogCandidateCombinations": 18
   },
-  "fulfillmentNote": "Only Gelato and Gooten. Customers never choose a provider. Never show unverified variants."
+  "fulfillmentNote": "Only Gelato and Gooten. Customers never choose a provider. Never show unverified variants.",
+  "candidates": [
+    {
+      "provider": "gooten",
+      "brand": "Next Level",
+      "model": "3600",
+      "productType": "Cotton Crew Neck Tee",
+      "catalogEvidence": {
+        "source": "https://help.gooten.com/hc/en-us/articles/360060948432-Stocked-and-Non-Stocked-Products",
+        "status": "catalog_stocked_usually_not_live_inventory",
+        "productionBusinessDays": 4,
+        "colors": [
+          {
+            "storeColor": "Negro",
+            "supplierColor": "Black",
+            "usualStockedSizes": [
+              "S",
+              "M",
+              "L",
+              "XL",
+              "2XL",
+              "3XL"
+            ]
+          },
+          {
+            "storeColor": "Blanco",
+            "supplierColor": "White",
+            "usualStockedSizes": [
+              "S",
+              "M",
+              "L",
+              "XL",
+              "2XL",
+              "3XL"
+            ]
+          },
+          {
+            "storeColor": "Azul nocturno",
+            "supplierColor": "Midnight Navy",
+            "usualStockedSizes": [
+              "S",
+              "M",
+              "L",
+              "XL",
+              "2XL",
+              "3XL"
+            ]
+          }
+        ]
+      },
+      "destinationValidation": {
+        "EC": "pending_actual_variant_shipping_quote",
+        "US": "pending_actual_variant_shipping_quote",
+        "CA": "pending_actual_variant_shipping_quote",
+        "ES": "pending_actual_variant_shipping_quote",
+        "MX": "pending_actual_variant_shipping_quote",
+        "CO": "pending_actual_variant_shipping_quote",
+        "PE": "pending_actual_variant_shipping_quote",
+        "CL": "pending_actual_variant_shipping_quote",
+        "GB": "pending_actual_variant_shipping_quote"
+      },
+      "liveStockVerified": false,
+      "priceVerified": false,
+      "shippingVerified": false,
+      "publishable": false
+    }
+  ],
+  "nextActions": [
+    "Connect authorized Gooten API credentials server-side",
+    "Resolve supplier SKU per color/size",
+    "Check SKU out-of-stock feed",
+    "Quote shipment and totals for nine requested countries",
+    "Keep storefront checkout off until confirmed"
+  ]
 }
