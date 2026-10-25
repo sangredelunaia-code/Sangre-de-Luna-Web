@@ -797,5 +797,61 @@
       "officialDocumentation": "https://dashboard.gelato.com/docs/",
       "catalogConsultationVerified": true
     }
+  },
+  "fulfillmentStrategy": {
+    "mode": "multi_provider_verified_only",
+    "customerVisibleProvider": false,
+    "checkoutEnabled": false,
+    "ordersEnabled": false,
+    "providers": [
+      {
+        "id": "gelato",
+        "role": "international_primary",
+        "integration": "api",
+        "status": "requires_verified_variant_quote"
+      },
+      {
+        "id": "gooten",
+        "role": "international_fallback",
+        "integration": "api",
+        "status": "credentials_and_mapping_pending"
+      },
+      {
+        "id": "infrarojo",
+        "role": "ecuador_primary",
+        "integration": "manual",
+        "status": "commercial_agreement_and_inventory_confirmation_pending"
+      }
+    ],
+    "priorityByDestination": {
+      "EC": [
+        "infrarojo",
+        "gelato",
+        "gooten"
+      ],
+      "default": [
+        "gelato",
+        "gooten",
+        "infrarojo"
+      ]
+    },
+    "requiredDestinations": [
+      "EC",
+      "US",
+      "CA",
+      "ES",
+      "MX",
+      "CO",
+      "PE",
+      "CL",
+      "GB"
+    ],
+    "priorityApparelSizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "availabilityRule": "Only list variants after supplier confirms precise SKU, colour, size, destination and shipping quote; no unverified or inferred inventory."
   }
 }
