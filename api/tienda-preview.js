@@ -556,9 +556,9 @@ async function saveVerifiedGelatoVariants(id,category,raw){
     if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
     const id=String(p.get('id')||''),size=Number(p.get('size')),filename=String(p.get('filename')||'');
     if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||!filename.toLowerCase().endsWith('.pdf')||filename.length>170||!Number.isSafeInteger(size)||size<100||size>104857600){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_master_pdf'}));}
-    const url=String(process.env.SDL_STORE_SUPABASE_URL||'').replace(/\\/$/,'');
+    const url=String(process.env.SDL_STORE_SUPABASE_URL||'').replace(/\/$/,'');
     const serviceKey=process.env.SDL_STORE_SUPABASE_SERVICE_ROLE_KEY;
-    if(!/^https:\/\/[-a-z0-9.]+\\.supabase\\.co$/.test(url)||!serviceKey){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'private_pdf_storage_not_configured'}));}
+    if(!/^https:\/\/[-a-z0-9.]+\.supabase\.co$/.test(url)||!serviceKey){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'private_pdf_storage_not_configured'}));}
     try{
      const crypto=require('node:crypto');
      const key=id+'/'+crypto.randomUUID()+'.pdf';
