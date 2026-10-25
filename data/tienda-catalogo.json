@@ -815,24 +815,16 @@
         "role": "international_fallback",
         "integration": "api",
         "status": "credentials_and_mapping_pending"
-      },
-      {
-        "id": "infrarojo",
-        "role": "ecuador_primary",
-        "integration": "manual",
-        "status": "commercial_agreement_and_inventory_confirmation_pending"
       }
     ],
     "priorityByDestination": {
       "EC": [
-        "infrarojo",
         "gelato",
         "gooten"
       ],
       "default": [
         "gelato",
-        "gooten",
-        "infrarojo"
+        "gooten"
       ]
     },
     "requiredDestinations": [
