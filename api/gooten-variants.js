@@ -13,11 +13,11 @@ module.exports=async function handler(req,res){
  url.searchParams.set('productId',productId);
  url.searchParams.set('countryCode',country);
  url.searchParams.set('currencyCode','USD');
- url.searchParams.set('pageSize','100');
+ // Start with only documented required parameters; optional filters may trigger vendor validation.
  const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),12000);
  try{
   const response=await fetch(url,{headers:{Accept:'application/json'},signal:ctl.signal});
-  if(!response.ok){res.statusCode=502;return res.end(JSON.stringify({ok:false,reason:'gooten_http_'+response.status}));}
+  if(!response.ok){const raw=(await response.text()).slice(0,1500);let details={};try{const parsed=JSON.parse(raw);details={vendorCode:String(parsed.ErrorCode||parsed.ErrorReferenceCode||'').slice(0,80),vendorMessage:String(parsed.Message||parsed.ErrorMessage||parsed.Error||'').replace(/[A-Za-z0-9_-]{28,}/g,'[redacted]').slice(0,180)};}catch(_){} console.error('gooten_variant_rejection',response.status,details.vendorCode||'',details.vendorMessage||'');res.statusCode=502;return res.end(JSON.stringify({ok:false,reason:'gooten_http_'+response.status,vendorMessage:details.vendorMessage||null,vendorCode:details.vendorCode||null}));}
   const data=await response.json();
   if(data?.HadError===true){res.statusCode=502;return res.end(JSON.stringify({ok:false,reason:'gooten_rejected_variant_lookup'}));}
   if(!Array.isArray(data?.ProductVariants)){res.statusCode=502;return res.end(JSON.stringify({ok:false,reason:'unexpected_variant_response'}));}
