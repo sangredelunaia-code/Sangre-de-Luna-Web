@@ -768,9 +768,19 @@
     });
     color.addEventListener('change',()=>{
       sizes.replaceChildren();
-      const values=[...new Set(models.filter(compatible).map(p=>p.attributes?.GarmentSize).filter(Boolean))];
+      const sameModel=models.filter(p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value));
+      const values=[...new Set(sameModel.map(p=>p.attributes?.GarmentSize).filter(Boolean))];
       if(!values.length){sizes.textContent='No se encontraron tallas en el modelo consultado. Prueba otro modelo de fabricación.';return}
-      values.forEach(v=>{const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0';const input=document.createElement('input');input.type='checkbox';input.value=v;label.append(input,document.createTextNode(v));sizes.append(label)});
+      const order=['XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
+      values.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+      values.forEach(v=>{
+        const allowed=sameModel.some(p=>p.attributes?.GarmentSize===v&&servesEcuadorAndAbroad(p));
+        const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0;opacity:'+(allowed?'1':'.65');
+        const input=document.createElement('input');input.type='checkbox';input.value=v;input.disabled=!allowed;
+        label.append(input,document.createTextNode(v+(allowed?'':' · No cumple los 9 países')));sizes.append(label);
+      });
+      const enabled=values.filter(v=>sameModel.some(p=>p.attributes?.GarmentSize===v&&servesEcuadorAndAbroad(p)));
+      status.textContent='Tallas encontradas: '+values.join(', ')+'. Compatibles con los 9 destinos: '+(enabled.join(', ')||'ninguna')+'. Las demás se muestran para diagnóstico, pero no se pueden seleccionar.';
     });
     form.addEventListener('submit',()=>{
       for(const name of ['gelato_catalog','gelato_base_color','gelato_sizes','gelato_variant_uids','gelato_selection_problem'])form.querySelector('[name="'+name+'"]')?.remove();
