@@ -698,8 +698,8 @@
       const type=simplifiedPrintType(key);
       return type==='amplia'?'Frente + espalda + ambas mangas + etiqueta interior':type==='dos_caras'?'Frente + espalda + etiqueta interior':type==='frontal'?'Frente + etiqueta interior':'No disponible';
     };
-    // Solo variantes cuya ficha confirma Ecuador y al menos otro país.
-    const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&p.supportedCountries.includes('EC')&&p.supportedCountries.some(c=>c!=='EC');
+    // Solo modelos Gelato que admiten Ecuador, Estados Unidos y al menos un mercado internacional habitual.
+    const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&['EC','US'].every(c=>p.supportedCountries.includes(c))&&['CA','ES','MX','CO','PE','CL','GB'].some(c=>p.supportedCountries.includes(c));
     const refreshPrintOptions=()=>{
       const prior=modelSelect.value;
       modelSelect.replaceChildren();
@@ -731,7 +731,7 @@
         refreshPrintOptions();
         const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
         [...new Set(models.filter(servesEcuadorAndAbroad).map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
-        status.textContent=models.filter(servesEcuadorAndAbroad).length+' variantes disponibles para Ecuador y otros países. La disponibilidad por país se comprueba por separado. Elige modelo, color y tallas.';
+        status.textContent=models.filter(servesEcuadorAndAbroad).length+' variantes compatibles con Ecuador, Estados Unidos y otros destinos habituales. La disponibilidad por país se comprueba por separado. Elige modelo, color y tallas.';
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
     });
     const searchBox=document.createElement('div');
