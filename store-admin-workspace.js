@@ -511,58 +511,43 @@
     const areaNames=[['front','Frente'],['back','Espalda'],['left_sleeve','Manga izquierda'],['right_sleeve','Manga derecha'],['inner_label','Etiqueta interior']];
     const productId=(form.querySelector('[name="ids"]')?.value||'').split(',').filter(Boolean)[0]||'';
     const title=document.createElement('strong');title.textContent='Archivos de fabricación';
-    const help=document.createElement('p');help.style.fontSize='12px';help.textContent='Selecciona hasta 5 archivos juntos. Puedes asignar cada uno a una zona; los archivos ya guardados se conservan.';
-    const picker=document.createElement('input');picker.type='file';picker.multiple=true;picker.accept='image/png,image/jpeg,image/webp';picker.style.cssText='display:block;width:100%;max-width:100%;margin:8px 0';
-    const assignments=document.createElement('div'),existing=document.createElement('p'),uploadMessage=document.createElement('p');
+    const help=document.createElement('p');help.style.fontSize='12px';help.textContent='Elige un archivo para cada zona que quieras actualizar. Las zonas ya guardadas permanecen intactas si no eliges un nuevo archivo.';
+    const existing=document.createElement('p'),uploadMessage=document.createElement('p');
     existing.style.fontSize='12px';uploadMessage.style.fontSize='12px';
-    artwork.append(title,help,picker,assignments,existing,uploadMessage);area.append(artwork);
+    const fileInputs=new Map();
+    artwork.append(title,help);
+    for(const [key,label] of areaNames){
+      const row=document.createElement('label');row.style.cssText='display:block;border-top:1px solid #d5e1e9;padding:9px 0;font-size:12px';
+      const name=document.createElement('strong');name.textContent=label;name.style.display='block';
+      const picker=document.createElement('input');picker.type='file';picker.accept='image/png,image/jpeg,image/webp';picker.style.cssText='display:block;width:100%;max-width:100%;margin-top:5px;box-sizing:border-box';
+      row.append(name,picker);artwork.append(row);fileInputs.set(key,picker);
+    }
+    artwork.append(existing,uploadMessage);area.append(artwork);
     let uploadedAreas=new Set();
     const updateExisting=()=>{existing.textContent='Guardados: '+(areaNames.filter(([key])=>uploadedAreas.has(key)).map(([,name])=>name).join(', ')||'ninguno')+' · Pendientes de validación técnica'};
     fetch('/api/tienda-preview?action=gelato_print_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
       if(!data.ok)return;uploadedAreas=new Set((data.files||[]).filter(f=>f.product_id===productId).map(f=>f.area));updateExisting();
     }).catch(()=>{existing.textContent='No se pudo consultar el estado de archivos guardados.'});
-    const guessArea=name=>{
-      const value=name.toLowerCase();
-      if(/etiqueta|label|cuello|neck/.test(value))return 'inner_label';
-      if(/izquierda|left|manga.?i/.test(value))return 'left_sleeve';
-      if(/derecha|right|manga.?d/.test(value))return 'right_sleeve';
-      if(/espalda|back|posterior/.test(value))return 'back';
-      if(/frente|front|delantero/.test(value))return 'front';
-      return '';
-    };
-    picker.addEventListener('change',()=>{
-      assignments.replaceChildren();
-      const files=Array.from(picker.files||[]);
-      if(files.length>5){uploadMessage.textContent='Selecciona como máximo cinco archivos.';return}
-      uploadMessage.textContent=files.length?'Revisa las zonas asignadas antes de guardar.':'';
-      files.forEach((file,index)=>{
-        const line=document.createElement('label');line.style.cssText='display:block;margin:8px 0;font-size:12px';
-        const name=document.createElement('span');name.textContent=file.name+' → ';
-        const select=document.createElement('select');select.dataset.index=String(index);select.style.cssText='width:100%;max-width:100%;padding:6px;box-sizing:border-box';
-        const blank=document.createElement('option');blank.value='';blank.textContent='Elige la zona';select.append(blank);
-        areaNames.forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;select.append(option)});
-        select.value=guessArea(file.name);
-        line.append(name,select);assignments.append(line);
-      });
-    });
     const uploadSelected=async()=>{
-      const files=Array.from(picker.files||[]);
-      if(!files.length)return true;
-      const selections=Array.from(assignments.querySelectorAll('select')).map(x=>x.value);
-      if(files.length>5||selections.length!==files.length||selections.some(x=>!x)||new Set(selections).size!==selections.length){uploadMessage.textContent='Asigna una zona diferente a cada archivo.';return false}
-      for(let i=0;i<files.length;i++){
-        const file=files[i],areaKey=selections[i];
-        if(file.size>2000000||!['image/png','image/jpeg','image/webp'].includes(file.type)){uploadMessage.textContent='Archivo inválido: '+file.name+'. Máximo 2 MB, PNG/JPG/WebP.';return false}
-        uploadMessage.textContent='Guardando '+(i+1)+' de '+files.length+': '+file.name;
+      const selected=areaNames.map(([key,label])=>({key,label,file:fileInputs.get(key)?.files?.[0]})).filter(item=>item.file);
+      if(!selected.length){uploadMessage.textContent='Se conservaron los archivos que ya estaban guardados.';return true}
+      for(const item of selected){
+        if(item.file.size>2000000||!['image/png','image/jpeg','image/webp'].includes(item.file.type)){
+          uploadMessage.textContent='Archivo inválido en '+item.label+'. Usa PNG, JPG o WebP de máximo 2 MB.';return false;
+        }
+      }
+      for(let i=0;i<selected.length;i++){
+        const {key,label,file}=selected[i];
+        uploadMessage.textContent='Guardando '+label+' ('+(i+1)+' de '+selected.length+')…';
         try{
           const image=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=reject;reader.readAsDataURL(file)});
-          const response=await fetch('/api/tienda-preview',{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},body:new URLSearchParams({action:'upload_gelato_print_file',id:productId,area:areaKey,mime:file.type,image})});
+          const response=await fetch('/api/tienda-preview',{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},body:new URLSearchParams({action:'upload_gelato_print_file',id:productId,area:key,mime:file.type,image})});
           const result=await response.json();if(!response.ok||!result.ok)throw Error(result.reason||'falló el guardado');
-          uploadedAreas.add(areaKey);updateExisting();
-        }catch(error){uploadMessage.textContent='Error en '+file.name+': '+error.message+'. Los archivos guardados previamente se conservan.';return false}
+          uploadedAreas.add(key);updateExisting();fileInputs.get(key).value='';
+        }catch(error){uploadMessage.textContent='No se pudo guardar '+label+': '+error.message+'. Se mantienen los demás archivos.';return false}
       }
-      uploadMessage.textContent='Archivos guardados correctamente. Aún requieren validación de Gelato.';
-      picker.value='';assignments.replaceChildren();return true;
+      uploadMessage.textContent='Archivos seleccionados guardados. Pendientes de validación técnica con Gelato.';
+      return true;
     };
     const saveGelato=document.createElement('button');
     saveGelato.type='button';saveGelato.textContent='Guardar archivos y verificar selección';
