@@ -47,8 +47,8 @@
     },
     "gooten": {
       "priority": "international_fallback",
-      "credentials": "pending",
-      "variants": "pending_sku_stock_and_shipping_quote"
+      "credentials": "configured_in_vercel_production",
+      "variants": "read_only_variants_api_tested_live_stock_and_shipping_pending"
     }
   },
   "validationRequired": [
@@ -158,5 +158,19 @@
       "GB"
     ],
     "specificSkuShippingVerified": false
-  }
+  },
+  "releaseGate": {
+    "salesEnabled": false,
+    "requires": [
+      "Gooten stock check validated with live response",
+      "Supplier quote for each purchasable SKU and destination",
+      "Vendor production costs and shipping prices established",
+      "Payment capture and refund flow tested",
+      "Gooten exposed key rotated and protected",
+      "End-to-end test order verified without charging customer",
+      "Production endpoints and admin access security reviewed"
+    ],
+    "allRequired": true
+  },
+  "publicationPlan": "Bundle pending backend fixes; one deployment after quota clears; no automated sales activation"
 }
