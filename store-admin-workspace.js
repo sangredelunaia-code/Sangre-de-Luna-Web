@@ -32,7 +32,15 @@
    'portadas-categorias':document.getElementById('portadas-categorias'),
    'configuracion':document.getElementById('configuracion')
   };
-  if(Object.values(sections).some(x=>!x))return;
+  // Secciones opcionales pueden faltar según la versión del HTML.
+  // No cancelar la carga completa del panel de Gelato por un apartado ausente.
+  if(!sections['admin-resumen']||!sections['productos-registrados'])return;
+  for(const [id,element] of Object.entries(sections)){
+    if(element)continue;
+    const fallback=document.createElement('section');fallback.id=id;fallback.hidden=true;
+    fallback.textContent='Esta sección todavía no está disponible.';
+    main.append(fallback);sections[id]=fallback;
+  }
   const names={'admin-resumen':'Resumen general','colecciones-admin':'Colecciones y productos','crear-coleccion':'Nueva colección','crear-producto':'Nuevo producto','productos-registrados':'Productos registrados','portadas-categorias':'Portadas de categorías','configuracion':'Configuración avanzada'};
   // Respetar los formularios originales y sus event listeners, sin duplicar contenido.
   const oldWorkspace=document.getElementById('sdl-store-workspace');
