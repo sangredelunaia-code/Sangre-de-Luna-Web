@@ -716,7 +716,7 @@
       if([...modelSelect.options].some(o=>o.value===prior))modelSelect.value=prior;
     };
 
-    const compatible=p=>availableInCountry(p)&&p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
+    const compatible=p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     modelSelect.addEventListener('change',()=>color.dispatchEvent(new Event('change')));
     catalog.addEventListener('change',async()=>{
       const current=++version;models=[];color.replaceChildren();color.disabled=true;sizes.textContent='Selecciona un color';status.textContent='Consultando Gelato…';
@@ -745,10 +745,13 @@
       if(!catalogUid){status.textContent='Selecciona primero la categoría.';return}
       const index=version;const btn=searchBox.querySelector('button');btn.disabled=true;status.textContent='Buscando '+chosen+' en Gelato…';
       try{
-        const batches=await Promise.all(Array.from({length:10},(_,i)=>i*100).map(async offset=>{
+        const batches=[];
+        for(const offset of [0,100,200]){
           const response=await fetch('/api/tienda-preview?action=gelato_models&adult=1&catalog='+encodeURIComponent(catalogUid)+'&color='+encodeURIComponent(chosen)+'&offset='+offset,{credentials:'same-origin',cache:'no-store'});
-          const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');return data.products||[];
-        }));
+          const data=await response.json();if(!data.ok)throw Error(data.reason||'Gelato no disponible');
+          batches.push(data.products||[]);
+          if((data.products||[]).length<100)break;
+        }
         if(index!==version)return;
         const incoming=batches.flat().filter(p=>p.uid);
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
