@@ -477,7 +477,7 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    finally{clearTimeout(timer);}
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
-   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,offset,adultOnly,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),supportedCountries:Array.isArray(p.supportedCountries)?p.supportedCountries.filter(c=>c==='EC'||c==='US'):[],attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
+   return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,offset,adultOnly,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),supportedCountries:Array.isArray(p.supportedCountries)?p.supportedCountries.filter(c=>typeof c==='string'&&/^[A-Z]{2}$/.test(c)).slice(0,250):[],attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
   }catch(e){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
