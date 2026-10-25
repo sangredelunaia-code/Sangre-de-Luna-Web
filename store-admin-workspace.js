@@ -371,6 +371,23 @@
       const detail=print.includes('inlbl')?' · Etiqueta interior':print.includes('bk')?' · Incluye espalda':print.includes('shsl')?' · Incluye manga':' · Impresión básica';
       return [brand+sku,cut,quality,collar].filter(Boolean).join(' · ')+detail+' · Variante '+(i+1);
     };
+    const destinationPicker=document.createElement('label');destinationPicker.textContent='País donde recibirá el comprador ';
+    const countrySelect=document.createElement('select');
+    [['EC','Ecuador'],['US','Estados Unidos'],['CA','Canadá'],['ES','España'],['MX','México'],['CO','Colombia'],['PE','Perú'],['CL','Chile'],['GB','Reino Unido']].forEach(([code,name])=>{const option=document.createElement('option');option.value=code;option.textContent=name;countrySelect.append(option)});
+    destinationPicker.append(countrySelect);area.insertBefore(destinationPicker,modelLabel);
+    const availableInCountry=p=>Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value);
+    const updateCountryColors=()=>{
+      const before=color.value;
+      const values=[...new Set(models.filter(availableInCountry).map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort();
+      color.replaceChildren();const first=document.createElement('option');first.value='';first.textContent='Selecciona color compatible';color.append(first);
+      for(const v of values){const option=document.createElement('option');option.value=v;option.textContent=v;color.append(option)}
+      color.value=values.includes(before)?before:'';
+      color.disabled=!values.length;
+      refreshPrintOptions();
+      color.dispatchEvent(new Event('change'));
+      if(!values.length)status.textContent='No hay variantes compatibles con '+countrySelect.selectedOptions[0].textContent+' en los resultados consultados. Prueba otro modelo o país.';
+    };
+    countrySelect.addEventListener('change',updateCountryColors);
     const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
     const simplifiedPrintType=key=>{
       const a=Object.fromEntries(JSON.parse(key)),code=String(a.GarmentPrint||'').toLowerCase();
@@ -387,7 +404,7 @@
       modelSelect.replaceChildren();
       const first=document.createElement('option');first.value='';first.textContent='Elige tipo de impresión';modelSelect.append(first);
       const seen=new Set();
-      for(const key of [...new Set(models.map(modelKey))]){
+      for(const key of [...new Set(models.filter(availableInCountry).map(modelKey))]){
         const type=simplifiedPrintType(key);
         if(!type)continue;
         const a=Object.fromEntries(JSON.parse(key));
@@ -667,7 +684,7 @@
       if([...modelSelect.options].some(o=>o.value===prior))modelSelect.value=prior;
     };
 
-    const compatible=p=>p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
+    const compatible=p=>availableInCountry(p)&&p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     modelSelect.addEventListener('change',()=>color.dispatchEvent(new Event('change')));
     catalog.addEventListener('change',async()=>{
       const current=++version;models=[];color.replaceChildren();color.disabled=true;sizes.textContent='Selecciona un color';status.textContent='Consultando Gelato…';
@@ -680,7 +697,7 @@
         refreshPrintOptions();
         const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
         [...new Set(models.map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
-        color.disabled=!models.length;status.textContent=models.length+' variantes reales consultadas. Elige el color base y sus tallas.';
+        updateCountryColors();status.textContent=models.filter(availableInCountry).length+' variantes admitidas para '+countrySelect.selectedOptions[0].textContent+'. Elige modelo, color y tallas.';
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
     });
     const searchBox=document.createElement('div');
@@ -706,7 +723,7 @@
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(color.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)}}
         if(colors.length){color.disabled=false;color.value=colors[0];modelSelect.value='';color.dispatchEvent(new Event('change'));}
-        refreshPrintOptions();
+        updateCountryColors();
         status.textContent=colors.length?'Se encontraron colores: '+colors.join(', ')+'. Selecciona el color y modelo correspondiente.':'No aparece '+chosen+' en los resultados del catálogo consultado.';
       }catch(e){status.textContent='Error al buscar el color en Gelato: '+e.message}finally{btn.disabled=false}
     });
