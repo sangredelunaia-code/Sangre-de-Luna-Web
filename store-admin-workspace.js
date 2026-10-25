@@ -1,5 +1,25 @@
 /* Sangre de Luna · Panel de tienda: vistas independientes sin acordeones principales */
 (()=>{
+ const installStableNavigation=()=>{
+  const sidebar=document.querySelector('.sdl-admin-sidebar'),main=document.querySelector('.sdl-admin-content');
+  if(!sidebar||!main||sidebar.dataset.sdlStableNavigation)return;
+  sidebar.dataset.sdlStableNavigation='1';
+  const ids=['admin-resumen','colecciones-admin','crear-coleccion','crear-producto','productos-registrados','portadas-categorias','configuracion'];
+  const labels={'admin-resumen':'Resumen general','colecciones-admin':'Colecciones y productos','crear-coleccion':'Nueva colección','crear-producto':'Nuevo producto','productos-registrados':'Productos registrados','portadas-categorias':'Portadas de categorías','configuracion':'Configuración avanzada'};
+  const style=document.createElement('style');style.id='sdl-stable-nav-css';
+  style.textContent=ids.map(id=>'#'+id+'{display:none!important}').join('')+ids.map(id=>'#'+id+'.sdl-v2-visible{display:block!important}').join('');
+  document.head.append(style);
+  const show=id=>{
+   if(!ids.includes(id))id='admin-resumen';
+   for(const key of ids){const el=document.getElementById(key);if(!el)continue;el.classList.toggle('sdl-v2-visible',key===id);if(el.tagName==='DETAILS')el.open=key===id}
+   const heading=document.querySelector('#sdl-v2-title');if(heading)heading.textContent=labels[id];
+   sidebar.querySelectorAll('a[href^="#"]').forEach(a=>a.classList.toggle('sdl-v2-current',a.getAttribute('href')==='#'+id));
+  };
+  sidebar.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!ids.includes(id))return;e.preventDefault();e.stopImmediatePropagation();history.replaceState(null,'','#'+id);show(id)},true);
+  main.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]');if(!a)return;const id=a.getAttribute('href').slice(1);if(!ids.includes(id))return;e.preventDefault();e.stopImmediatePropagation();history.replaceState(null,'','#'+id);show(id)},true);
+  window.addEventListener('hashchange',()=>show(location.hash.slice(1)));
+  show(location.hash.slice(1));
+ };
  const boot=()=>{
   const main=document.querySelector('.sdl-admin-content'),sidebar=document.querySelector('.sdl-admin-sidebar');
   if(!main||!sidebar||document.getElementById('sdl-store-workspace-v2'))return;
@@ -819,7 +839,7 @@
   show(location.hash.slice(1));
  };
  // Restore one visible panel when switching sections; keep all Gelato setup code untouched.
- const safeInit=()=>{try{boot()}catch(e){console.error('sdl_panel_init_error',e?.message)}};
+ const safeInit=()=>{installStableNavigation();try{boot()}catch(e){console.error('sdl_panel_init_error',e?.message)}};
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',safeInit);else safeInit();
 })();
 ;(()=>{function wire(){const browser=document.querySelector('.sdl-store-collection-browser');if(!browser||browser.dataset.wired)return;browser.dataset.wired='1';const grid=browser.querySelector('.sdl-collection-grid');const screens=[...browser.querySelectorAll('.sdl-col-screen')];const reset=()=>{grid.hidden=false;screens.forEach(x=>{x.hidden=true;x.querySelectorAll('.sdl-category-content').forEach(y=>y.hidden=true);x.querySelectorAll('.sdl-category-tile').forEach(y=>y.hidden=false)})};browser.addEventListener('click',e=>{const open=e.target.closest('[data-sdl-col]');if(open){const index=Number(open.dataset.sdlCol);reset();grid.hidden=true;if(screens[index])screens[index].hidden=false;return}if(e.target.closest('.sdl-col-back')){reset();return}const category=e.target.closest('.sdl-cat-open');if(category){const screen=category.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>x.hidden=true);const tile=category.closest('.sdl-category-tile');tile.hidden=false;tile.querySelector('.sdl-cat-open').hidden=true;tile.querySelector('.sdl-category-content').hidden=false;screen.querySelector('.sdl-category-grid').style.display='block';return}if(e.target.closest('.sdl-cat-back')){const screen=e.target.closest('.sdl-col-screen');screen.querySelectorAll('.sdl-category-tile').forEach(x=>{x.hidden=false;x.querySelector('.sdl-cat-open').hidden=false;x.querySelector('.sdl-category-content').hidden=true});screen.querySelector('.sdl-category-grid').style.display='grid'}})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wire);else wire()})();
