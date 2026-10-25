@@ -28,7 +28,16 @@
       "XL",
       "2XL",
       "3XL"
-    ]
+    ],
+    "baseColors": [
+      "Negro",
+      "Blanco",
+      "Azul nocturno"
+    ],
+    "colorsPolicy": "Base colors are initial examples only, not an exhaustive list. Additional colors must be discovered from provider variant catalog and validated by SKU, size and destination.",
+    "expandableColors": true,
+    "catalogDrivenColors": true,
+    "colorsAreExhaustive": false
   },
   "providers": {
     "gelato": {
@@ -56,7 +65,8 @@
   "testMatrix": {
     "expectedCombinations": 162,
     "verifiedCombinations": 0,
-    "catalogCandidateCombinations": 18
+    "catalogCandidateCombinations": 18,
+    "expectedCombinationsIsBaseline": true
   },
   "fulfillmentNote": "Only Gelato and Gooten. Customers never choose a provider. Never show unverified variants.",
   "candidates": [
