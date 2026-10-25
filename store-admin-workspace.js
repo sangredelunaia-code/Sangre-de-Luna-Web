@@ -848,14 +848,13 @@
   const providerPanel=document.createElement('section');
   providerPanel.id='sdl-provider-routing';
   providerPanel.style.cssText='border:1px solid #a8c1d3;background:#f5f9fc;border-radius:10px;padding:14px;margin:14px 0;color:#183b53';
-  const providerHeading=document.createElement('strong');providerHeading.textContent='Fabricación y entregas · 3 proveedores';
+  const providerHeading=document.createElement('strong');providerHeading.textContent='Fabricación y entregas · 2 proveedores';
   const providerIntro=document.createElement('p');
   providerIntro.textContent='Una sola ficha de producto para el comprador. Selección interna del proveedor por país, talla, color y técnica de impresión, únicamente después de verificar capacidad de fabricación y envío.';
   providerIntro.style.cssText='font-size:12px;line-height:1.5';
   const providerStatuses=[
     ['Gelato','Conectado al catálogo · verificar variantes, impresión, costo y destino'],
-    ['Gooten','Pendiente de credenciales, catálogo y prueba real de envío a Ecuador'],
-    ['Infrarojo (Ecuador)','Pendiente de convenio, precios, catálogo, áreas de impresión y logística']
+    ['Gooten','Conectado al catálogo y variantes; pendientes validación de envíos y costos por destino']
   ];
   const providerList=document.createElement('div');
   for(const [name,state] of providerStatuses){
