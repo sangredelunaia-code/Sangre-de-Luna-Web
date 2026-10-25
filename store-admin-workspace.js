@@ -507,43 +507,71 @@
     area.innerHTML='<legend>Configurar fabricación en Gelato</legend><label>Categoría de Gelato <select data-gelato-catalog><option value="">Elegir categoría</option><option value="t-shirts">Camiseta unisex para adultos (recomendada para Origen)</option><option value="sweatshirts">Sudaderas y hoodies (recomendado para colección sudaderas)</option><option value="mugs">Tazas para personalizar</option></select></label><label>Color base real de Gelato <select data-gelato-color disabled><option value="">Selecciona categoría primero</option></select></label><fieldset style="border:1px solid #d6e0e8;padding:10px;margin-top:10px"><legend>Tallas disponibles para el color</legend><div data-gelato-sizes>Selecciona categoría y color</div></fieldset><p data-gelato-state role="status">La vinculación será guardada como pendiente de verificación, sin activar pedidos.</p>';
     form.append(area);
     const artwork=document.createElement('section');
-    artwork.style.cssText='border:1px solid #c1d1df;border-radius:8px;padding:10px;margin-top:12px;box-sizing:border-box;max-width:100%;overflow:hidden';
-    artwork.innerHTML='<strong>Archivos para fabricar esta camiseta</strong><p style="font-size:12px">Carga cada imagen de impresión por separado. Solo se guardan de forma privada. No se envían pedidos a Gelato.</p>';
+    artwork.style.cssText='border:1px solid #c1d1df;border-radius:8px;padding:12px;margin-top:12px;box-sizing:border-box;max-width:100%;overflow:hidden';
     const areaNames=[['front','Frente'],['back','Espalda'],['left_sleeve','Manga izquierda'],['right_sleeve','Manga derecha'],['inner_label','Etiqueta interior']];
     const productId=(form.querySelector('[name="ids"]')?.value||'').split(',').filter(Boolean)[0]||'';
-    for(const [key,label] of areaNames){
-      const row=document.createElement('div');row.style.cssText='display:grid;grid-template-columns:minmax(0,1fr);gap:5px;border-top:1px solid #dae4eb;padding:10px 0';
-      const heading=document.createElement('label');heading.textContent=label;
-      const file=document.createElement('input');file.type='file';file.accept='image/png,image/jpeg,image/webp';file.style.cssText='max-width:100%;width:100%;box-sizing:border-box';
-      const save=document.createElement('button');save.type='button';save.textContent='Guardar '+label.toLowerCase();save.style.cssText='padding:8px;background:#194563;color:white;border:0;border-radius:6px;cursor:pointer';
-      const status=document.createElement('small');status.textContent='Sin verificar';
-      save.addEventListener('click',async()=>{
-        if(!file.files?.length){status.textContent='Selecciona una imagen primero.';return}
-        const selected=file.files[0];if(selected.size>2000000||!['image/png','image/jpeg','image/webp'].includes(selected.type)){status.textContent='Usa PNG, JPG o WebP de máximo 2 MB.';return}
-        save.disabled=true;status.textContent='Guardando…';
-        try{
-          const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=reject;reader.readAsDataURL(selected)});
-          const response=await fetch('/api/tienda-preview',{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},body:new URLSearchParams({action:'upload_gelato_print_file',id:productId,area:key,mime:selected.type,image:data})});
-          const result=await response.json();if(!response.ok||!result.ok)throw Error(result.reason||'Error al guardar');
-          status.textContent='Archivo guardado · Pendiente de validación técnica';
-        }catch(error){status.textContent='No se pudo guardar: '+error.message}finally{save.disabled=false}
-      });
-      heading.append(file);row.append(heading,save,status);artwork.append(row);
-    }
-    area.append(artwork);
+    const title=document.createElement('strong');title.textContent='Archivos de fabricación';
+    const help=document.createElement('p');help.style.fontSize='12px';help.textContent='Selecciona hasta 5 archivos juntos. Puedes asignar cada uno a una zona; los archivos ya guardados se conservan.';
+    const picker=document.createElement('input');picker.type='file';picker.multiple=true;picker.accept='image/png,image/jpeg,image/webp';picker.style.cssText='display:block;width:100%;max-width:100%;margin:8px 0';
+    const assignments=document.createElement('div'),existing=document.createElement('p'),uploadMessage=document.createElement('p');
+    existing.style.fontSize='12px';uploadMessage.style.fontSize='12px';
+    artwork.append(title,help,picker,assignments,existing,uploadMessage);area.append(artwork);
+    let uploadedAreas=new Set();
+    const updateExisting=()=>{existing.textContent='Guardados: '+(areaNames.filter(([key])=>uploadedAreas.has(key)).map(([,name])=>name).join(', ')||'ninguno')+' · Pendientes de validación técnica'};
     fetch('/api/tienda-preview?action=gelato_print_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
-      if(!data.ok)return;
-      const stored=new Set((data.files||[]).filter(f=>f.product_id===productId).map(f=>f.area));
-      [...artwork.querySelectorAll('small')].forEach((status,i)=>{if(stored.has(areaNames[i][0]))status.textContent='Archivo guardado · Pendiente de validación técnica'});
-    }).catch(()=>{});
+      if(!data.ok)return;uploadedAreas=new Set((data.files||[]).filter(f=>f.product_id===productId).map(f=>f.area));updateExisting();
+    }).catch(()=>{existing.textContent='No se pudo consultar el estado de archivos guardados.'});
+    const guessArea=name=>{
+      const value=name.toLowerCase();
+      if(/etiqueta|label|cuello|neck/.test(value))return 'inner_label';
+      if(/izquierda|left|manga.?i/.test(value))return 'left_sleeve';
+      if(/derecha|right|manga.?d/.test(value))return 'right_sleeve';
+      if(/espalda|back|posterior/.test(value))return 'back';
+      if(/frente|front|delantero/.test(value))return 'front';
+      return '';
+    };
+    picker.addEventListener('change',()=>{
+      assignments.replaceChildren();
+      const files=Array.from(picker.files||[]);
+      if(files.length>5){uploadMessage.textContent='Selecciona como máximo cinco archivos.';return}
+      uploadMessage.textContent=files.length?'Revisa las zonas asignadas antes de guardar.':'';
+      files.forEach((file,index)=>{
+        const line=document.createElement('label');line.style.cssText='display:block;margin:8px 0;font-size:12px';
+        const name=document.createElement('span');name.textContent=file.name+' → ';
+        const select=document.createElement('select');select.dataset.index=String(index);select.style.cssText='width:100%;max-width:100%;padding:6px;box-sizing:border-box';
+        const blank=document.createElement('option');blank.value='';blank.textContent='Elige la zona';select.append(blank);
+        areaNames.forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;select.append(option)});
+        select.value=guessArea(file.name);
+        line.append(name,select);assignments.append(line);
+      });
+    });
+    const uploadSelected=async()=>{
+      const files=Array.from(picker.files||[]);
+      if(!files.length)return true;
+      const selections=Array.from(assignments.querySelectorAll('select')).map(x=>x.value);
+      if(files.length>5||selections.length!==files.length||selections.some(x=>!x)||new Set(selections).size!==selections.length){uploadMessage.textContent='Asigna una zona diferente a cada archivo.';return false}
+      for(let i=0;i<files.length;i++){
+        const file=files[i],areaKey=selections[i];
+        if(file.size>2000000||!['image/png','image/jpeg','image/webp'].includes(file.type)){uploadMessage.textContent='Archivo inválido: '+file.name+'. Máximo 2 MB, PNG/JPG/WebP.';return false}
+        uploadMessage.textContent='Guardando '+(i+1)+' de '+files.length+': '+file.name;
+        try{
+          const image=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.onerror=reject;reader.readAsDataURL(file)});
+          const response=await fetch('/api/tienda-preview',{method:'POST',credentials:'same-origin',headers:{Accept:'application/json'},body:new URLSearchParams({action:'upload_gelato_print_file',id:productId,area:areaKey,mime:file.type,image})});
+          const result=await response.json();if(!response.ok||!result.ok)throw Error(result.reason||'falló el guardado');
+          uploadedAreas.add(areaKey);updateExisting();
+        }catch(error){uploadMessage.textContent='Error en '+file.name+': '+error.message+'. Los archivos guardados previamente se conservan.';return false}
+      }
+      uploadMessage.textContent='Archivos guardados correctamente. Aún requieren validación de Gelato.';
+      picker.value='';assignments.replaceChildren();return true;
+    };
     const saveGelato=document.createElement('button');
-    saveGelato.type='button';saveGelato.textContent='Guardar selección de Gelato';
+    saveGelato.type='button';saveGelato.textContent='Guardar archivos y verificar selección';
     saveGelato.style.cssText='display:block;width:100%;padding:12px;background:#16496a;color:white;font-weight:700;border:0;border-radius:8px;margin-top:12px;cursor:pointer;box-sizing:border-box';
     const saveHint=document.createElement('p');
     saveHint.style.cssText='font-size:12px;margin:7px 0;color:#325470';
-    saveHint.textContent='Guarda la selección como borrador privado. No realiza pedidos ni envía archivos a Gelato.';
+    saveHint.textContent='Guarda los archivos seleccionados y comprueba la selección de variantes. No envía archivos a Gelato ni realiza pedidos.';
     area.append(saveGelato,saveHint);
-    saveGelato.addEventListener('click',()=>{
+    saveGelato.addEventListener('click',async()=>{\n      saveGelato.disabled=true;\n      try{if(!(await uploadSelected()))return;}finally{saveGelato.disabled=false;}
       const id=form.querySelector('[name="gelato_target_id"]');
       if(id&&!id.value){const selected=form.querySelector('[name="gelato_store_color"]')?.selectedOptions?.[0];if(selected?.dataset.target)id.value=selected.dataset.target;else{saveHint.textContent='Primero elige el color que quieres configurar.';return}}
       const sel=area.querySelector('[data-gelato-catalog]'),base=area.querySelector('[data-gelato-color]');
