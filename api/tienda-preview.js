@@ -380,6 +380,18 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    return res.end(JSON.stringify({ok:!!ok,productId:id,productUid:uid,status:'mapping_approved_print_and_shipping_pending',ordersEnabled:false}));
   }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'verification_unavailable'}));}
  }
+ if(req.method==='GET'&&req.query&&req.query.action==='public_country_availability'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  res.setHeader('Cache-Control','public, max-age=0, s-maxage=120');
+  const country=String(req.query.country||'').toUpperCase();
+  if(!/^[A-Z]{2}$/.test(country)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_country'}));}
+  try{
+   const entries=await rpc('sdl_store_gelato_countries_list',{p_secret:SESSION_SECRET});
+   const pilot='SDL-NEW-1791835993474996';
+   const sizes=(Array.isArray(entries)?entries:[]).filter(v=>v.product_id===pilot&&Array.isArray(v.supported_countries)&&v.supported_countries.includes(country)).map(v=>String(v.size||'')).filter(Boolean);
+   return res.end(JSON.stringify({ok:true,country,productId:pilot,availableSizes:[...new Set(sizes)],ordersEnabled:false,checkoutEnabled:false,verificationOnly:true}));
+  }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'availability_unconfirmed'}));}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='public_catalog'){
   if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
   res.setHeader('Content-Type','application/json; charset=utf-8');
