@@ -299,7 +299,7 @@ async function saveVerifiedGelatoVariants(id,category,raw){
  if(!catalog||!raw||!process.env.GELATO_API_KEY)return {saved:0,reason:'not_configured',issues:[]};
  let entries;try{entries=JSON.parse(raw)}catch(e){return {saved:0,reason:'bad_selection',issues:[]};}
  if(!Array.isArray(entries)||!entries.length||entries.length>20)return {saved:0,reason:'invalid_selection',issues:[]};
- const approved=[],issues=[];let color='';
+ const approved=[],issues=[],countryRows=[];let color='';
  for(const entry of entries){
   const uid=String(entry?.uid||''),size=String(entry?.size||''),requestedColor=String(entry?.color||'');
   if(uid.length<8||uid.length>250||size.length>24||requestedColor.length>80||!size||!requestedColor||(color&&requestedColor!==color)){issues.push({size:size.slice(0,24),reason:'invalid_selection'});continue;}
@@ -311,16 +311,22 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    if(model.productUid!==uid||a.GarmentColor!==requestedColor||a.GarmentSize!==size){issues.push({size,reason:'variant_mismatch'});continue;}
    if(String(a.ProductStatus).toLowerCase()!=='activated'){issues.push({size,reason:'inactive_product'});continue;}
    if(/(kids|youth|child|infant|baby)/i.test(String(a.GarmentCut||''))){issues.push({size,reason:'not_adult'});continue;}
-   if(!Array.isArray(model.supportedCountries)){issues.push({size,reason:'countries_unconfirmed'});continue;}
-   if(!model.supportedCountries.includes('EC')){issues.push({size,reason:'ecuador_not_supported'});continue;}
    color=requestedColor;approved.push({size,uid});
+   if(Array.isArray(model.supportedCountries))countryRows.push({size,uid,countries:model.supportedCountries.filter(x=>typeof x==='string'&&/^[A-Z]{2}$/.test(x))});
+   else issues.push({size,reason:'countries_unconfirmed'});
   }catch(e){issues.push({size,reason:e?.name==='AbortError'?'provider_timeout':'provider_error'});}finally{clearTimeout(timer);}
  }
  if(!approved.length)return {saved:0,requested:entries.length,reason:'no_verified_ec_variants',issues};
  const saved=await rpc('sdl_store_gelato_variants_save',{p_secret:SESSION_SECRET,p_id:id,p_catalog:catalog,p_color:color,p_variants:approved});
- return {saved:Number(saved)||0,requested:entries.length,reason:'pending_review',issues};
+ if(countryRows.length)await rpc('sdl_store_gelato_countries_save',{p_secret:SESSION_SECRET,p_id:id,p_color:color,p_rows:countryRows});
+ return {saved:Number(saved)||0,requested:entries.length,reason:'pending_review',issues,ecuadorSupported:countryRows.filter(x=>x.countries.includes('EC')).length,internationalOnly:countryRows.filter(x=>!x.countries.includes('EC')).length};
 }
 
+ if(req.method==='GET'&&req.query&&req.query.action==='gelato_destination_status'){
+  res.setHeader('Content-Type','application/json; charset=utf-8');
+  if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false}));}
+  try{return res.end(JSON.stringify({ok:true,variants:await rpc('sdl_store_gelato_countries_list',{p_secret:SESSION_SECRET}),saleEnabled:false}));}catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false}));}
+ }
  if(req.method==='GET'&&req.query&&req.query.action==='gelato_print_status'){
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false}));}
