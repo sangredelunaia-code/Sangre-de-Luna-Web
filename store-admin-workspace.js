@@ -699,6 +699,16 @@
       return type==='amplia'?'Frente + espalda + ambas mangas + etiqueta interior':type==='dos_caras'?'Frente + espalda + etiqueta interior':type==='frontal'?'Frente + etiqueta interior':'No disponible';
     };
     // Solo modelos Gelato que admiten Ecuador, Estados Unidos y al menos un mercado internacional habitual.
+    const destinationPicker=document.createElement('label');
+    destinationPicker.textContent='País de entrega para comprobar tallas ';
+    destinationPicker.style.cssText='display:block;margin:10px 0;font-weight:600';
+    const countrySelect=document.createElement('select');
+    countrySelect.style.cssText='display:block;width:100%;max-width:430px;padding:8px;margin-top:5px';
+    [['EC','Ecuador'],['US','Estados Unidos'],['CA','Canadá'],['ES','España'],['MX','México'],['CO','Colombia'],['PE','Perú'],['CL','Chile'],['GB','Reino Unido'],['FR','Francia'],['DE','Alemania'],['IT','Italia'],['AU','Australia'],['BR','Brasil']].forEach(([code,name])=>{
+      const option=document.createElement('option');option.value=code;option.textContent=name;countrySelect.append(option);
+    });
+    destinationPicker.append(countrySelect);
+    area.insertBefore(destinationPicker,area.querySelector('[data-gelato-catalog]')?.parentElement||area.firstChild);
     const requiredDestinations=['EC','US','CA','ES','MX','CO','PE','CL','GB'];
     const extraDestinations=['FR','DE','IT','AU','BR'];
     const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&requiredDestinations.some(c=>p.supportedCountries.includes(c));
