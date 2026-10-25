@@ -448,7 +448,7 @@
 
     const compatible=p=>p.attributes?.GarmentColor===colorSelect.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     const garment=(p)=>p.attributes||{};
-    const qualifies=(p)=>Array.isArray(p.supportedCountries)&&['EC','US','CA','ES','MX','CO','PE','CL','GB'].every(c=>p.supportedCountries.includes(c))&&p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
+    const qualifies=(p)=>Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value)&&p.uid&&String(garment(p).ProductStatus||'').toLowerCase()==='activated'&&!['kids','youth','children'].includes(String(garment(p).GarmentCut||'').toLowerCase());
     const refreshSizes=()=>{
       sizes.replaceChildren();
       const options=[...new Set(models.filter(compatible).map(p=>String(garment(p).GarmentSize||'')).filter(Boolean))];
@@ -701,7 +701,7 @@
     // Solo modelos Gelato que admiten Ecuador, Estados Unidos y al menos un mercado internacional habitual.
     const requiredDestinations=['EC','US','CA','ES','MX','CO','PE','CL','GB'];
     const extraDestinations=['FR','DE','IT','AU','BR'];
-    const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&requiredDestinations.every(c=>p.supportedCountries.includes(c));
+    const servesEcuadorAndAbroad=p=>Array.isArray(p.supportedCountries)&&requiredDestinations.some(c=>p.supportedCountries.includes(c));
     const refreshPrintOptions=()=>{
       const prior=modelSelect.value;
       modelSelect.replaceChildren();
@@ -720,8 +720,9 @@
       if([...modelSelect.options].some(o=>o.value===prior))modelSelect.value=prior;
     };
 
-    const compatible=p=>servesEcuadorAndAbroad(p)&&p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
+    const compatible=p=>Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value)&&p.attributes?.GarmentColor===color.value&&(!modelSelect.value||modelKey(p)===modelSelect.value);
     modelSelect.addEventListener('change',()=>color.dispatchEvent(new Event('change')));
+    countrySelect.addEventListener('change',()=>{modelSelect.value='';refreshPrintOptions();color.dispatchEvent(new Event('change'));});
     catalog.addEventListener('change',async()=>{
       const current=++version;models=[];color.replaceChildren();color.disabled=true;sizes.textContent='Selecciona un color';status.textContent='Consultando Gelato…';
       if(!catalog.value){status.textContent='Elige una categoría.';return}
@@ -732,7 +733,7 @@
         modelSelect.replaceChildren();const initial=document.createElement('option');initial.value='';initial.textContent='Selecciona modelo de fabricación';modelSelect.append(initial);
         refreshPrintOptions();
         const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona color base';color.append(placeholder);
-        [...new Set(models.filter(servesEcuadorAndAbroad).map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
+        [...new Set(models.filter(p=>Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value)).map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort().forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)});
         status.textContent=models.filter(servesEcuadorAndAbroad).length+' variantes que incluyen los 9 destinos exigidos (Ecuador, Estados Unidos, Canadá, España, México, Colombia, Perú, Chile y Reino Unido). '+(models.some(servesEcuadorAndAbroad)?'Se priorizan además Francia, Alemania, Italia, Australia y Brasil cuando estén admitidos.':'No se encontró todavía un modelo que cumpla todos los destinos; no se mostrará un fabricante incompatible.');
       }catch(e){if(current===version)status.textContent='No fue posible consultar Gelato; conserva los datos del producto sin modificar.'}
     });
@@ -757,7 +758,7 @@
           if((data.products||[]).length<100)break;
         }
         if(index!==version)return;
-        const incoming=batches.flat().filter(p=>p.uid&&servesEcuadorAndAbroad(p));
+        const incoming=batches.flat().filter(p=>p.uid);
         const existing=new Set(models.map(p=>p.uid));for(const p of incoming){if(!existing.has(p.uid)){models.push(p);existing.add(p.uid)}}
         const colors=[...new Set(incoming.map(p=>p.attributes?.GarmentColor).filter(Boolean))];
         for(const v of colors){if(!Array.from(color.options).some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v;color.append(o)}}
@@ -774,13 +775,13 @@
       const order=['XS','S','M','L','XL','2XL','3XL','4XL','5XL'];
       values.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
       values.forEach(v=>{
-        const allowed=sameModel.some(p=>p.attributes?.GarmentSize===v&&servesEcuadorAndAbroad(p));
+        const allowed=sameModel.some(p=>p.attributes?.GarmentSize===v&&Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value));
         const label=document.createElement('label');label.style.cssText='display:inline-flex;align-items:center;gap:5px;margin:5px 12px 5px 0;opacity:'+(allowed?'1':'.65');
         const input=document.createElement('input');input.type='checkbox';input.value=v;input.disabled=!allowed;
-        label.append(input,document.createTextNode(v+(allowed?'':' · No cumple los 9 países')));sizes.append(label);
+        label.append(input,document.createTextNode(v+(allowed?'':' · No disponible para '+countrySelect.selectedOptions[0].textContent)));sizes.append(label);
       });
-      const enabled=values.filter(v=>sameModel.some(p=>p.attributes?.GarmentSize===v&&servesEcuadorAndAbroad(p)));
-      status.textContent='Tallas encontradas: '+values.join(', ')+'. Compatibles con los 9 destinos: '+(enabled.join(', ')||'ninguna')+'. Las demás se muestran para diagnóstico, pero no se pueden seleccionar.';
+      const enabled=values.filter(v=>sameModel.some(p=>p.attributes?.GarmentSize===v&&Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value)));
+      status.textContent='Tallas compatibles con '+countrySelect.selectedOptions[0].textContent+': '+(enabled.join(', ')||'ninguna')+'. Las demás no pueden seleccionarse para este destino.';
     });
     form.addEventListener('submit',()=>{
       for(const name of ['gelato_catalog','gelato_base_color','gelato_sizes','gelato_variant_uids','gelato_selection_problem'])form.querySelector('[name="'+name+'"]')?.remove();
