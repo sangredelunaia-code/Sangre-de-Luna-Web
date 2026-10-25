@@ -402,18 +402,19 @@
     const destinationPicker=document.createElement('label');destinationPicker.textContent='País donde recibirá el comprador ';
     const countrySelect=document.createElement('select');
     [['EC','Ecuador'],['US','Estados Unidos'],['CA','Canadá'],['ES','España'],['MX','México'],['CO','Colombia'],['PE','Perú'],['CL','Chile'],['GB','Reino Unido']].forEach(([code,name])=>{const option=document.createElement('option');option.value=code;option.textContent=name;countrySelect.append(option)});
-    destinationPicker.append(countrySelect);area.insertBefore(destinationPicker,modelLabel);
+    destinationPicker.append(countrySelect);modelLabel.before(destinationPicker);
     const availableInCountry=p=>Array.isArray(p.supportedCountries)&&p.supportedCountries.includes(countrySelect.value);
     const updateCountryColors=()=>{
-      const before=color.value;
+      const before=colorSelect.value;
       const values=[...new Set(models.filter(availableInCountry).map(p=>p.attributes?.GarmentColor).filter(Boolean))].sort();
-      color.replaceChildren();const first=document.createElement('option');first.value='';first.textContent='Selecciona color compatible';color.append(first);
-      for(const v of values){const option=document.createElement('option');option.value=v;option.textContent=v;color.append(option)}
-      color.value=values.includes(before)?before:'';
-      color.disabled=!values.length;
+      colorSelect.replaceChildren();
+      const first=document.createElement('option');first.value='';first.textContent='Selecciona color compatible';colorSelect.append(first);
+      for(const v of values){const option=document.createElement('option');option.value=v;option.textContent=v;colorSelect.append(option)}
+      colorSelect.value=values.includes(before)?before:'';
+      colorSelect.disabled=!values.length;
       refreshPrintOptions();
-      color.dispatchEvent(new Event('change'));
-      if(!values.length)status.textContent='No hay variantes compatibles con '+countrySelect.selectedOptions[0].textContent+' en los resultados consultados. Prueba otro modelo o país.';
+      colorSelect.dispatchEvent(new Event('change'));
+      if(!values.length)message.textContent='No hay variantes compatibles con '+countrySelect.selectedOptions[0].textContent+' en los resultados consultados. Prueba otro modelo o país.';
     };
     countrySelect.addEventListener('change',updateCountryColors);
     const modelKey=p=>JSON.stringify(Object.entries(p.attributes||{}).filter(([k])=>!['GarmentColor','GarmentSize','ProductStatus'].includes(k)).sort(([a],[b])=>a.localeCompare(b)));
