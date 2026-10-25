@@ -571,7 +571,9 @@
     saveHint.style.cssText='font-size:12px;margin:7px 0;color:#325470';
     saveHint.textContent='Guarda los archivos seleccionados y comprueba la selección de variantes. No envía archivos a Gelato ni realiza pedidos.';
     area.append(saveGelato,saveHint);
-    saveGelato.addEventListener('click',async()=>{\n      saveGelato.disabled=true;\n      try{if(!(await uploadSelected()))return;}finally{saveGelato.disabled=false;}
+    saveGelato.addEventListener('click',async()=>{
+      saveGelato.disabled=true;
+      try{if(!(await uploadSelected()))return;}finally{saveGelato.disabled=false;}
       const id=form.querySelector('[name="gelato_target_id"]');
       if(id&&!id.value){const selected=form.querySelector('[name="gelato_store_color"]')?.selectedOptions?.[0];if(selected?.dataset.target)id.value=selected.dataset.target;else{saveHint.textContent='Primero elige el color que quieres configurar.';return}}
       const sel=area.querySelector('[data-gelato-catalog]'),base=area.querySelector('[data-gelato-color]');
