@@ -751,6 +751,22 @@
       }
     });
   }
+  const destinationPanel=document.createElement('section');
+  destinationPanel.style.cssText='border:1px solid #b5cadb;background:#edf5fa;border-radius:10px;padding:12px;margin:14px 0;color:#12354b';
+  destinationPanel.innerHTML='<strong>Gelato · fabricación y países de envío</strong><p style="font-size:12px">Los identificadores se comprueban independientemente de los países. Ecuador solo estará habilitado si Gelato confirma compatibilidad. No se activan ventas.</p>';
+  const destList=document.createElement('div');destList.style.cssText='font-size:12px;line-height:1.7';destList.textContent='Consultando variantes verificadas…';destinationPanel.append(destList);
+  sections['productos-registrados'].prepend(destinationPanel);
+  fetch('/api/tienda-preview?action=gelato_destination_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
+    if(!data.ok){destList.textContent='No se pudo confirmar disponibilidad de envío.';return}
+    const pilot=(data.variants||[]).filter(x=>x.product_id==='SDL-NEW-1791835993474996');
+    destList.replaceChildren();
+    if(!pilot.length){destList.textContent='Azul Nocturno: falta guardar y verificar las variantes para mostrar países de envío.';return}
+    pilot.sort((a,b)=>['S','M','L','XL','2XL'].indexOf(a.size)-['S','M','L','XL','2XL'].indexOf(b.size)).forEach(v=>{
+      const p=document.createElement('p');p.style.margin='3px 0';
+      p.textContent='Talla '+v.size+': UID comprobado · Ecuador '+(v.ecuador_available?'incluido':'NO admitido')+' · '+v.countries_count+' países disponibles';
+      destList.append(p);
+    });
+  }).catch(()=>{destList.textContent='Sin conexión para consultar destinos.'});
   // Logo oficial para etiqueta interior: archivo independiente de las fotos del producto.
   const labelLogoPanel=document.createElement('section');
   labelLogoPanel.style.cssText='box-sizing:border-box;max-width:100%;padding:14px;border:1px solid #bed1df;border-radius:10px;margin:14px 0;background:#f5f8fc;color:#16314c;overflow:hidden';
