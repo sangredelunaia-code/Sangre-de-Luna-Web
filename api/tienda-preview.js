@@ -550,6 +550,26 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    else for await (const part of req) {data+=part.toString('utf8');if(data.length>7200000)break;}
    if(data.length>7200000) return respond(res,413,loginPage(true));
    const p=new URLSearchParams(data);
+   if(p.get('action')==='create_master_pdf_upload'){
+    res.setHeader('Content-Type','application/json; charset=utf-8');
+    res.setHeader('Cache-Control','no-store');
+    if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
+    const id=String(p.get('id')||''),size=Number(p.get('size')),filename=String(p.get('filename')||'');
+    if(!/^SDL-NEW-[0-9]{8,16}$/.test(id)||!filename.toLowerCase().endsWith('.pdf')||filename.length>170||!Number.isSafeInteger(size)||size<100||size>104857600){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_master_pdf'}));}
+    const url=String(process.env.SDL_STORE_SUPABASE_URL||'').replace(/\\/$/,'');
+    const serviceKey=process.env.SDL_STORE_SUPABASE_SERVICE_ROLE_KEY;
+    if(!/^https:\/\/[-a-z0-9.]+\\.supabase\\.co$/.test(url)||!serviceKey){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'private_pdf_storage_not_configured'}));}
+    try{
+     const crypto=require('node:crypto');
+     const key=id+'/'+crypto.randomUUID()+'.pdf';
+     const upstream=await fetch(url+'/storage/v1/object/upload/sign/sdl-master-pdfs/'+key,{method:'POST',headers:{Authorization:'Bearer '+serviceKey,apikey:serviceKey,'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(10000)});
+     if(!upstream.ok){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'signed_upload_unavailable'}));}
+     const signed=await upstream.json();
+     const path=String(signed.url||'');
+     if(!path.startsWith('/object/upload/sign/sdl-master-pdfs/')||!path.includes('token=')){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'invalid_signed_upload'}));}
+     return res.end(JSON.stringify({ok:true,uploadUrl:url+'/storage/v1'+path,objectPath:key,private:true,requiresProductionReview:true}));
+    }catch(e){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'private_storage_unavailable'}));}
+   }
    if(p.get('action')==='upload_gelato_print_file'){
     res.setHeader('Content-Type','application/json; charset=utf-8');
     if(!(await isValidSession(req))){res.statusCode=403;return res.end(JSON.stringify({ok:false,reason:'login_required'}));}
