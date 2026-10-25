@@ -463,7 +463,7 @@ async function saveVerifiedGelatoVariants(id,category,raw){
   if(!/^[a-z0-9-]{2,80}$/.test(catalog)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'invalid_catalog'}));}
   if(!process.env.GELATO_API_KEY)return res.end(JSON.stringify({ok:false,reason:'missing_gelato_key'}));
   try{
-   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),9500);
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),20000);
    let upstream;
    try{
     let filters={};
@@ -490,7 +490,7 @@ async function saveVerifiedGelatoVariants(id,category,raw){
    if(!upstream.ok)return res.end(JSON.stringify({ok:false,reason:'gelato_http_'+upstream.status}));
    const data=await upstream.json(),products=Array.isArray(data?.products)?data.products:[];
    return res.end(JSON.stringify({ok:true,mode:'read_only',catalog,offset,adultOnly,returned:products.length,total:data?.total||data?.totalCount||null,products:products.map(p=>({uid:String(p.productUid||'').slice(0,250),supportedCountries:Array.isArray(p.supportedCountries)?p.supportedCountries.filter(c=>typeof c==='string'&&/^[A-Z]{2}$/.test(c)).slice(0,250):[],attributes:p.attributes&&typeof p.attributes==='object'?Object.fromEntries(Object.entries(p.attributes).slice(0,20).map(([k,v])=>[String(k).slice(0,60),String(v).slice(0,100)])):{} }))}));
-  }catch(e){return res.end(JSON.stringify({ok:false,reason:'provider_unavailable'}));}
+  }catch(e){console.error('gelato_models_query_error',String(e?.name||'')+':'+String(e?.message||'').slice(0,180));return res.end(JSON.stringify({ok:false,reason:e?.name==='AbortError'?'provider_timeout':'provider_unavailable'}));}
  }
  if(req.method==='GET'&&req.query&&req.query.action==='cover'){
  if(!(await isValidSession(req))){res.statusCode=403;return res.end();}
