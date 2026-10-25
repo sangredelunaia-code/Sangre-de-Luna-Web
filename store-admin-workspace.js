@@ -738,20 +738,33 @@
   }
   const destinationPanel=document.createElement('section');
   destinationPanel.style.cssText='border:1px solid #b5cadb;background:#edf5fa;border-radius:10px;padding:12px;margin:14px 0;color:#12354b';
-  destinationPanel.innerHTML='<strong>Gelato · fabricación y países de envío</strong><p style="font-size:12px">Los identificadores se comprueban independientemente de los países. Ecuador solo estará habilitado si Gelato confirma compatibilidad. No se activan ventas.</p>';
-  const destList=document.createElement('div');destList.style.cssText='font-size:12px;line-height:1.7';destList.textContent='Consultando variantes verificadas…';destinationPanel.append(destList);
+  const destinationTitle=document.createElement('strong');destinationTitle.textContent='Disponibilidad de compra · Gelato';
+  const destinationInfo=document.createElement('p');destinationInfo.style.fontSize='12px';destinationInfo.textContent='Elige país de entrega. Las tallas solo podrán venderse cuando Gelato confirme disponibilidad para ese país y se validen archivos y costos. No activa ventas.';
+  const destinationLabel=document.createElement('label');destinationLabel.textContent='País de entrega ';
+  const destinationSelect=document.createElement('select');destinationSelect.style.cssText='display:block;max-width:100%;padding:8px;margin:7px 0 12px';
+  [['EC','Ecuador'],['US','Estados Unidos'],['CA','Canadá'],['ES','España'],['MX','México'],['CO','Colombia'],['PE','Perú'],['CL','Chile'],['GB','Reino Unido']].forEach(([value,label])=>{const option=document.createElement('option');option.value=value;option.textContent=label;destinationSelect.append(option)});
+  destinationLabel.append(destinationSelect);
+  const destList=document.createElement('div');destList.style.cssText='font-size:12px;line-height:1.7';destList.textContent='Consultando variantes…';
+  destinationPanel.append(destinationTitle,destinationInfo,destinationLabel,destList);
   sections['productos-registrados'].prepend(destinationPanel);
   fetch('/api/tienda-preview?action=gelato_destination_status',{credentials:'same-origin',cache:'no-store'}).then(r=>r.json()).then(data=>{
-    if(!data.ok){destList.textContent='No se pudo confirmar disponibilidad de envío.';return}
+    if(!data.ok){destList.textContent='No se pudo confirmar disponibilidad.';return}
     const pilot=(data.variants||[]).filter(x=>x.product_id==='SDL-NEW-1791835993474996');
-    destList.replaceChildren();
-    if(!pilot.length){destList.textContent='Azul Nocturno: falta guardar y verificar las variantes para mostrar países de envío.';return}
-    pilot.sort((a,b)=>['S','M','L','XL','2XL'].indexOf(a.size)-['S','M','L','XL','2XL'].indexOf(b.size)).forEach(v=>{
-      const p=document.createElement('p');p.style.margin='3px 0';
-      p.textContent='Talla '+v.size+': UID comprobado · Ecuador '+(v.ecuador_available?'incluido':'NO admitido')+' · '+v.countries_count+' países disponibles';
-      destList.append(p);
-    });
-  }).catch(()=>{destList.textContent='Sin conexión para consultar destinos.'});
+    const render=()=>{
+      const country=destinationSelect.value;destList.replaceChildren();
+      if(!pilot.length){destList.textContent='No hay tallas verificadas. Guarda y verifica la selección de Gelato primero.';return}
+      pilot.slice().sort((a,b)=>['S','M','L','XL','2XL'].indexOf(a.size)-['S','M','L','XL','2XL'].indexOf(b.size)).forEach(v=>{
+        const allowed=Array.isArray(v.supported_countries)&&v.supported_countries.includes(country);
+        const p=document.createElement('p');p.style.margin='4px 0';
+        p.textContent='Talla '+v.size+': identificador comprobado · '+(allowed?'País admitido por el catálogo':'No disponible para este país');
+        destList.append(p);
+      });
+      const alert=document.createElement('p');alert.style.cssText='font-weight:700;margin:10px 0 0';
+      alert.textContent=pilot.some(v=>!Array.isArray(v.supported_countries)||!v.supported_countries.includes(country))?'Hay tallas no disponibles. No permitir compras sin una alternativa compatible.':'Catálogo compatible en este país para las tallas mostradas; faltan archivos, precio final y prueba de envío antes de vender.';
+      destList.append(alert);
+    };
+    destinationSelect.addEventListener('change',render);render();
+  }).catch(()=>{destList.textContent='No se pudo cargar la disponibilidad por país.'});
   // Logo oficial para etiqueta interior: archivo independiente de las fotos del producto.
   const labelLogoPanel=document.createElement('section');
   labelLogoPanel.style.cssText='box-sizing:border-box;max-width:100%;padding:14px;border:1px solid #bed1df;border-radius:10px;margin:14px 0;background:#f5f8fc;color:#16314c;overflow:hidden';
