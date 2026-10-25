@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "stage": "supplier_validation",
+  "verifiedAt": null,
+  "publicationAllowed": false,
+  "note": "All variants intentionally unverified until a precise provider quote or written confirmation is received. Country support alone does not guarantee an order.",
+  "destinations": [
+    "EC",
+    "US",
+    "CA",
+    "ES",
+    "MX",
+    "CO",
+    "PE",
+    "CL",
+    "GB"
+  ],
+  "apparel": {
+    "colors": [
+      "Negro",
+      "Blanco",
+      "Azul nocturno"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "2XL",
+      "3XL"
+    ]
+  },
+  "providers": {
+    "gelato": {
+      "priority": "international",
+      "credentials": "configured_in_existing_store_runtime_not_revalidated",
+      "variants": "pending_live_uid_and_shipping_quote"
+    },
+    "gooten": {
+      "priority": "international_fallback",
+      "credentials": "pending",
+      "variants": "pending_sku_stock_and_shipping_quote"
+    },
+    "infrarojo": {
+      "priority": "ecuador",
+      "credentials": "manual",
+      "variants": "pending_written_catalog_pricing_and_delivery_confirmation"
+    }
+  },
+  "validationRequired": [
+    "country",
+    "sku",
+    "color",
+    "size",
+    "providerProductId",
+    "shippingQuoteUsd",
+    "baseCostUsd",
+    "verifiedAt",
+    "verificationReference"
+  ],
+  "testMatrix": {
+    "expectedCombinations": 162,
+    "verifiedCombinations": 0
+  },
+  "fulfillmentNote": "Customers must not choose providers. Hide unavailable variants; never treat general destination coverage as SKU availability."
+}
