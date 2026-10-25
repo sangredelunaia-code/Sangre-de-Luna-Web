@@ -6,6 +6,8 @@ module.exports=async function handler(req,res){
  if(req.method!=='GET'){res.statusCode=405;return res.end(JSON.stringify({ok:false,reason:'method_not_allowed'}));}
  const country=String(req.query?.country||'EC').trim().toUpperCase();
  const productId=String(req.query?.productId||'').trim();
+ const page=Math.max(0,Math.min(100,Number.parseInt(String(req.query?.page||'0'),10)||0));
+ const pageSize=25;
  if(!COUNTRIES.has(country)||!/^\d{1,12}$/.test(productId)){res.statusCode=400;return res.end(JSON.stringify({ok:false,reason:'valid_country_and_numeric_product_id_required'}));}
  if(!process.env.GOOTEN_RECIPE_ID){res.statusCode=503;return res.end(JSON.stringify({ok:false,reason:'gooten_credentials_missing'}));}
  const url=new URL('https://api.print.io/api/v/5/source/api/productvariants');
@@ -13,7 +15,8 @@ module.exports=async function handler(req,res){
  url.searchParams.set('productId',productId);
  url.searchParams.set('countryCode',country);
  url.searchParams.set('currencyCode','USD');
- // Start with only documented required parameters; optional filters may trigger vendor validation.
+ url.searchParams.set('pageSize',String(pageSize));
+ url.searchParams.set('page',String(page));
  const ctl=new AbortController(),timeout=setTimeout(()=>ctl.abort(),12000);
  try{
   const response=await fetch(url,{headers:{Accept:'application/json'},signal:ctl.signal});
@@ -27,7 +30,7 @@ module.exports=async function handler(req,res){
    // Supplier price data not shown publicly; availability requires a separate stock-and-shipping check.
    purchasable:false
   })).filter(x=>x.sku);
-  res.end(JSON.stringify({ok:true,provider:'Gooten',country,productId,returned:variants.length,variants,stockVerified:false,shippingVerified:false,checkoutEnabled:false}));
+  res.end(JSON.stringify({ok:true,provider:'Gooten',country,productId,returned:variants.length,page,pageSize,hasMore:variants.length===pageSize,variants,stockVerified:false,shippingVerified:false,checkoutEnabled:false}));
  }catch(e){res.statusCode=503;res.end(JSON.stringify({ok:false,reason:e?.name==='AbortError'?'gooten_timeout':'gooten_unavailable'}));}
  finally{clearTimeout(timeout);}
 };
