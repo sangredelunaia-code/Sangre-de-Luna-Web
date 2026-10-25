@@ -22,6 +22,33 @@ main{position:relative;z-index:1;width:min(800px,92%);padding:45px 10px 35px}img
 <div class="kicker">Sangre de Luna · Tienda Oficial</div>
 <h1>Una nueva leyenda<br><span class="shine">está tomando forma.</span></h1>
 <p class="desc">Bajo la luz de la luna, preparamos una colección de artículos inspirados en los personajes, los lugares y la historia de Sangre de Luna. Aún no hay productos disponibles para comprar.</p>
+<section aria-label="Consulta de disponibilidad de Gelato" style="margin:0 auto 28px;max-width:540px;padding:17px;border:1px solid #536b80;border-radius:12px;background:#0b1929;text-align:left">
+<label for="sdl-ship-country" style="display:block;font-weight:700;margin-bottom:7px">¿En qué país deseas recibir tu compra?</label>
+<select id="sdl-ship-country" style="width:100%;padding:11px;border-radius:7px;background:#142d42;color:#fff;border:1px solid #7194b3">
+<option value="EC">Ecuador</option><option value="US">Estados Unidos</option><option value="CA">Canadá</option><option value="ES">España</option><option value="MX">México</option><option value="CO">Colombia</option><option value="PE">Perú</option><option value="CL">Chile</option><option value="GB">Reino Unido</option>
+</select>
+<p id="sdl-ship-status" role="status" aria-live="polite" style="font-size:.88rem;margin:12px 0 0;color:#d5e3ef">Consultando disponibilidad preliminar…</p>
+<p style="font-size:.75rem;color:#94aabd;margin-bottom:0">Consulta informativa. No se aceptan pedidos todavía. La disponibilidad definitiva y los costos de envío se verificarán antes de habilitar la compra.</p>
+</section>
 <div class="divider" aria-hidden="true"></div><p class="sub">Próximamente · El legado de la luna</p>
 <a class="button" href="/">Regresar al universo Sangre de Luna</a>
-</main><footer>EL VIAJE CONTINÚA · SANGRE DE LUNA</footer></body></html>
+<script>
+(function(){
+ const select=document.getElementById('sdl-ship-country'),status=document.getElementById('sdl-ship-status');
+ const params=new URLSearchParams(location.search);const fromLink=(params.get('country')||'').toUpperCase();
+ const countries=new Set([...select.options].map(o=>o.value));
+ if(countries.has(fromLink))select.value=fromLink;
+ else {const lang=(navigator.language||'').split('-')[1]?.toUpperCase();if(countries.has(lang))select.value=lang}
+ let sequence=0;
+ async function check(){
+  const current=++sequence;status.textContent='Consultando el catálogo de Gelato…';
+  try{
+   const response=await fetch('/api/tienda-preview?action=public_country_availability&country='+encodeURIComponent(select.value),{cache:'no-store'});
+   const data=await response.json();if(current!==sequence)return;
+   if(!response.ok||!data.ok)throw Error('Consulta no disponible');
+   status.textContent=data.availableSizes.length?'Azul Nocturno: tallas preliminarmente compatibles '+data.availableSizes.join(', ')+'. Compra aún no habilitada.':'Azul Nocturno: todavía no hay tallas confirmadas para este destino. Compra no disponible.';
+  }catch(e){if(current===sequence)status.textContent='No se pudo confirmar disponibilidad para este país. Compra no disponible.'}
+ }
+ select.addEventListener('change',check);check();
+})();
+</script></main><footer>EL VIAJE CONTINÚA · SANGRE DE LUNA</footer></body></html>
