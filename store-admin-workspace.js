@@ -584,11 +584,11 @@
        const data=await init.json();
        if(!init.ok||!data.ok)throw Error(data.reason||'No se pudo iniciar la subida.');
        masterStatus.textContent='Subiendo documento original ('+(file.size/1048576).toFixed(1)+' MB)...';
-       const sent=await fetch(data.uploadUrl,{method:'PUT',headers:{'Content-Type':'application/pdf'},body:file});
-       if(!sent.ok)throw Error('El almacenamiento rechazó el archivo ('+sent.status+').');
+       const formData=new FormData();formData.append('cacheControl','3600');formData.append('',file,file.name);const sent=await fetch(data.uploadUrl,{method:'PUT',body:formData});
+       if(!sent.ok)throw Error('El almacenamiento rechazó el archivo ('+sent.status+'): '+(await sent.text()).slice(0,180));
        masterStatus.textContent='PDF guardado en almacenamiento privado. Pendiente de revisión técnica; no publicado ni enviado a fabricación.';
        masterPicker.value='';
-      }catch(e){masterStatus.textContent='No se pudo guardar el PDF: '+String(e.message||e)+'. Los documentos anteriores siguen intactos.';}
+      }catch(e){masterStatus.textContent='No se pudo guardar el PDF: '+String(e.message||e)+(String(e.message||e).includes('Failed to fetch')?' (posible bloqueo del navegador o conexión con Supabase)':'')+'. Los documentos anteriores siguen intactos.';}
       finally{masterButton.disabled=false}
     });
     const legacy=document.createElement('details');legacy.style.cssText='margin-top:12px';
