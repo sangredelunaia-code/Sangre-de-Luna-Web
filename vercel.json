@@ -23,6 +23,21 @@
       "source": "/index",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/mi-viaje",
+      "destination": "/viaje",
+      "permanent": true
+    },
+    {
+      "source": "/fan-club",
+      "destination": "/fanclub",
+      "permanent": true
+    },
+    {
+      "source": "/manada",
+      "destination": "/fanclub",
+      "permanent": true
     }
   ],
   "headers": [
