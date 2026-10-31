@@ -1,4 +1,4 @@
-const SITE='https://sangre-de-luna-public.vercel.app';
+const SITE='https://sangredeluna.com';
 const SOURCE_REF=process.env.VERCEL_GIT_COMMIT_SHA||'main';
 const RAW=`https://raw.githubusercontent.com/sangredelunaia-code/Sangre-de-Luna-Web/${SOURCE_REF}`;
 const FALLBACK='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@023846677b3a03f60109e50695e2e605cc671976';
