@@ -1,0 +1,20 @@
+{
+  "name": "Sangre de Luna Mail",
+  "short_name": "SDL Mail",
+  "description": "Correo oficial privado de Sangre de Luna",
+  "lang": "es",
+  "id": "/webmail.html",
+  "start_url": "/webmail.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#081827",
+  "theme_color": "#081827",
+  "icons": [
+    {
+      "src": "/assets/logo-oficial.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
