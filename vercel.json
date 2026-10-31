@@ -58,7 +58,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/>; rel=\"canonical\""
         }
       ]
     },
@@ -71,7 +71,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/personajes>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/personajes>; rel=\"canonical\""
         }
       ]
     },
@@ -84,7 +84,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/historias>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/historias>; rel=\"canonical\""
         }
       ]
     },
@@ -97,7 +97,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/episodios>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/episodios>; rel=\"canonical\""
         }
       ]
     },
@@ -110,7 +110,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/musica>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/musica>; rel=\"canonical\""
         }
       ]
     },
@@ -123,7 +123,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/galeria>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/galeria>; rel=\"canonical\""
         }
       ]
     },
@@ -136,7 +136,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/desafios>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/desafios>; rel=\"canonical\""
         }
       ]
     },
@@ -149,7 +149,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/fanclub>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/fanclub>; rel=\"canonical\""
         }
       ]
     },
@@ -162,7 +162,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/mapa>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/mapa>; rel=\"canonical\""
         }
       ]
     },
@@ -175,7 +175,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/tour>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/tour>; rel=\"canonical\""
         }
       ]
     },
@@ -188,7 +188,7 @@
         },
         {
           "key": "Link",
-          "value": "<https://sangre-de-luna-public.vercel.app/viaje>; rel=\"canonical\""
+          "value": "<https://sangredeluna.com/viaje>; rel=\"canonical\""
         }
       ]
     },
