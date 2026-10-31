@@ -30,7 +30,41 @@ body:has(#login:not(.hidden)) .wrap{max-width:none;margin:0;padding:0}
 #login .login-assurance>div+div{border-left:1px solid #5c7387}
 #login .login-assurance small{display:block;font-size:11px;margin-top:8px;color:#e8f2fc}
 @media(max-width:800px){#login{align-items:flex-end;justify-content:center;min-height:100dvh;padding:26vh 14px 22px;background:linear-gradient(180deg,rgba(5,15,27,.12),#07121f 65%),url('/assets/webmail-login-reference.jpg') 25% top/auto 80vh no-repeat,#081523}#login .real-mail-card{padding:24px 19px;width:min(100%,490px)}#login .login-envelope{width:53px;height:53px;font-size:30px}#login .login-heading{gap:12px}#login .login-heading p{font-size:13px}#login .login-assurance small{font-size:10px}}
-</style></head><body><header><h1>🌙 Sangre de Luna Mail</h1><a href="/">Sitio principal</a></header><div class="wrap"><p class="note">Correo institucional · bandeja privada</p><div id="login"><section class="real-mail-card" aria-label="Inicio de sesión"><div class="login-heading"><div class="login-envelope" aria-hidden="true">✉</div><div><h2>Bienvenido</h2><p>Accede a tu correo de Sangre de Luna</p></div></div><form id="loginForm"><div class="real-field"><span aria-hidden="true">♙</span><input id="email" aria-label="Correo electrónico" type="email" autocomplete="username" placeholder="Correo electrónico" required></div><div class="real-field"><span aria-hidden="true">♙</span><input id="password" aria-label="Contraseña" type="password" autocomplete="current-password" placeholder="Contraseña" required><button id="showPassword" type="button" aria-label="Mostrar u ocultar contraseña">◉</button></div><div class="real-options"><label id="rememberLabel"><input id="remember" type="checkbox" checked> Mantener sesión iniciada</label><a id="forgotPassword" href="#">¿Olvidaste tu contraseña?</a></div><button id="loginSubmit" type="submit">⇥ &nbsp; Iniciar sesión</button><p id="loginError" role="alert" aria-live="polite"></p></form><footer class="login-assurance"><div>♢<small>Seguro</small></div><div>✉<small>Comunicación oficial</small></div><div>♧<small>Conexión con la manada</small></div></footer></section></div><div id="passwordSetup" class="card hidden" style="max-width:560px;margin:24px auto"><h2>Activar tu cuenta de correo</h2><p>Por seguridad, reemplaza tu contraseña temporal antes de acceder al buzón.</p><form id="changePasswordForm" class="formgrid"><input id="newPassword" type="password" autocomplete="new-password" required minlength="12" placeholder="Nueva contraseña (12 caracteres, mayúscula y número)"><button type="submit">Guardar nueva contraseña</button></form></div><div id="app" class="hidden"><div class="toolbar" style="margin-bottom:16px"><select id="account" aria-label="Dirección de correo" style="max-width:320px"><option value="webmaster">webmaster@sangredeluna.com</option><option value="contacto">contacto@sangredeluna.com</option><option value="info">info@sangredeluna.com</option></select><button id="refresh">Actualizar</button><button id="logout">Cerrar sesión</button></div>
+</style><style id="sdl-position-card-over-art-v7">
+@media(min-width:801px){
+body:has(#login:not(.hidden)){overflow:hidden!important}
+body:has(#login:not(.hidden)) #login{
+position:fixed!important;inset:auto!important;left:50%!important;top:50%!important;
+width:1672px!important;height:941px!important;min-height:0!important;
+padding:0!important;margin:0!important;
+display:block!important;
+transform:translate(-50%,-50%) scale(var(--sdl-stage-fit,1))!important;
+transform-origin:center!important;
+background:url('/assets/webmail-login-reference.jpg') center/1672px 941px no-repeat!important;
+}
+#login .real-mail-card{
+position:absolute!important;box-sizing:border-box!important;
+left:905px!important;top:357px!important;width:576px!important;height:525px!important;
+margin:0!important;padding:33px 36px!important;
+border-radius:28px!important;background:#091c31!important;
+border:2px solid #9eb2c5!important;box-shadow:0 14px 40px #000a!important;
+display:flex!important;flex-direction:column!important;justify-content:center!important;
+}
+#login .login-heading{margin-bottom:20px!important}
+#login .login-envelope{width:67px!important;height:67px!important}
+#login #loginForm{gap:13px!important}
+#login .real-field{min-height:54px!important}
+#login #email,#login #password{height:52px!important}
+#login #loginSubmit{min-height:55px!important}
+#login .login-assurance{margin-top:20px!important;padding-top:16px!important}
+}
+@media(max-width:800px){
+#login{background:linear-gradient(180deg,#0718271a,#071827f0 68%),url('/assets/webmail-login-reference.jpg') 25% top/auto 70vh no-repeat,#071827!important}
+#login .real-mail-card{background:#091c31!important;box-shadow:0 14px 40px #000c!important}
+}
+</style><script>
+(function(){function fit(){document.documentElement.style.setProperty('--sdl-stage-fit',String(Math.min(innerWidth/1672,innerHeight/941)))}fit();addEventListener('resize',fit,{passive:true});})();
+</script></head><body><header><h1>🌙 Sangre de Luna Mail</h1><a href="/">Sitio principal</a></header><div class="wrap"><p class="note">Correo institucional · bandeja privada</p><div id="login"><section class="real-mail-card" aria-label="Inicio de sesión"><div class="login-heading"><div class="login-envelope" aria-hidden="true">✉</div><div><h2>Bienvenido</h2><p>Accede a tu correo de Sangre de Luna</p></div></div><form id="loginForm"><div class="real-field"><span aria-hidden="true">♙</span><input id="email" aria-label="Correo electrónico" type="email" autocomplete="username" placeholder="Correo electrónico" required></div><div class="real-field"><span aria-hidden="true">♙</span><input id="password" aria-label="Contraseña" type="password" autocomplete="current-password" placeholder="Contraseña" required><button id="showPassword" type="button" aria-label="Mostrar u ocultar contraseña">◉</button></div><div class="real-options"><label id="rememberLabel"><input id="remember" type="checkbox" checked> Mantener sesión iniciada</label><a id="forgotPassword" href="#">¿Olvidaste tu contraseña?</a></div><button id="loginSubmit" type="submit">⇥ &nbsp; Iniciar sesión</button><p id="loginError" role="alert" aria-live="polite"></p></form><footer class="login-assurance"><div>♢<small>Seguro</small></div><div>✉<small>Comunicación oficial</small></div><div>♧<small>Conexión con la manada</small></div></footer></section></div><div id="passwordSetup" class="card hidden" style="max-width:560px;margin:24px auto"><h2>Activar tu cuenta de correo</h2><p>Por seguridad, reemplaza tu contraseña temporal antes de acceder al buzón.</p><form id="changePasswordForm" class="formgrid"><input id="newPassword" type="password" autocomplete="new-password" required minlength="12" placeholder="Nueva contraseña (12 caracteres, mayúscula y número)"><button type="submit">Guardar nueva contraseña</button></form></div><div id="app" class="hidden"><div class="toolbar" style="margin-bottom:16px"><select id="account" aria-label="Dirección de correo" style="max-width:320px"><option value="webmaster">webmaster@sangredeluna.com</option><option value="contacto">contacto@sangredeluna.com</option><option value="info">info@sangredeluna.com</option></select><button id="refresh">Actualizar</button><button id="logout">Cerrar sesión</button></div>
 <div class="layout"><nav class="card sidebar" id="folders"><button class="active" data-folder="inbox">📥 Recibidos</button><button data-folder="sent">📤 Enviados</button><button data-folder="drafts">📝 Borradores</button><button data-folder="trash">🗑️ Papelera</button><button id="compose">✍️ Redactar</button></nav>
 <div class="card"><h2 id="folderTitle">Recibidos</h2><div id="messages"><p class="muted">Cargando…</p></div></div>
 <div class="card"><div id="reader"><h2>Selecciona un mensaje</h2><p class="muted">Aquí aparecerá la correspondencia de la bandeja seleccionada.</p></div>
