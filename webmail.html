@@ -1,35 +1,5 @@
 <!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Sangre de Luna Mail</title><style>
 :root{font-family:Inter,Arial,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#06111c;color:#e9f5ff}button,input,select,textarea{font:inherit}button{border:1px solid #365b76;background:#102c43;color:#eaf6ff;border-radius:10px;padding:11px;cursor:pointer}button:hover{background:#21445b}button.active{background:#2a5b7c}button:disabled{opacity:.45;cursor:not-allowed}input,select,textarea{background:#071520;border:1px solid #355971;color:#fff;border-radius:9px;padding:12px;width:100%}textarea{resize:vertical;min-height:160px}header{background:#091e30;border-bottom:1px solid #2b4962;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 24px}h1{font:700 27px Georgia,serif;margin:4px 0}h2{font-size:20px}small,.muted{color:#9fb5c7}.wrap{max-width:1250px;margin:auto;padding:24px}.card{background:#0d2233;border:1px solid #29485f;border-radius:16px;padding:22px}.layout{display:grid;grid-template-columns:220px minmax(260px,390px) 1fr;gap:14px;min-height:63vh}.sidebar{display:flex;flex-direction:column;gap:7px}.mailrow{border-bottom:1px solid #233d52;padding:15px 7px;cursor:pointer}.mailrow:hover,.mailrow.selected{background:#19364b}.mailrow strong{display:block;margin-bottom:5px}.mailrow .muted{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#viewer{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.hidden{display:none!important}.note{border-left:3px solid #d6a85c;padding:12px;background:#172637}.formgrid{display:grid;gap:12px}label{font-size:13px;color:#bdd3e4}#toast{min-height:20px;color:#a3dcff}a{color:#9bdaff}@media(max-width:850px){.layout{grid-template-columns:1fr;min-height:0}.sidebar{flex-direction:row;flex-wrap:wrap}.wrap{padding:12px}.card{padding:15px}header{padding:14px}.mailrow{padding:14px}#viewer{min-height:150px}}
-</style><style id="sdl-working-login-v6">
-body:has(#login:not(.hidden)){background:#07121d;overflow:auto}
-body:has(#login:not(.hidden)) header,body:has(#login:not(.hidden)) .wrap>.note{display:none}
-body:has(#login:not(.hidden)) .wrap{max-width:none;margin:0;padding:0}
-#login{min-height:100dvh;display:flex;align-items:center;justify-content:flex-end;padding:clamp(15px,3vw,56px) clamp(20px,9vw,140px);background:url('/assets/webmail-login-reference.jpg') center center/cover no-repeat,#081523}
-#login .real-mail-card{box-sizing:border-box;width:min(100%,520px);padding:clamp(22px,3vw,38px);border:1px solid #91adc7;border-radius:25px;background:#091c31;color:#f7fbff;box-shadow:0 15px 48px #000a;z-index:1}
-#login .login-heading{display:flex;align-items:center;gap:20px;margin-bottom:25px}
-#login .login-envelope{display:grid;place-items:center;flex-shrink:0;width:72px;height:72px;background:#731830;border:1px solid #ba4964;border-radius:14px;font-size:40px}
-#login .login-heading h2{font:700 clamp(27px,3vw,37px) Georgia,serif;margin:0 0 6px;color:#fff}
-#login .login-heading p{margin:0;color:#aebfd1;line-height:1.4;font-size:15px}
-#login #loginForm{display:flex;flex-direction:column;gap:15px;margin:0}
-#login .real-field{display:flex;align-items:center;gap:12px;position:relative;border:1px solid #627f9d;border-radius:11px;background:#192e46;min-height:57px;padding:0 15px}
-#login .real-field>span{font-size:23px;color:#c5d9ec}
-#login #email,#login #password{position:static!important;flex:1;min-width:0;width:100%;height:55px;padding:10px 3px!important;margin:0!important;background:#192e46!important;border:0!important;border-radius:0!important;color:white!important;outline:none!important;font-size:17px!important;box-shadow:none!important}
-#login #email::placeholder,#login #password::placeholder{color:#b0c3d7!important;opacity:1!important}
-#login .real-field:focus-within{outline:2px solid #b0e1ff;border-color:#a2d8ff}
-#login #showPassword{position:static!important;flex-shrink:0;width:37px;height:39px;padding:3px;border:0;border-radius:6px;background:transparent;color:#c5d6e9;font-size:19px;cursor:pointer}
-#login .real-options{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-#login #rememberLabel{display:flex;align-items:center;gap:8px;font-size:13px;color:#edf3fb;cursor:pointer}
-#login #remember{appearance:auto!important;position:static!important;width:19px!important;height:19px!important;opacity:1!important;margin:0!important;accent-color:#2f81ed;cursor:pointer}
-#login #forgotPassword{color:#c7e0f8;font-size:13px}
-#login #loginSubmit{position:static!important;width:100%!important;min-height:59px;padding:10px 15px!important;background:#7b1932!important;border:1px solid #c94a65!important;border-radius:32px!important;color:white!important;opacity:1!important;font-weight:700;font-size:18px;cursor:pointer}
-#login #loginSubmit:hover{background:#91203d!important}
-#login #loginError{position:static!important;margin:0!important;min-height:0!important;color:#ffbdc7!important;font-size:13px!important;line-height:1.5}
-#login #loginError:empty{display:none}
-#login .login-assurance{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #63798d;margin-top:26px;padding-top:20px}
-#login .login-assurance>div{text-align:center;font-size:26px;color:#d6e9f7}
-#login .login-assurance>div+div{border-left:1px solid #5c7387}
-#login .login-assurance small{display:block;font-size:11px;margin-top:8px;color:#e8f2fc}
-@media(max-width:800px){#login{align-items:flex-end;justify-content:center;min-height:100dvh;padding:26vh 14px 22px;background:linear-gradient(180deg,rgba(5,15,27,.12),#07121f 65%),url('/assets/webmail-login-reference.jpg') 25% top/auto 80vh no-repeat,#081523}#login .real-mail-card{padding:24px 19px;width:min(100%,490px)}#login .login-envelope{width:53px;height:53px;font-size:30px}#login .login-heading{gap:12px}#login .login-heading p{font-size:13px}#login .login-assurance small{font-size:10px}}
 </style><style id="sdl-mail-dashboard-luxury">
 body:has(#app:not(.hidden)){background:radial-gradient(ellipse at 85% -15%,#273b50 0%,#0b1a2b 45%,#060e18 85%);min-height:100dvh}
 body:has(#app:not(.hidden)) header{padding:15px clamp(20px,4vw,68px);background:linear-gradient(95deg,#0c1b2b,#142b40 60%,#0b1829);border-bottom:1px solid #42617d;box-shadow:0 5px 30px #0004}
@@ -285,47 +255,6 @@ body.sdl-exact-mail #app .reader-empty h2{font-size:24px!important}
 body.sdl-exact-mail:has(#app:not(.hidden)){background:#071625!important;overflow:auto!important}
 body.sdl-exact-mail #app{width:100%!important;max-width:none!important;min-height:100dvh!important;height:auto!important;background:#071625!important}
 }
-</style><style id="sdl-approved-clean-login-v14">
-@media(min-width:801px){
-body.sdl-clean-login:has(#login:not(.hidden)){margin:0!important;overflow:hidden!important;background:#061322!important}
-body.sdl-clean-login:has(#login:not(.hidden)) .wrap{max-width:none!important;margin:0!important;padding:0!important}
-body.sdl-clean-login #login{position:fixed!important;inset:0!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;min-height:0!important;margin:0!important;padding:0!important;transform:none!important;background:url('/assets/sdl-webmail-login-clean.webp') center center/cover no-repeat!important}
-body.sdl-clean-login #login .real-mail-card{position:absolute!important;left:var(--clean-card-x)!important;top:var(--clean-card-y)!important;width:550px!important;height:418px!important;max-width:none!important;padding:24px 30px!important;margin:0!important;transform:scale(var(--clean-scale))!important;scale:none!important;transform-origin:top left!important;display:flex!important;flex-direction:column!important;justify-content:center!important;border:1px solid #a9bacb!important;border-radius:24px!important;background:#0a1b30f5!important;box-shadow:0 12px 40px #0009!important}
-body.sdl-clean-login #login .login-heading{margin-bottom:14px!important}
-body.sdl-clean-login #login .login-heading h2{font-size:32px!important}
-body.sdl-clean-login #login .login-envelope{width:58px!important;height:58px!important;font-size:32px!important}
-body.sdl-clean-login #login #loginForm{gap:10px!important}
-body.sdl-clean-login #login .real-field{min-height:48px!important}
-body.sdl-clean-login #login #email,body.sdl-clean-login #login #password{height:46px!important}
-body.sdl-clean-login #login #loginSubmit{min-height:52px!important}
-body.sdl-clean-login #login .login-assurance{margin-top:15px!important;padding-top:12px!important}
-}
-@media(max-width:800px){
-body.sdl-clean-login:has(#login:not(.hidden)){overflow:auto!important;background:#071526!important}
-body.sdl-clean-login #login{position:relative!important;inset:auto!important;left:auto!important;top:auto!important;transform:none!important;width:100%!important;min-height:100dvh!important;height:auto!important;padding:48vh 14px 22px!important;background:linear-gradient(180deg,#0613230a 0%,#071625ec 55%),url('/assets/sdl-webmail-login-clean.webp') center top/auto 73vh no-repeat,#071625!important}
-body.sdl-clean-login #login .real-mail-card{position:relative!important;left:auto!important;top:auto!important;width:min(100%,480px)!important;height:auto!important;transform:none!important;scale:none!important;margin:auto!important;padding:22px!important;background:#0a1c30f6!important}
-}
-</style><script>
-(function(){const a=new Image();a.onload=()=>document.body.classList.add('sdl-clean-login');a.src='/assets/sdl-webmail-login-clean.webp';
-function layout(){const k=Math.max(innerWidth/1672,innerHeight/941);document.documentElement.style.setProperty('--clean-scale',String(k));document.documentElement.style.setProperty('--clean-card-x',((innerWidth-1672*k)/2+985*k)+'px');document.documentElement.style.setProperty('--clean-card-y',((innerHeight-941*k)/2+488*k)+'px');}
-layout();addEventListener('resize',layout,{passive:true});})();
-</script><style id="sdl-login-responsive-cover-v15">
-/* Imagen original: llenar sin estirar. El encuadre puede recortarse, nunca deformarse. */
-body.sdl-clean-login:has(#login:not(.hidden)){background:#071625!important}
-body.sdl-clean-login #login{background-image:url('/assets/sdl-webmail-login-clean.webp')!important;background-repeat:no-repeat!important;background-size:cover!important;background-position:center center!important}
-@media(min-width:801px){
-body.sdl-clean-login #login{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;overflow:hidden!important}
-body.sdl-clean-login #login .real-mail-card{max-width:none!important;box-sizing:border-box!important}
-}
-@media(max-width:800px){
-body.sdl-clean-login:has(#login:not(.hidden)){overflow:auto!important}
-body.sdl-clean-login #login{position:relative!important;inset:auto!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;min-height:100dvh!important;height:auto!important;width:100%!important;padding:clamp(280px,48dvh,600px) 14px 18px!important;background:url('/assets/sdl-webmail-login-clean.webp') center top/cover no-repeat!important}
-body.sdl-clean-login #login .real-mail-card{position:relative!important;left:auto!important;top:auto!important;width:min(100%,480px)!important;height:auto!important;max-width:100%!important;margin:0 auto!important;padding:clamp(16px,4vw,22px)!important;transform:none!important;scale:none!important}
-}
-@media(max-width:380px){
-body.sdl-clean-login #login{padding:38dvh 10px 12px!important}
-body.sdl-clean-login #login .login-assurance small{font-size:9px!important}
-}
 </style><style id="sdl-lunar-notifications-v16">
 :root{--sdl-gold:#e5c58f;--sdl-silver:#dbe6f1;--sdl-moon:#75b8e9}
 #toast.sdl-toast{position:fixed!important;bottom:clamp(16px,4vh,40px)!important;right:clamp(14px,3vw,42px)!important;left:auto!important;top:auto!important;z-index:2147482000!important;max-width:min(440px,calc(100vw - 28px))!important;min-height:0!important;padding:15px 18px!important;margin:0!important;border:1px solid #bd9c68!important;border-radius:15px!important;background:linear-gradient(135deg,#15283bef,#091629f7)!important;box-shadow:0 20px 65px #000b!important;color:#f2e7d7!important;font-size:14px!important;line-height:1.5!important;backdrop-filter:blur(18px);overflow-wrap:anywhere}
@@ -349,44 +278,45 @@ body.sdl-clean-login #login .login-assurance small{font-size:9px!important}
 #sdlSoundToggle:hover{background:#1a3951;border-color:#e0c08a}
 #sdlSoundToggle:focus-visible{outline:2px solid #e8cb91;outline-offset:3px}
 @media(max-width:620px){#sdlSoundToggle{width:100%;order:5}}
-</style><style id="sdl-login-fullbleed-final-v18">
-/* Última regla específica: full bleed real, sin lienzo escalado. */
-@media(min-width:801px){
-body.sdl-clean-login:has(#login:not(.hidden)) #login{
-position:fixed!important;inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;
-width:100vw!important;height:100dvh!important;min-height:100dvh!important;max-width:none!important;
-margin:0!important;padding:0!important;transform:none!important;
-background:#071625 url('/assets/sdl-webmail-login-clean.webp') center center/cover no-repeat!important;overflow:hidden!important;
-}
-body.sdl-clean-login:has(#login:not(.hidden)) #login .real-mail-card{
-position:absolute!important;top:var(--clean-card-y)!important;left:var(--clean-card-x)!important;right:auto!important;bottom:auto!important;
-width:550px!important;height:418px!important;max-width:none!important;margin:0!important;padding:24px 30px!important;
-transform:scale(var(--clean-scale))!important;transform-origin:top left!important;scale:none!important;
-}
-}
-@media(max-width:800px){
-body.sdl-clean-login:has(#login:not(.hidden)) #login{
-position:relative!important;inset:auto!important;left:auto!important;top:auto!important;width:100%!important;max-width:none!important;
-min-height:100dvh!important;height:auto!important;transform:none!important;margin:0!important;
-padding:clamp(280px,48dvh,600px) 14px 18px!important;
-background:#071625 url('/assets/sdl-webmail-login-clean.webp') center top/cover no-repeat!important;
-display:flex!important;align-items:flex-end!important;justify-content:center!important;
-}
-body.sdl-clean-login:has(#login:not(.hidden)) #login .real-mail-card{
+</style><style id="sdl-login-rebuild-v20">
+/* Un único layout de acceso, independiente de clases JS y escalas heredadas. */
+html:has(#login:not(.hidden)),body:has(#login:not(.hidden)){width:100%!important;min-height:100%!important;margin:0!important;overflow-x:hidden!important;background:#081827!important}
+body:has(#login:not(.hidden)) header,body:has(#login:not(.hidden)) .wrap>.note{display:none!important}
+body:has(#login:not(.hidden)) .wrap{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
+body:has(#login:not(.hidden)) #login{
 position:relative!important;inset:auto!important;left:auto!important;top:auto!important;right:auto!important;bottom:auto!important;
-width:min(100%,480px)!important;height:auto!important;max-width:100%!important;transform:none!important;scale:none!important;margin:0 auto!important;
-}
-}
-</style><style id="sdl-login-original-art-fullscreen-v19">
-@media(min-width:801px){
-body:has(#login:not(.hidden)) #login,
-body.sdl-clean-login:has(#login:not(.hidden)) #login{
-position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:0!important;
-inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;min-height:100dvh!important;
-max-width:100vw!important;margin:0!important;padding:0!important;transform:none!important;
+width:100%!important;max-width:none!important;height:100dvh!important;min-height:580px!important;
+margin:0!important;padding:0!important;transform:none!important;scale:none!important;
+display:grid!important;place-items:initial!important;overflow:hidden!important;
 background-image:url('/assets/sdl-webmail-login-clean.webp')!important;
-background-size:cover!important;background-position:center center!important;background-repeat:no-repeat!important;
+background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important;
 }
+body:has(#login:not(.hidden)) #login .real-mail-card{
+position:absolute!important;inset:auto!important;left:auto!important;right:clamp(24px,15.5vw,240px)!important;top:38%!important;
+width:clamp(340px,30vw,520px)!important;max-width:calc(100vw - 30px)!important;height:auto!important;min-height:0!important;
+transform:none!important;scale:none!important;margin:0!important;padding:clamp(19px,2.15vw,32px)!important;
+background:#081b30f4!important;border:1px solid #93a9bc!important;border-radius:22px!important;
+box-shadow:0 18px 44px #0009!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+z-index:2!important;
+}
+body:has(#login:not(.hidden)) #login .login-heading{margin-bottom:14px!important}
+body:has(#login:not(.hidden)) #login .login-envelope{width:55px!important;height:55px!important;font-size:28px!important}
+body:has(#login:not(.hidden)) #login .login-heading h2{font-size:clamp(25px,2.3vw,34px)!important}
+body:has(#login:not(.hidden)) #login #loginForm{gap:10px!important}
+body:has(#login:not(.hidden)) #login .real-field{min-height:47px!important}
+body:has(#login:not(.hidden)) #login #email,body:has(#login:not(.hidden)) #login #password{height:45px!important}
+body:has(#login:not(.hidden)) #login #loginSubmit{min-height:49px!important}
+body:has(#login:not(.hidden)) #login .login-assurance{margin-top:14px!important;padding-top:12px!important}
+@media(max-width:800px){
+body:has(#login:not(.hidden)){overflow-y:auto!important}
+body:has(#login:not(.hidden)) #login{height:auto!important;min-height:100dvh!important;display:flex!important;align-items:flex-end!important;justify-content:center!important;padding:clamp(280px,44dvh,620px) 14px 22px!important;background-position:32% top!important}
+body:has(#login:not(.hidden)) #login .real-mail-card{position:relative!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;width:min(100%,470px)!important;max-width:100%!important;padding:22px 19px!important;margin:0 auto!important}
+}
+@media(max-height:680px) and (min-width:801px){
+body:has(#login:not(.hidden)) #login .real-mail-card{top:37%!important;padding:14px 21px!important}
+body:has(#login:not(.hidden)) #login .login-heading{margin-bottom:8px!important}
+body:has(#login:not(.hidden)) #login #loginForm{gap:7px!important}
+body:has(#login:not(.hidden)) #login .login-assurance{margin-top:9px!important;padding-top:8px!important}
 }
 </style></head><body><header><h1>🌙 Sangre de Luna Mail</h1><a href="/">Sitio principal</a></header><div class="wrap"><p class="note">Correo institucional · bandeja privada</p><div id="login"><section class="real-mail-card" aria-label="Inicio de sesión"><div class="login-heading"><div class="login-envelope" aria-hidden="true">✉</div><div><h2>Bienvenido</h2><p>Accede a tu correo de Sangre de Luna</p></div></div><form id="loginForm"><div class="real-field"><span aria-hidden="true">♙</span><input id="email" aria-label="Correo electrónico" type="email" autocomplete="username" placeholder="Correo electrónico" required></div><div class="real-field"><span aria-hidden="true">♙</span><input id="password" aria-label="Contraseña" type="password" autocomplete="current-password" placeholder="Contraseña" required><button id="showPassword" type="button" aria-label="Mostrar u ocultar contraseña">◉</button></div><div class="real-options"><label id="rememberLabel"><input id="remember" type="checkbox" checked> Mantener sesión iniciada</label><a id="forgotPassword" href="#">¿Olvidaste tu contraseña?</a></div><button id="loginSubmit" type="submit">⇥ &nbsp; Iniciar sesión</button><p id="loginError" role="alert" aria-live="polite"></p></form><footer class="login-assurance"><div>♢<small>Seguro</small></div><div>✉<small>Comunicación oficial</small></div><div>♧<small>Conexión con la manada</small></div></footer></section></div><div id="passwordSetup" class="card hidden" style="max-width:560px;margin:24px auto"><h2>Activar tu cuenta de correo</h2><p>Por seguridad, reemplaza tu contraseña temporal antes de acceder al buzón.</p><form id="changePasswordForm" class="formgrid"><input id="newPassword" type="password" autocomplete="new-password" required minlength="12" placeholder="Nueva contraseña (12 caracteres, mayúscula y número)"><button type="submit">Guardar nueva contraseña</button></form></div><div id="app" class="hidden"><div class="mail-hero"><img class="mail-official-logo" src="/assets/logo-oficial.png" alt="Sangre de Luna"><div><div class="mail-eyebrow">✦ CORRESPONDENCIA DE LA CIUDADELA</div><h2>Sangre de Luna <em>Mail</em></h2><p>Tu espacio privado para comunicarte con la manada.</p></div><div class="mail-hero-symbol" aria-hidden="true">✉</div></div><div class="toolbar mail-controls"><span class="account-label">✦ Identidad</span><select id="account" aria-label="Dirección de correo" style="max-width:320px"><option value="webmaster">webmaster@sangredeluna.com</option><option value="contacto">contacto@sangredeluna.com</option><option value="info">info@sangredeluna.com</option></select><button id="refresh">↻ Actualizar</button><button id="sdlSoundToggle" type="button" aria-pressed="true" title="Activar o silenciar el aullido de confirmación">🐺 Sonido activado</button><button id="logout">Cerrar sesión <span aria-hidden="true">⇥</span></button></div>
 <div class="layout"><nav class="card sidebar" id="folders"><button class="active" data-folder="inbox">📥 Recibidos</button><button data-folder="sent">📤 Enviados</button><button data-folder="drafts">📝 Borradores</button><button data-folder="trash">🗑️ Papelera</button><button id="compose">✍️ Redactar</button></nav>
