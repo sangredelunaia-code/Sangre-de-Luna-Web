@@ -43,7 +43,45 @@ body:not(.sdl-image-loaded) #login:not(.hidden) #loginForm button{position:stati
 body:not(.sdl-image-loaded) #login:not(.hidden){background:#091b2eea!important;border-radius:18px!important;padding:35px!important;height:auto!important;min-height:0!important;top:15%!important}
 body:not(.sdl-image-loaded) #login:not(.hidden):before{display:block!important;content:"SANGRE DE LUNA"!important;font-size:34px!important}
 @media(max-width:900px){body:not(.sdl-image-loaded) #login:not(.hidden){margin:16px auto!important;padding:25px!important;width:calc(100% - 32px)!important}}
-</style><script>window.addEventListener('DOMContentLoaded',()=>{const i=new Image();i.onload=()=>document.body.classList.add('sdl-image-loaded');i.src='/assets/webmail-login-reference.jpg';});</script></head><body><header><div><small>🌙 SANGRE DE LUNA</small><h1>Mail</h1><small>Correspondencia privada</small></div><a href="/">Sitio principal</a></header><div class="wrap"><p class="note">Versión inicial: lectura de mensajes almacenados y guardado de borradores. Envío y recepción reales pendientes de conectar y verificar con Resend.</p><div id="login" class="card"><h2>Iniciar sesión</h2><p class="muted">Utiliza el acceso de superadministrador de Sangre de Luna.</p><form id="loginForm" class="formgrid"><input id="email" type="email" placeholder="Correo del administrador" autocomplete="username" required><input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" required><button type="submit">Ingresar</button></form></div>
+</style><script>window.addEventListener('DOMContentLoaded',()=>{const i=new Image();i.onload=()=>document.body.classList.add('sdl-image-loaded');i.src='/assets/webmail-login-reference.jpg';});</script><style id="sdl-login-fit-v2">
+/* Stage matches the original 1672×941 artwork and scales as one unit. */
+@media(min-width:901px) and (min-aspect-ratio: 11/10){
+body:has(#login:not(.hidden)){overflow:hidden!important;background:#060d15!important}
+body:has(#login:not(.hidden)):before,body:has(#login:not(.hidden)):after{display:none!important}
+body:has(#login:not(.hidden)) .wrap{padding:0!important;margin:0!important;max-width:none!important;position:static!important}
+body:has(#login:not(.hidden)) #login{position:fixed!important;left:50%!important;top:50%!important;width:1672px!important;height:941px!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#081522 url('/assets/webmail-login-reference.jpg') center/100% 100% no-repeat!important;box-shadow:none!important;display:block!important;transform:translate(-50%,-50%) scale(var(--sdl-scale,.75))!important;transform-origin:center center!important}
+#login:not(.hidden):before,#login:not(.hidden):after,#login:not(.hidden) h2,#login:not(.hidden) p.muted{display:none!important}
+#login:not(.hidden) #loginForm{position:absolute!important;left:946px!important;top:494px!important;width:490px!important;height:247px!important;display:block!important;padding:0!important;margin:0!important}
+#login:not(.hidden) #loginForm input{position:absolute!important;left:0!important;width:490px!important;height:55px!important;border-radius:12px!important;border:1px solid transparent!important;background:rgba(12,23,38,.12)!important;color:#fff!important;opacity:1!important;font-size:20px!important;padding:9px 18px!important;margin:0!important}
+#login:not(.hidden) #email{top:0!important}
+#login:not(.hidden) #password{top:67px!important}
+#login:not(.hidden) #loginForm input::placeholder{color:transparent!important}
+#login:not(.hidden) #loginForm input:focus{background:rgba(8,23,38,.92)!important;border-color:#a7d9fb!important;outline:2px solid #a7d9fb!important}
+#login:not(.hidden) #loginForm button{position:absolute!important;left:0!important;top:187px!important;width:490px!important;height:59px!important;padding:0!important;border:0!important;border-radius:30px!important;opacity:.05!important;color:transparent!important;background:#9c203e!important;font-size:20px!important;margin:0!important}
+#login:not(.hidden) #loginForm button:focus-visible,#login:not(.hidden) #loginForm button:hover{opacity:.55!important;color:#fff!important}
+body:has(#login:not(.hidden)) #toast{position:fixed;bottom:5px;left:50%;transform:translateX(-50%);z-index:5;color:#fff;background:#132739ee;border-radius:9px;max-width:90vw;padding:3px 10px}
+}
+@media(max-width:900px),(max-aspect-ratio:11/10){
+body:has(#login:not(.hidden)){min-height:100dvh!important;overflow-y:auto!important;background:linear-gradient(180deg,rgba(4,12,24,.12),#061321 64%),url('/assets/webmail-login-reference.jpg') 26% top/auto 58vh no-repeat,#081523!important}
+body:has(#login:not(.hidden)):before,body:has(#login:not(.hidden)):after{display:none!important}
+body:has(#login:not(.hidden)) .wrap{max-width:none!important;padding:min(30vh,230px) 14px 24px!important;margin:0!important;position:relative!important}
+body:has(#login:not(.hidden)) #login{display:block!important;position:relative!important;inset:auto!important;transform:none!important;margin:0 auto!important;width:min(100%,510px)!important;min-height:0!important;height:auto!important;border:1px solid #68849b!important;border-radius:22px!important;padding:26px 20px!important;background:rgba(9,24,41,.96)!important;box-shadow:0 20px 60px #000a!important}
+#login:not(.hidden):before{display:block!important;font-size:clamp(25px,6vw,38px)!important}
+#login:not(.hidden):after{display:block!important;font-size:10px!important}
+#login:not(.hidden) h2{display:block!important;font-size:26px!important}
+#login:not(.hidden) p.muted{display:block!important;margin:6px 0 20px!important}
+#login:not(.hidden) #loginForm{display:grid!important;position:static!important;gap:12px!important;height:auto!important;width:auto!important}
+#login:not(.hidden) #loginForm input{position:static!important;width:100%!important;height:52px!important;opacity:1!important;padding:12px 16px!important;background:#142c42!important;border:1px solid #58758a!important;margin:0!important}
+#login:not(.hidden) #loginForm input::placeholder{color:#a6bbcc!important}
+#login:not(.hidden) #loginForm button{position:static!important;width:100%!important;height:54px!important;opacity:1!important;color:#fff!important;background:linear-gradient(110deg,#932740,#49152a)!important;margin:0!important}
+body:has(#login:not(.hidden)) #toast{max-width:510px;margin:12px auto}
+}
+</style><script>
+(function(){
+function fit(){const width=1672,height=941;const factor=Math.min(window.innerWidth/width,window.innerHeight/height);document.documentElement.style.setProperty('--sdl-scale',String(Math.max(0.1,factor)));}
+fit();addEventListener('resize',fit,{passive:true});addEventListener('orientationchange',fit,{passive:true});
+})();
+</script></head><body><header><div><small>🌙 SANGRE DE LUNA</small><h1>Mail</h1><small>Correspondencia privada</small></div><a href="/">Sitio principal</a></header><div class="wrap"><p class="note">Versión inicial: lectura de mensajes almacenados y guardado de borradores. Envío y recepción reales pendientes de conectar y verificar con Resend.</p><div id="login" class="card"><h2>Iniciar sesión</h2><p class="muted">Utiliza el acceso de superadministrador de Sangre de Luna.</p><form id="loginForm" class="formgrid"><input id="email" type="email" placeholder="Correo del administrador" autocomplete="username" required><input id="password" type="password" placeholder="Contraseña" autocomplete="current-password" required><button type="submit">Ingresar</button></form></div>
 <div id="app" class="hidden"><div class="toolbar" style="margin-bottom:16px"><select id="account" aria-label="Dirección de correo" style="max-width:320px"><option value="contacto">contacto@sangredeluna.com</option><option value="info">info@sangredeluna.com</option><option value="webmaster">webmaster@sangredeluna.com</option></select><button id="refresh">Actualizar</button><button id="logout">Cerrar sesión</button></div>
 <div class="layout"><nav class="card sidebar" id="folders"><button class="active" data-folder="inbox">📥 Recibidos</button><button data-folder="sent">📤 Enviados</button><button data-folder="drafts">📝 Borradores</button><button data-folder="trash">🗑️ Papelera</button><button id="compose">✍️ Redactar</button></nav>
 <div class="card"><h2 id="folderTitle">Recibidos</h2><div id="messages"><p class="muted">Cargando…</p></div></div>
