@@ -629,6 +629,22 @@ document.head.appendChild(compactPortalStyle);
  @media(max-width:900px){body .top:has(nav.sdl-site-nav){background:#0e2130!important}body .sdl-ux-dock{z-index:1600!important}}
  `;
  document.head.appendChild(jw);
+ /* Igualdad de logotipo en Fan Club y destino exclusivo de JUGAR. */
+ const finalFix=document.createElement('style');finalFix.id='sdl-fan-logo-game-fix';
+ finalFix.textContent=`
+ @media(min-width:901px){
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child,
+ body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child{width:175px!important;height:128px!important;min-width:0!important;min-height:128px!important;grid-row:1/3!important;align-self:center!important;justify-self:start!important;display:flex!important;align-items:center!important;justify-content:center!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child img,
+ body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child img{display:block!important;width:156px!important;min-width:156px!important;max-width:156px!important;height:124px!important;max-height:124px!important;object-fit:contain!important;visibility:visible!important;opacity:1!important}
+ }
+ `;document.head.appendChild(finalFix);
+ const officialGame='https://sangre-de-luna-ecos-ciudadela.vercel.app/';
+ header.querySelectorAll('a').forEach(a=>{
+  const label=(a.textContent||'').trim().toUpperCase();
+  if(label==='JUGAR'||a.hasAttribute('data-sdl-game-link'))a.href=officialGame;
+ });
+ document.querySelectorAll('a[data-sdl-game-link],a[data-sdl-game-mobile]').forEach(a=>a.href=officialGame);
  const splash=document.getElementById('splash');
  const enter=()=>{if(splash&&location.hash==='#inicio'){splash.classList.add('hide');try{sessionStorage.setItem('sdl-entered','1')}catch{}}};
  enter();window.addEventListener('hashchange',enter);
