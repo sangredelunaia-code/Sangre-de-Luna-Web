@@ -76,7 +76,7 @@ const universeMenu=[
 ];catalog.push(universeMenu[0],universeMenu[2],universeMenu[3]);
 groupRoot.appendChild(makeMenuLink(homeEntry));groupRoot.appendChild(makeDetails("LA SAGA",sagaEntries));groupRoot.appendChild(makeDetails("UNIVERSO",universeMenu));groupRoot.appendChild(makeDetails("MULTIMEDIA",universeEntries.slice(3,5)));groupRoot.appendChild(makeDetails("EXPLORAR",universeEntries.slice(5)));groupRoot.appendChild(makeDetails("COMUNIDAD",communityEntries.slice(0,3)));
 groupRoot.appendChild(makeMenuLink(catalog.find(x=>x[2]==="/tienda")));
-const gameUrl="https://sangre-de-luna-ecos-ciudadela.vercel.app/sdl_fullscreen.html";const gameItem=["Jugar · Crónicas de la Ciudadela","Entra al juego de Sangre de Luna.",gameUrl,"juego jugar"];
+const gameUrl="https://sangredeluna.com/api/game";const gameItem=["Jugar · Crónicas de la Ciudadela","Entra al juego de Sangre de Luna.",gameUrl,"juego jugar"];
 groupRoot.appendChild(makeMenuLink(gameItem));
 const isWelcome=()=>{const splash=document.getElementById("splash");return !!(splash&&!splash.classList.contains("hide"))};
 const openMenu=()=>{if(isWelcome())return;menu.classList.add("open");const first=menu.querySelector(".sdl-menu-link");setTimeout(()=>first&&first.focus(),20)};
@@ -639,7 +639,7 @@ document.head.appendChild(compactPortalStyle);
  body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child img{display:block!important;width:156px!important;min-width:156px!important;max-width:156px!important;height:124px!important;max-height:124px!important;object-fit:contain!important;visibility:visible!important;opacity:1!important}
  }
  `;document.head.appendChild(finalFix);
- const officialGame='https://sangre-de-luna-ecos-ciudadela.vercel.app/sdl_fullscreen.html';
+ const officialGame='https://sangredeluna.com/api/game';
  header.querySelectorAll('a').forEach(a=>{
   const label=(a.textContent||'').trim().toUpperCase();
   if(label==='JUGAR'||a.hasAttribute('data-sdl-game-link'))a.href=officialGame;
@@ -663,6 +663,18 @@ document.head.appendChild(compactPortalStyle);
  body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child img{display:block!important;width:156px!important;height:124px!important;max-width:156px!important;max-height:124px!important;object-fit:contain!important}
  @media(max-width:900px){body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child img,body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child img{width:95px!important;height:78px!important;max-width:95px!important;max-height:78px!important}}
  `;document.head.appendChild(repair);
+ const strictFan=document.createElement('style');strictFan.id='sdl-final-fan-header';
+ strictFan.textContent=`
+ @media(min-width:901px){
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top:has(nav.sdl-site-nav){grid-template-columns:180px minmax(0,1fr)!important;grid-template-rows:79px 51px!important;height:130px!important;min-height:130px!important;position:relative!important;z-index:20000!important;overflow:visible!important;isolation:auto!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top>a:first-child{grid-column:1!important;grid-row:1/3!important;width:175px!important;height:128px!important;min-height:128px!important;max-height:none!important;overflow:visible!important;justify-self:start!important;align-self:center!important;z-index:20!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top>a:first-child img{width:156px!important;min-width:156px!important;max-width:156px!important;height:124px!important;min-height:124px!important;max-height:124px!important;object-fit:contain!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top>.head-actions{grid-column:2!important;grid-row:1!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top>nav.sdl-site-nav{grid-column:1/-1!important;grid-row:2!important;position:relative!important;z-index:21000!important;display:flex!important;overflow:visible!important;height:51px!important;min-height:51px!important;padding:0 2.5% 0 calc(2.5% + 180px)!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top nav.sdl-site-nav .sdl-nav-panel{position:absolute!important;top:100%!important;left:2.5%!important;right:2.5%!important;z-index:22000!important;overflow-y:auto!important;max-height:calc(100dvh - 160px)!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top nav.sdl-site-nav .sdl-nav-group.is-open>.sdl-nav-panel{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+ }
+ `;document.head.appendChild(strictFan);
  const splash=document.getElementById('splash');
  const enter=()=>{if(splash&&location.hash==='#inicio'){splash.classList.add('hide');try{sessionStorage.setItem('sdl-entered','1')}catch{}}};
  enter();window.addEventListener('hashchange',enter);
