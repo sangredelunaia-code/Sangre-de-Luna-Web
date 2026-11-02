@@ -36,6 +36,17 @@
 @page{size:54mm 81mm;margin:0}@media print{html,body{width:54mm;height:81mm;margin:0!important;background:#fff!important}body *{visibility:hidden!important}#fanDigitalCard,#fanDigitalCard *{visibility:visible!important}#fanDigitalCard{position:fixed!important;inset:0!important;width:54mm!important;height:81mm!important;border-radius:0!important;box-shadow:none!important}.fan-card-qr{width:18mm!important}.fan-card-qr #fanQrCanvas{width:18mm!important;height:18mm!important;padding:1mm!important}}
 @media(max-width:700px){.brand div{display:none}.top-actions .site-label{display:none}.auth-grid,.activity-grid{grid-template-columns:1fr}.faction-grid,.fan-content-grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.span2{grid-column:auto}.portal-actions{display:grid}.portal-actions .btn{width:100%}.manada-hero{padding-top:54px}.head{display:block}.foot .row{display:block}.portal-emblem{width:min(210px,55vw)}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+
+/* SDL FAN CLUB · CORRECCIÓN DE VISUALIZACIÓN 2026-11-02 */
+/* Evita que el encabezado comprima el logotipo y permite leer el formulario al navegar a sus anclas. */
+html body .top{min-height:86px!important;height:auto!important;padding:10px max(16px,3%)!important;overflow:visible!important;flex-wrap:wrap!important}
+html body .top .brand{min-width:0!important;flex-shrink:0!important;align-items:center!important}
+html body .top .brand img{display:block!important;width:112px!important;height:64px!important;max-width:112px!important;max-height:64px!important;object-fit:contain!important;object-position:center!important;overflow:visible!important}
+html body .top .top-actions{min-width:0!important;flex-wrap:wrap!important}
+html body #acceso,html body #fanJoinCard,html body #fanMemberCard{scroll-margin-top:205px!important}
+html body #acceso{position:relative;z-index:1}
+html body #fanJoinCard,html body #fanMemberCard{overflow:visible}
+@media(max-width:700px){html body .top{min-height:76px!important;padding:8px 14px!important;gap:8px!important}html body .top .brand img{width:86px!important;height:54px!important;max-width:86px!important;max-height:54px!important}html body .top .top-actions{gap:6px!important}html body #acceso,html body #fanJoinCard,html body #fanMemberCard{scroll-margin-top:165px!important}.auth-grid{grid-template-columns:minmax(0,1fr)!important}.fan-card{min-width:0!important}}
 </style>
 <!-- SDL SEO START -->
 <meta name="description" content="Únete al Fan Club oficial de Sangre de Luna, crea tu credencial digital, participa en desafíos, gana insignias y forma parte de la Manada.">
