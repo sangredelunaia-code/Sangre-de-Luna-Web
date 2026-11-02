@@ -527,3 +527,18 @@ body .top:has(nav.sdl-site-nav)>a:first-child{width:145px!important;height:110px
 body .top:has(nav.sdl-site-nav)>a:first-child img{display:block!important;width:120px!important;height:110px!important;max-width:120px!important;max-height:110px!important;min-width:120px!important;object-fit:contain!important;object-position:center!important;transform:none!important;opacity:1!important;visibility:visible!important}
 @media(max-width:900px){body .top:has(nav.sdl-site-nav)>a:first-child{width:112px!important;height:92px!important;grid-row:1/3!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:98px!important;min-width:98px!important;max-width:98px!important;height:92px!important;max-height:92px!important}}
 `;document.head.appendChild(style)})();
+
+/* SDL estabilidad Fan Club: logo y desplegables sobre el portal */
+(()=>{if(!document.querySelector('#fanJoinForm'))return;
+const css=document.createElement('style');css.id='sdl-fanclub-navigation-stable';css.textContent=`
+body .top:has(nav.sdl-site-nav){overflow:visible!important;z-index:9999!important;isolation:auto!important}
+body .top:has(nav.sdl-site-nav)>a:first-child{width:162px!important;height:111px!important;grid-row:1/3!important;z-index:4!important}
+body .top:has(nav.sdl-site-nav)>a:first-child img{width:125px!important;min-width:125px!important;max-width:125px!important;height:109px!important;max-height:109px!important;object-fit:contain!important}
+body .top nav.sdl-site-nav{overflow:visible!important;position:relative!important;z-index:10000!important}
+body .top nav.sdl-site-nav .sdl-nav-group{position:static!important}
+body .top nav.sdl-site-nav .sdl-nav-panel{position:absolute!important;top:100%!important;left:3%!important;right:3%!important;z-index:10001!important;max-height:min(65vh,600px)!important;overflow-y:auto!important;background:#091b2a!important}
+body .top nav.sdl-site-nav .sdl-nav-group.is-open>.sdl-nav-panel{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+body #portal{z-index:80!important}
+@media(max-width:900px){body .top:has(nav.sdl-site-nav)>a:first-child{width:120px!important;height:90px!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:108px!important;min-width:108px!important;max-width:108px!important;height:90px!important}body .top nav.sdl-site-nav{overflow-x:auto!important}body .top nav.sdl-site-nav .sdl-nav-panel{position:fixed!important;top:var(--sdl-header-height,111px)!important;left:0!important;right:0!important}}
+`;document.head.appendChild(css);
+})();
