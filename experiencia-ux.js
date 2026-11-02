@@ -60,19 +60,19 @@ const makeMenuLink=(item)=>{const a=document.createElement("a");a.href=item[2];a
 const makeDetails=(title,items)=>{const d=document.createElement("details");d.className="sdl-menu-group";const sm=document.createElement("summary");sm.textContent=title;d.appendChild(sm);const list=document.createElement("div");list.className="sdl-menu-links";items.forEach(x=>list.appendChild(makeMenuLink(x)));d.appendChild(list);return d};
 const homeEntry=catalog[0],bookEntry=catalog[1],universeEntries=catalog.slice(2,9),communityEntries=catalog.slice(9);
 const sagaEntries=[
-["El libro","Portada, presentación y compra oficial en Amazon.","https://sangre-de-luna-public.vercel.app/libro.html","libro saga amazon"],
-["Por dónde empezar","Una guía para descubrir el libro, la serie y la manada.","https://sangre-de-luna-public.vercel.app/saga#empezar","saga comenzar guía"],
-["Temporadas y capítulos","Videos y crónicas organizados por temporada.","https://sangre-de-luna-public.vercel.app/saga#temporadas","saga temporadas capítulos"],
-["La historia hasta ahora","Recupera el hilo con aviso antes de acceder a revelaciones.","https://sangre-de-luna-public.vercel.app/saga#resumen","saga resumen sinopsis"]
+["El libro","Portada, presentación y compra oficial en Amazon.","https://sangredeluna.com/libro.html","libro saga amazon"],
+["Por dónde empezar","Una guía para descubrir el libro, la serie y la manada.","https://sangredeluna.com/saga#empezar","saga comenzar guía"],
+["Temporadas y capítulos","Videos y crónicas organizados por temporada.","https://sangredeluna.com/saga#temporadas","saga temporadas capítulos"],
+["La historia hasta ahora","Recupera el hilo con aviso antes de acceder a revelaciones.","https://sangredeluna.com/saga#resumen","saga resumen sinopsis"]
 ];
 catalog.push(...sagaEntries.slice(1));
 const universeMenu=[
-["Descubre el universo","Una guía visual para elegir tu próximo recorrido.","https://sangre-de-luna-public.vercel.app/universo","universo guía"],
-["Personajes","Retratos oficiales, roles y biografías.","https://sangre-de-luna-public.vercel.app/personajes","personajes fichas"],
-["Linajes y grupos","Encuentra a los personajes por su grupo publicado.","https://sangre-de-luna-public.vercel.app/personajes#linajes","linajes facciones grupos"],
-["Glosario del universo","Una guía breve para orientarte en el contenido.","https://sangre-de-luna-public.vercel.app/universo#glosario","glosario términos universo"],
-["Mapa de las Tierras","Explora los lugares del mundo de Sangre de Luna.","https://sangre-de-luna-public.vercel.app/mapa","territorios reinos mapa"],
-["Recorrido por la Ciudadela","Visita sus espacios en el tour interactivo.","https://sangre-de-luna-public.vercel.app/tour","ciudadela tour recorrido"]
+["Descubre el universo","Una guía visual para elegir tu próximo recorrido.","https://sangredeluna.com/universo","universo guía"],
+["Personajes","Retratos oficiales, roles y biografías.","https://sangredeluna.com/personajes","personajes fichas"],
+["Linajes y grupos","Encuentra a los personajes por su grupo publicado.","https://sangredeluna.com/personajes#linajes","linajes facciones grupos"],
+["Glosario del universo","Una guía breve para orientarte en el contenido.","https://sangredeluna.com/universo#glosario","glosario términos universo"],
+["Mapa de las Tierras","Explora los lugares del mundo de Sangre de Luna.","https://sangredeluna.com/mapa","territorios reinos mapa"],
+["Recorrido por la Ciudadela","Visita sus espacios en el tour interactivo.","https://sangredeluna.com/tour","ciudadela tour recorrido"]
 ];catalog.push(universeMenu[0],universeMenu[2],universeMenu[3]);
 groupRoot.appendChild(makeMenuLink(homeEntry));groupRoot.appendChild(makeDetails("LA SAGA",sagaEntries));groupRoot.appendChild(makeDetails("UNIVERSO",universeMenu));groupRoot.appendChild(makeDetails("MULTIMEDIA",universeEntries.slice(3,5)));groupRoot.appendChild(makeDetails("EXPLORAR",universeEntries.slice(5)));groupRoot.appendChild(makeDetails("COMUNIDAD",communityEntries.slice(0,3)));
 groupRoot.appendChild(makeMenuLink(catalog.find(x=>x[2]==="/tienda")));
@@ -86,8 +86,8 @@ menu.querySelector("[data-sdl-close-menu]").addEventListener("click",closeMenu);
 menu.addEventListener("click",e=>{if(e.target===menu)closeMenu()});
 menu.querySelectorAll("a[href]").forEach(a=>a.addEventListener("click",()=>closeMenu()));
 
-const SDL_SITE="https://sangre-de-luna-public.vercel.app";
-const onGame=location.origin!==SDL_SITE;
+const SDL_SITE="https://sangredeluna.com";
+const onGame=!['sangredeluna.com','www.sangredeluna.com','sangre-de-luna-public.vercel.app'].includes(location.hostname);
 if(onGame)catalog.forEach(x=>{if(x[2].startsWith('/'))x[2]=SDL_SITE+x[2]});
 if(!document.querySelector(".top nav.nav")){
  const previous=document.querySelector('header.top,header.topbar');
