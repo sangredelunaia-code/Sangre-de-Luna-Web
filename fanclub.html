@@ -64,7 +64,17 @@ html body #fanJoinCard,html body #fanMemberCard{overflow:visible}
 <meta name="twitter:image" content="https://sangredeluna.com/assets/credencial-diseno-oficial.webp">
 <!-- SDL SEO END -->
 <script src="/site-visits.js" defer></script>
-</head>
+<style id="sdl-fanclub-recovery">
+/* Navigation header does not belong to the fixed portal's clipped layer. */
+body.sdl-has-shared-header .sdl-common-header{position:relative!important;overflow:visible!important;z-index:16000!important;isolation:auto!important}
+body.sdl-has-shared-header .sdl-common-header nav.sdl-site-nav{overflow:visible!important;position:relative!important;z-index:16001!important}
+body.sdl-has-shared-header .sdl-common-header .sdl-nav-panel{z-index:16002!important;pointer-events:auto!important}
+body.sdl-has-shared-header #portal{z-index:100!important;top:var(--sdl-header-height,130px)!important;max-height:calc(100dvh - var(--sdl-header-height,130px))!important}
+@media(min-width:901px){
+body.sdl-has-shared-header .sdl-common-header>a:first-child{grid-row:1/3!important;height:130px!important;min-height:130px!important;width:180px!important;overflow:visible!important;z-index:16003!important}
+body.sdl-has-shared-header .sdl-common-header>a:first-child img{width:156px!important;min-width:156px!important;max-width:156px!important;height:124px!important;max-height:124px!important;object-fit:contain!important}
+}
+</style></head>
 <body class="locked">
 <div class="portal" id="portal" aria-label="Entrada a La Manada">
  <div class="portal-bg"></div><div class="mist m1"></div><div class="mist m2"></div><div class="mist m3"></div>
@@ -219,5 +229,5 @@ await loadPublic();
 </script>
 </body><script src="/lykos-viewport-fit.js?v=20260930-9" defer></script>
 
-<script src="/experiencia-ux.js?v=2" defer></script>
+<script src="/experiencia-ux.js?v=20261102-fanclub-fix" defer></script>
 </html>
