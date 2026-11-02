@@ -606,3 +606,5 @@ document.head.appendChild(compactPortalStyle);
  const enter=()=>{if(splash&&location.hash==='#inicio'){splash.classList.add('hide');try{sessionStorage.setItem('sdl-entered','1')}catch{}}};
  enter();window.addEventListener('hashchange',enter);
 })();
+
+})();
