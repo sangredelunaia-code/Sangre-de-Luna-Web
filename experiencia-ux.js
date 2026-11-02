@@ -520,3 +520,10 @@ document.head.appendChild(compactPortalStyle);
  document.head.appendChild(extra);
  if(h.classList.contains('sdl-common-header')){const sync=()=>document.documentElement.style.setProperty('--sdl-header-height',h.offsetHeight+'px');new ResizeObserver(sync).observe(h);sync();}
 })();
+
+/* SDL logo uniforme: tamaño oficial en inicio y páginas internas */
+(()=>{if(/^\/(?:tienda|admin|mail|webmail)(?:\/|\.|$)/i.test(location.pathname)||new URLSearchParams(location.search).has('admin'))return;const style=document.createElement('style');style.id='sdl-official-logo-size';style.textContent=`
+body .top:has(nav.sdl-site-nav)>a:first-child{width:145px!important;height:110px!important;grid-row:1/3!important;align-self:center!important;justify-self:start!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;position:relative!important;z-index:5!important;overflow:visible!important}
+body .top:has(nav.sdl-site-nav)>a:first-child img{display:block!important;width:120px!important;height:110px!important;max-width:120px!important;max-height:110px!important;min-width:120px!important;object-fit:contain!important;object-position:center!important;transform:none!important;opacity:1!important;visibility:visible!important}
+@media(max-width:900px){body .top:has(nav.sdl-site-nav)>a:first-child{width:112px!important;height:92px!important;grid-row:1/3!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:98px!important;min-width:98px!important;max-width:98px!important;height:92px!important;max-height:92px!important}}
+`;document.head.appendChild(style)})();
