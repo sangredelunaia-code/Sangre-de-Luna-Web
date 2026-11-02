@@ -498,47 +498,38 @@ document.head.appendChild(compactPortalStyle);
   document.head.appendChild(style);
 })();
 
-/* SDL NAVEGACIÓN OFICIAL ÚNICA · NOV 2026 · Administración/Correo/Tienda conservan diseño independiente */
+
+/* Navegación pública unificada v4: una sola fuente de reglas, sin parches acumulados. */
 (()=>{
- const excluded=/^\/(?:tienda|admin|webmail|mail)(?:\/|\.|$)/i.test(location.pathname)||new URLSearchParams(location.search).has('admin');
- if(excluded)return;
- const h=document.querySelector('header.top:has(nav.sdl-site-nav)');if(!h)return;
- const extra=document.createElement('style');extra.id='sdl-official-unified-navigation';extra.textContent=`
- body .top:has(nav.sdl-site-nav){display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;grid-template-rows:67px 44px!important;gap:0!important;min-height:111px!important;height:111px!important;padding:0 3%!important;margin:0!important;position:relative!important;inset:auto!important;overflow:visible!important;background:linear-gradient(110deg,#122838,#07131f)!important;border-bottom:1px solid #203748!important;z-index:150!important}
- body .top:has(nav.sdl-site-nav)>a:first-child{grid-column:1!important;grid-row:1/3!important;position:relative!important;z-index:3!important;justify-self:start!important;align-self:center!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;width:145px!important;height:108px!important;min-width:0!important;margin:0!important;padding:0!important}
- body .top:has(nav.sdl-site-nav)>a:first-child img{width:120px!important;height:108px!important;max-width:120px!important;max-height:108px!important;object-fit:contain!important;position:static!important;transform:none!important;margin:0!important}
- body .top:has(nav.sdl-site-nav)>.head-actions{grid-column:2!important;grid-row:1!important;display:flex!important;align-items:center!important;justify-content:flex-end!important;flex-wrap:nowrap!important;min-width:0!important;min-height:67px!important;gap:9px!important;padding:0!important;margin:0!important}
- body .top:has(nav.sdl-site-nav) nav.sdl-site-nav{grid-column:1/-1!important;grid-row:2!important;display:flex!important;justify-content:space-evenly!important;align-items:center!important;gap:0!important;width:calc(100% + 6vw)!important;height:44px!important;min-height:44px!important;max-height:44px!important;margin:0 -3vw!important;padding:0 3% 0 calc(3% + 170px)!important;background:linear-gradient(180deg,#203a4d,#142a3a)!important;border-top:1px solid #4c6577!important;overflow:visible!important}
- body .top nav.sdl-site-nav>.sdl-nav-link,body .top nav.sdl-site-nav .sdl-nav-toggle{min-height:42px!important;height:42px!important;padding:8px clamp(5px,1vw,13px)!important;font-size:clamp(9px,.75vw,11px)!important;letter-spacing:.035em!important}
+ const path=location.pathname;
+ if(/^\/(?:tienda|admin|webmail|mail)(?:\/|\.|$)/i.test(path)||new URLSearchParams(location.search).has('admin'))return;
+ const h=document.querySelector('header.top:has(nav.sdl-site-nav)');
+ if(!h)return;
+ const style=document.createElement('style');style.id='sdl-unified-header-v4';
+ style.textContent=`
+ body .top:has(nav.sdl-site-nav){display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;grid-template-rows:66px 45px!important;gap:0!important;padding:0 3%!important;margin:0!important;min-height:111px!important;height:111px!important;position:relative!important;inset:auto!important;overflow:visible!important;z-index:10000!important;background:linear-gradient(110deg,#122838,#07131f)!important}
+ body .top:has(nav.sdl-site-nav)>a:first-child{grid-column:1!important;grid-row:1/3!important;width:155px!important;height:110px!important;min-width:155px!important;min-height:110px!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;align-self:center!important;justify-self:start!important;overflow:visible!important;position:relative!important;z-index:5!important;padding:0!important;margin:0!important}
+ body .top:has(nav.sdl-site-nav)>a:first-child img{display:block!important;width:125px!important;min-width:125px!important;max-width:125px!important;height:110px!important;max-height:110px!important;object-fit:contain!important;object-position:center!important;visibility:visible!important;opacity:1!important;transform:none!important}
+ body .top:has(nav.sdl-site-nav)>.head-actions{grid-column:2!important;grid-row:1!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;flex-wrap:nowrap!important;min-height:66px!important;gap:9px!important;padding:0!important;margin:0!important}
+ body .top:has(nav.sdl-site-nav)>nav.sdl-site-nav{grid-column:1/-1!important;grid-row:2!important;display:flex!important;justify-content:space-evenly!important;align-items:center!important;position:relative!important;width:calc(100% + 6vw)!important;max-width:none!important;height:45px!important;min-height:45px!important;margin:0 -3vw!important;padding:0 3% 0 calc(3% + 170px)!important;overflow:visible!important;z-index:10001!important;background:linear-gradient(180deg,#203a4d,#142a3a)!important;border-top:1px solid #4c6577!important}
+ body .top nav.sdl-site-nav>.sdl-nav-link,body .top nav.sdl-site-nav .sdl-nav-toggle{min-height:43px!important;height:43px!important;padding:7px clamp(5px,1vw,13px)!important;font-size:clamp(10px,.75vw,11px)!important}
+ body .top nav.sdl-site-nav .sdl-nav-group{position:static!important}
+ body .top nav.sdl-site-nav .sdl-nav-panel{position:absolute!important;top:100%!important;left:3%!important;right:3%!important;z-index:10002!important;max-height:calc(100dvh - 130px)!important;overflow-y:auto!important;background:#091b2a!important;pointer-events:auto!important}
+ body .top nav.sdl-site-nav .sdl-nav-group.is-open .sdl-nav-panel{display:grid!important;visibility:visible!important;opacity:1!important}
  body.sdl-has-shared-header>.sdl-local-header{display:none!important}
  body.sdl-has-shared-header:has(#portal) .sdl-common-header{position:relative!important;top:auto!important;left:auto!important;right:auto!important}
- body.sdl-has-shared-header:has(#portal) .portal{top:var(--sdl-header-height,111px)!important}
+ body.sdl-has-shared-header:has(#portal) .portal{top:var(--sdl-header-height,111px)!important;z-index:80!important}
  body.sdl-has-shared-header:has(#fanJoinForm) #acceso,body.sdl-has-shared-header:has(#fanJoinForm) #fanJoinCard,body.sdl-has-shared-header:has(#fanJoinForm) #fanMemberCard{scroll-margin-top:20px!important}
- @media(max-width:1100px){body .top:has(nav.sdl-site-nav){grid-template-columns:110px minmax(0,1fr)!important}body .top:has(nav.sdl-site-nav)>a:first-child{width:100px!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:98px!important;height:96px!important}body .top:has(nav.sdl-site-nav) nav.sdl-site-nav{padding-left:calc(3% + 110px)!important}body .top:has(nav.sdl-site-nav)>.head-actions{gap:5px!important}}
- @media(max-width:900px){body .top:has(nav.sdl-site-nav){height:auto!important;grid-template-columns:92px minmax(0,1fr)!important;grid-template-rows:minmax(68px,auto) auto!important}body .top:has(nav.sdl-site-nav)>a:first-child{grid-row:1!important;width:90px!important;height:68px!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:80px!important;height:64px!important}body .top:has(nav.sdl-site-nav)>.head-actions{grid-row:1!important;grid-column:2!important;min-height:68px!important;flex-wrap:wrap!important;justify-content:flex-end!important}body .top:has(nav.sdl-site-nav) nav.sdl-site-nav{grid-row:2!important;display:flex!important;overflow-x:auto!important;justify-content:flex-start!important;padding:0 12px!important;width:calc(100% + 6vw)!important;scrollbar-width:thin!important}body .sdl-header-search{max-width:220px!important}}
+ @media(max-width:900px){body .top:has(nav.sdl-site-nav){grid-template-columns:112px minmax(0,1fr)!important;grid-template-rows:auto 45px!important;height:auto!important}body .top:has(nav.sdl-site-nav)>a:first-child{width:105px!important;min-width:105px!important;height:80px!important;min-height:80px!important;grid-row:1!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:95px!important;min-width:95px!important;max-width:95px!important;height:80px!important;max-height:80px!important}body .top:has(nav.sdl-site-nav)>.head-actions{flex-wrap:wrap!important;gap:4px!important}body .top:has(nav.sdl-site-nav)>nav.sdl-site-nav{grid-row:2!important;justify-content:flex-start!important;overflow-x:auto!important;overflow-y:visible!important;padding:0 12px!important}body .top nav.sdl-site-nav .sdl-nav-panel{position:fixed!important;top:var(--sdl-header-height,130px)!important;left:0!important;right:0!important}}
  `;
- document.head.appendChild(extra);
+ document.head.appendChild(style);
+ const fixDropdown=()=>{
+  h.querySelectorAll('.sdl-nav-group').forEach(g=>{
+   const button=g.querySelector('.sdl-nav-toggle'),panel=g.querySelector('.sdl-nav-panel');
+   if(!button||!panel)return;
+   button.addEventListener('click',()=>{requestAnimationFrame(()=>{if(g.classList.contains('is-open')){panel.style.setProperty('display','grid','important');panel.style.setProperty('z-index','10002','important')}else{panel.style.removeProperty('display')}})});
+  });
+ };
+ fixDropdown();
  if(h.classList.contains('sdl-common-header')){const sync=()=>document.documentElement.style.setProperty('--sdl-header-height',h.offsetHeight+'px');new ResizeObserver(sync).observe(h);sync();}
-})();
-
-/* SDL logo uniforme: tamaño oficial en inicio y páginas internas */
-(()=>{if(/^\/(?:tienda|admin|mail|webmail)(?:\/|\.|$)/i.test(location.pathname)||new URLSearchParams(location.search).has('admin'))return;const style=document.createElement('style');style.id='sdl-official-logo-size';style.textContent=`
-body .top:has(nav.sdl-site-nav)>a:first-child{width:145px!important;height:110px!important;grid-row:1/3!important;align-self:center!important;justify-self:start!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;position:relative!important;z-index:5!important;overflow:visible!important}
-body .top:has(nav.sdl-site-nav)>a:first-child img{display:block!important;width:120px!important;height:110px!important;max-width:120px!important;max-height:110px!important;min-width:120px!important;object-fit:contain!important;object-position:center!important;transform:none!important;opacity:1!important;visibility:visible!important}
-@media(max-width:900px){body .top:has(nav.sdl-site-nav)>a:first-child{width:112px!important;height:92px!important;grid-row:1/3!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:98px!important;min-width:98px!important;max-width:98px!important;height:92px!important;max-height:92px!important}}
-`;document.head.appendChild(style)})();
-
-/* SDL estabilidad Fan Club: logo y desplegables sobre el portal */
-(()=>{if(!document.querySelector('#fanJoinForm'))return;
-const css=document.createElement('style');css.id='sdl-fanclub-navigation-stable';css.textContent=`
-body .top:has(nav.sdl-site-nav){overflow:visible!important;z-index:9999!important;isolation:auto!important}
-body .top:has(nav.sdl-site-nav)>a:first-child{width:162px!important;height:111px!important;grid-row:1/3!important;z-index:4!important}
-body .top:has(nav.sdl-site-nav)>a:first-child img{width:125px!important;min-width:125px!important;max-width:125px!important;height:109px!important;max-height:109px!important;object-fit:contain!important}
-body .top nav.sdl-site-nav{overflow:visible!important;position:relative!important;z-index:10000!important}
-body .top nav.sdl-site-nav .sdl-nav-group{position:static!important}
-body .top nav.sdl-site-nav .sdl-nav-panel{position:absolute!important;top:100%!important;left:3%!important;right:3%!important;z-index:10001!important;max-height:min(65vh,600px)!important;overflow-y:auto!important;background:#091b2a!important}
-body .top nav.sdl-site-nav .sdl-nav-group.is-open>.sdl-nav-panel{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
-body #portal{z-index:80!important}
-@media(max-width:900px){body .top:has(nav.sdl-site-nav)>a:first-child{width:120px!important;height:90px!important}body .top:has(nav.sdl-site-nav)>a:first-child img{width:108px!important;min-width:108px!important;max-width:108px!important;height:90px!important}body .top nav.sdl-site-nav{overflow-x:auto!important}body .top nav.sdl-site-nav .sdl-nav-panel{position:fixed!important;top:var(--sdl-header-height,111px)!important;left:0!important;right:0!important}}
-`;document.head.appendChild(css);
 })();
