@@ -675,6 +675,29 @@ document.head.appendChild(compactPortalStyle);
  body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header.top nav.sdl-site-nav .sdl-nav-group.is-open>.sdl-nav-panel{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
  }
  `;document.head.appendChild(strictFan);
+
+ /* Keep the crest visually above the lower nav bar without hiding the working dropdowns. */
+ const logoLayer=document.createElement('style');logoLayer.id='sdl-fanclub-logo-over-nav';
+ logoLayer.textContent=`
+ @media(min-width:901px){
+ body.sdl-has-shared-header:has(#portal) header.sdl-common-header.top,
+ body.sdl-has-shared-header:has(#fanJoinForm) header.sdl-common-header.top{overflow:visible!important;isolation:auto!important}
+ body.sdl-has-shared-header:has(#portal) header.sdl-common-header.top>a:first-child,
+ body.sdl-has-shared-header:has(#fanJoinForm) header.sdl-common-header.top>a:first-child{
+ position:relative!important;grid-column:1!important;grid-row:1/3!important;
+ align-self:center!important;justify-self:start!important;
+ width:180px!important;min-width:180px!important;height:130px!important;
+ min-height:130px!important;max-height:none!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ overflow:visible!important;z-index:40000!important;transform:none!important}
+ body.sdl-has-shared-header:has(#portal) header.sdl-common-header.top>a:first-child img,
+ body.sdl-has-shared-header:has(#fanJoinForm) header.sdl-common-header.top>a:first-child img{
+ width:156px!important;min-width:156px!important;max-width:156px!important;
+ height:124px!important;min-height:124px!important;max-height:124px!important;
+ object-fit:contain!important;object-position:center!important;display:block!important;
+ opacity:1!important;visibility:visible!important;transform:none!important}
+ }
+ `;document.head.appendChild(logoLayer);
  const splash=document.getElementById('splash');
  const enter=()=>{if(splash&&location.hash==='#inicio'){splash.classList.add('hide');try{sessionStorage.setItem('sdl-entered','1')}catch{}}};
  enter();window.addEventListener('hashchange',enter);
