@@ -2,7 +2,7 @@
 if(window.__SDL_EXPERIENCIA_V2__)return;window.__SDL_EXPERIENCIA_V2__=true;
 const body=document.body,root=document.documentElement,path=location.pathname,KEY="sdl-ux-last-place",FONT="sdl-ux-font-scale";const getItem=k=>{try{return localStorage.getItem(k)}catch{return null}},setItem=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
 const catalog=[
-["Inicio de la Ciudadela","Regresa a la portada y conoce el universo.","/","inicio ciudadela portada"],
+["Inicio de la Ciudadela","Accede a la página principal del universo.","/#inicio","inicio ciudadela portada"],
 ["El libro · El origen de la manada","Conoce el primer libro y cómo adquirirlo.","/libro.html","libro amazon leer comprar origen"],
 ["Personajes","Explora las fichas de los personajes.","/personajes","personajes protagonistas"],
 ["Historias","Lee relatos y contenido narrativo.","/historias","historias relatos lectura"],
@@ -93,10 +93,10 @@ if(!document.querySelector(".top nav.nav")){
  const previous=document.querySelector('header.top,header.topbar');
  if(previous){previous.classList.remove('top','topbar','wrap');previous.classList.add('sdl-local-header')}
  const shared=document.createElement('header');shared.className='top sdl-common-header';shared.setAttribute('aria-label','Encabezado de Sangre de Luna');
- shared.innerHTML='<a href="'+SDL_SITE+'/" aria-label="Sangre de Luna · Inicio"><img src="'+SDL_SITE+'/assets/logo-oficial.png" alt="Sangre de Luna"></a><nav class="nav" aria-label="Navegación principal"></nav>'+"<div class=\"head-actions\"><div class=\"socials\"><a class=\"social\" href=\"https://www.instagram.com/sangredelunaia\" target=\"_blank\" rel=\"noopener\" aria-label=\"Instagram\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5Zm8.95 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 6.4A5.6 5.6 0 1 1 6.4 12 5.61 5.61 0 0 1 12 6.4Zm0 1.8A3.8 3.8 0 1 0 15.8 12 3.8 3.8 0 0 0 12 8.2Z\"/></svg></a><a class=\"social\" href=\"https://www.youtube.com/@SangredeLunaIA\" target=\"_blank\" rel=\"noopener\" aria-label=\"YouTube\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M23 12.01s0-3.51-.45-5.2a2.95 2.95 0 0 0-2.08-2.09C18.79 4.27 12 4.27 12 4.27s-6.79 0-8.47.45A2.95 2.95 0 0 0 1.45 6.8C1 8.5 1 12 1 12s0 3.51.45 5.2a2.95 2.95 0 0 0 2.08 2.09c1.68.45 8.47.45 8.47.45s6.79 0 8.47-.45a2.95 2.95 0 0 0 2.08-2.09c.45-1.69.45-5.19.45-5.19ZM9.2 15.52V8.5l6.07 3.51-6.07 3.51Z\"/></svg></a><a class=\"social\" href=\"https://www.tiktok.com/@hamunaptsoon\" target=\"_blank\" rel=\"noopener\" aria-label=\"TikTok\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14.6 2h2.59c.2 1.68 1.2 3.24 2.81 4.01.86.42 1.79.61 2.7.64v2.66c-1.27-.04-2.53-.3-3.68-.84-.77-.36-1.46-.85-2.1-1.43v7.65a6.54 6.54 0 1 1-6.54-6.54c.29 0 .57.02.85.06v2.72a3.86 3.86 0 1 0 2.93 3.76V2Z\"/></svg></a></div><a class=\"btn ghost fanclub-head-btn\" href=\"/fanclub.html\" aria-label=\"Abrir Fan Club\">Fan Club</a><a class=\"btn ghost admin-entry\" href=\"?admin=1\">Ingresar</a></div>";
+ shared.innerHTML='<a href="'+SDL_SITE+'/#inicio" aria-label="Sangre de Luna · Inicio"><img src="'+SDL_SITE+'/assets/logo-oficial.png" alt="Sangre de Luna"></a><nav class="nav" aria-label="Navegación principal"></nav>'+"<div class=\"head-actions\"><div class=\"socials\"><a class=\"social\" href=\"https://www.instagram.com/sangredelunaia\" target=\"_blank\" rel=\"noopener\" aria-label=\"Instagram\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2Zm0 1.8A3.95 3.95 0 0 0 3.8 7.75v8.5a3.95 3.95 0 0 0 3.95 3.95h8.5a3.95 3.95 0 0 0 3.95-3.95v-8.5a3.95 3.95 0 0 0-3.95-3.95h-8.5Zm8.95 1.35a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2ZM12 6.4A5.6 5.6 0 1 1 6.4 12 5.61 5.61 0 0 1 12 6.4Zm0 1.8A3.8 3.8 0 1 0 15.8 12 3.8 3.8 0 0 0 12 8.2Z\"/></svg></a><a class=\"social\" href=\"https://www.youtube.com/@SangredeLunaIA\" target=\"_blank\" rel=\"noopener\" aria-label=\"YouTube\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M23 12.01s0-3.51-.45-5.2a2.95 2.95 0 0 0-2.08-2.09C18.79 4.27 12 4.27 12 4.27s-6.79 0-8.47.45A2.95 2.95 0 0 0 1.45 6.8C1 8.5 1 12 1 12s0 3.51.45 5.2a2.95 2.95 0 0 0 2.08 2.09c1.68.45 8.47.45 8.47.45s6.79 0 8.47-.45a2.95 2.95 0 0 0 2.08-2.09c.45-1.69.45-5.19.45-5.19ZM9.2 15.52V8.5l6.07 3.51-6.07 3.51Z\"/></svg></a><a class=\"social\" href=\"https://www.tiktok.com/@hamunaptsoon\" target=\"_blank\" rel=\"noopener\" aria-label=\"TikTok\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14.6 2h2.59c.2 1.68 1.2 3.24 2.81 4.01.86.42 1.79.61 2.7.64v2.66c-1.27-.04-2.53-.3-3.68-.84-.77-.36-1.46-.85-2.1-1.43v7.65a6.54 6.54 0 1 1-6.54-6.54c.29 0 .57.02.85.06v2.72a3.86 3.86 0 1 0 2.93 3.76V2Z\"/></svg></a></div><a class=\"btn ghost fanclub-head-btn\" href=\"/fanclub.html\" aria-label=\"Abrir Fan Club\">Fan Club</a><a class=\"btn ghost admin-entry\" href=\"?admin=1\">Ingresar</a></div>";
  const socialTiktok=shared.querySelector('.social[aria-label="TikTok"]');if(socialTiktok)socialTiktok.insertAdjacentHTML('beforebegin',"<a class=\"social\" href=\"https://www.facebook.com/sangredelunaia/\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"Facebook oficial de Sangre de Luna\" title=\"Facebook\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.25.2 2.25.2v2.47H15.2c-1.24 0-1.63.77-1.63 1.56V12h2.77l-.44 2.89h-2.33v6.99A10 10 0 0 0 22 12Z\"/></svg></a>");
  shared.querySelectorAll('a[href^="/"],a[href^="?"]').forEach(a=>a.href=new URL(a.getAttribute('href'),SDL_SITE+'/').href);
- body.prepend(shared);dock.querySelector('a[aria-label="Volver al inicio"]').href=SDL_SITE+'/';
+ body.prepend(shared);dock.querySelector('a[aria-label="Volver al inicio"]').href=SDL_SITE+'/#inicio';
  body.classList.add('sdl-has-shared-header');if(onGame)body.classList.add('sdl-game-header');
  const sizeHeader=()=>root.style.setProperty('--sdl-header-height',shared.offsetHeight+'px');
  new ResizeObserver(sizeHeader).observe(shared);sizeHeader();
@@ -185,7 +185,7 @@ if(document.querySelector(".top nav.nav")){
   const addTopLink=(label,href)=>{const a=document.createElement("a");a.className="sdl-nav-link";a.href=href;a.textContent=label;nav.appendChild(a)};
   const closeGroups=()=>nav.querySelectorAll('.sdl-nav-group').forEach(g=>{g.classList.remove('is-open');g.querySelector('button').setAttribute('aria-expanded','false')});
   const addGroup=(label,items)=>{const wrap=document.createElement('div');wrap.className='sdl-nav-group';const b=document.createElement('button');b.type='button';b.className='sdl-nav-toggle';b.setAttribute('aria-expanded','false');b.textContent=label+'  ⌄';const panel=document.createElement('section');panel.className='sdl-nav-panel';panel.id='sdlMega'+label;b.setAttribute('aria-controls',panel.id);const head=document.createElement('header');head.className='sdl-mega-head';const title=document.createElement('h2');title.textContent=label+' · SANGRE DE LUNA';const close=document.createElement('button');close.type='button';close.className='sdl-mega-close';close.textContent='×';close.setAttribute('aria-label','Cerrar menú '+label);close.onclick=()=>{closeGroups();b.focus()};head.append(title,close);const grid=document.createElement('div');grid.className='sdl-mega-grid';const sections=label==='LA SAGA'?[['El libro y el comienzo',items.slice(0,2)],['La historia',items.slice(2)]]:label==='UNIVERSO'?[['PERSONAJES',items.slice(0,2)],['LINAJES Y GRUPOS',items.slice(2,4)],['TERRITORIOS',items.slice(4)]]:label==='MULTIMEDIA'?[['Música original',[items[0]]],['Galería oficial',[items[1]]]]:label==='EXPLORAR'?[['Territorios',[items[0]]],['Recorridos',[items[1]]]]:[['Tu recorrido',items.slice(0,1)],['La Manada',items.slice(1,2)],['Participa',items.slice(2)]];sections.forEach(([heading,entries])=>{const col=document.createElement('div');const h=document.createElement('h3');h.textContent=heading;col.appendChild(h);entries.forEach(x=>{const a=document.createElement('a');a.href=x[2];const strong=document.createElement('strong');strong.textContent=x[0];const small=document.createElement('small');small.textContent=x[1];a.append(strong,small);a.onclick=closeGroups;col.appendChild(a)});grid.appendChild(col)});panel.append(head,grid);b.addEventListener('click',()=>{const open=!wrap.classList.contains('is-open');closeGroups();wrap.classList.toggle('is-open',open);b.setAttribute('aria-expanded',String(open))});wrap.append(b,panel);nav.appendChild(wrap)};
-  addTopLink("INICIO",homeEntry[2]);addGroup("LA SAGA",sagaEntries);addGroup("UNIVERSO",universeMenu);addGroup("MULTIMEDIA",universeEntries.slice(3,5));addGroup("EXPLORAR",universeEntries.slice(5));addGroup("COMUNIDAD",communityEntries.slice(0,3));addTopLink("TIENDA","/tienda");addTopLink("JUGAR",gameUrl);
+  addTopLink("INICIO",SDL_SITE+"/#inicio");addGroup("LA SAGA",sagaEntries);addGroup("UNIVERSO",universeMenu);addGroup("MULTIMEDIA",universeEntries.slice(3,5));addGroup("EXPLORAR",universeEntries.slice(5));addGroup("COMUNIDAD",communityEntries.slice(0,3));addTopLink("TIENDA","/tienda");addTopLink("JUGAR",gameUrl);
   document.addEventListener("click",e=>{if(!e.target.closest(".sdl-nav-group"))nav.querySelectorAll(".sdl-nav-group").forEach(g=>{g.classList.remove("is-open");g.querySelector("button").setAttribute("aria-expanded","false")})});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){nav.querySelectorAll(".sdl-nav-group").forEach(g=>{g.classList.remove("is-open");g.querySelector("button").setAttribute("aria-expanded","false")})}});
  }
@@ -532,4 +532,41 @@ document.head.appendChild(compactPortalStyle);
  };
  fixDropdown();
  if(h.classList.contains('sdl-common-header')){const sync=()=>document.documentElement.style.setProperty('--sdl-header-height',h.offsetHeight+'px');new ResizeObserver(sync).observe(h);sync();}
+
+/* Corrección integral de acceso y Fan Club: bienvenida sin navegación,
+   Inicio siempre abre contenido, menús por encima del portal y sin recortes. */
+(()=>{
+ const siteRoot=/^\/(?:index(?:\.html)?)?$/.test(location.pathname);
+ const splash=document.getElementById('splash');
+ const navigateContent=()=>{if(siteRoot&&splash&&location.hash.toLowerCase()==='#inicio'){splash.classList.add('hide');try{sessionStorage.setItem('sdl-entered','1')}catch{}}};
+ navigateContent();
+ window.addEventListener('hashchange',navigateContent);
+ const css=document.createElement('style');
+ css.id='sdl-navigation-route-audit-20261102';
+ css.textContent=`
+ body:has(#splash:not(.hide)) #publicApp>header.top,
+ body:has(#splash:not(.hide)) .sdl-ux-dock{display:none!important}
+ body:has(#splash:not(.hide)) #splash{inset:0!important;top:0!important;min-height:100svh!important}
+ body.sdl-has-shared-header .sdl-common-header{overflow:visible!important;isolation:auto!important}
+ body .top:has(nav.sdl-site-nav){overflow:visible!important}
+ body .top nav.sdl-site-nav{overflow:visible!important}
+ body .top nav.sdl-site-nav .sdl-nav-group{position:static!important}
+ body .top nav.sdl-site-nav .sdl-nav-panel{position:fixed!important;top:var(--sdl-header-height,111px)!important;left:3vw!important;right:3vw!important;max-height:calc(100dvh - var(--sdl-header-height,111px) - 12px)!important;overflow-y:auto!important;z-index:10005!important;pointer-events:auto!important}
+ body .top nav.sdl-site-nav .sdl-nav-group.is-open>.sdl-nav-panel{display:grid!important;visibility:visible!important;opacity:1!important}
+ body.sdl-has-shared-header:has(#portal) .sdl-common-header{position:relative!important;z-index:10000!important}
+ body.sdl-has-shared-header:has(#portal) #portal{z-index:80!important}
+ body.sdl-has-shared-header .sdl-local-header{display:none!important}
+ @media(max-width:900px){
+  body .top nav.sdl-site-nav{overflow-x:auto!important}
+  body .top nav.sdl-site-nav .sdl-nav-panel{left:0!important;right:0!important}
+  body:has(#splash:not(.hide)) .sdl-ux-dock{display:none!important}
+ }
+ `;
+ document.head.appendChild(css);
+ document.querySelectorAll('a[href="/"],a[href="https://sangredeluna.com/"]').forEach(a=>{
+  if(a.closest('#adminApp, #dashboard, .sdl-local-header'))return;
+  const name=(a.textContent||a.getAttribute('aria-label')||'').toLowerCase();
+  if(/inicio|sitio principal|volver al sitio|volver al inicio/.test(name))a.href='https://sangredeluna.com/#inicio';
+ });
+})();
 })();
