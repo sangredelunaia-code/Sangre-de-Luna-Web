@@ -645,6 +645,24 @@ document.head.appendChild(compactPortalStyle);
   if(label==='JUGAR'||a.hasAttribute('data-sdl-game-link'))a.href=officialGame;
  });
  document.querySelectorAll('a[data-sdl-game-link],a[data-sdl-game-mobile]').forEach(a=>a.href=officialGame);
+
+ /* Correcciones de superposición, Fan Club y navegación interna. */
+ const repair=document.createElement('style');repair.id='sdl-overlay-fanclub-stability';
+ repair.textContent=`
+ body .modal.open,body .promo.open,body #promoBox.open{z-index:11000!important}
+ body .promo.open{padding:clamp(12px,3vh,30px)!important;overflow-y:auto!important;align-items:safe center!important;justify-content:center!important}
+ body .promo-box{max-height:calc(100dvh - 30px)!important;overflow-y:auto!important}
+ body .promo-box video,body .promo-box iframe{max-height:min(65dvh,700px)!important}
+ body .top nav.sdl-site-nav .sdl-nav-panel{z-index:12000!important;max-height:calc(100dvh - var(--sdl-header-height,130px) - 12px)!important;overscroll-behavior:contain!important}
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header,
+ body.sdl-has-shared-header:has(#portal) .sdl-common-header{overflow:visible!important;z-index:12010!important;isolation:auto!important}
+ body.sdl-has-shared-header:has(#portal) #portal{z-index:80!important}
+ body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child,
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child{grid-row:1/3!important;overflow:visible!important}
+ body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child img,
+ body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child img{display:block!important;width:156px!important;height:124px!important;max-width:156px!important;max-height:124px!important;object-fit:contain!important}
+ @media(max-width:900px){body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child img,body.sdl-has-shared-header:has(#fanJoinForm) .sdl-common-header>a:first-child img{width:95px!important;height:78px!important;max-width:95px!important;max-height:78px!important}}
+ `;document.head.appendChild(repair);
  const splash=document.getElementById('splash');
  const enter=()=>{if(splash&&location.hash==='#inicio'){splash.classList.add('hide');try{sessionStorage.setItem('sdl-entered','1')}catch{}}};
  enter();window.addEventListener('hashchange',enter);
