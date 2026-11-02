@@ -76,7 +76,7 @@ const universeMenu=[
 ];catalog.push(universeMenu[0],universeMenu[2],universeMenu[3]);
 groupRoot.appendChild(makeMenuLink(homeEntry));groupRoot.appendChild(makeDetails("LA SAGA",sagaEntries));groupRoot.appendChild(makeDetails("UNIVERSO",universeMenu));groupRoot.appendChild(makeDetails("MULTIMEDIA",universeEntries.slice(3,5)));groupRoot.appendChild(makeDetails("EXPLORAR",universeEntries.slice(5)));groupRoot.appendChild(makeDetails("COMUNIDAD",communityEntries.slice(0,3)));
 groupRoot.appendChild(makeMenuLink(catalog.find(x=>x[2]==="/tienda")));
-const gameUrl="https://sangredeluna.com/api/game";const gameItem=["Jugar · Crónicas de la Ciudadela","Entra al juego de Sangre de Luna.",gameUrl,"juego jugar"];
+const gameUrl="https://sangre-de-luna-la-ruta-del-juramento.hamunaptsoon2015.chatgpt.site";const gameItem=["Jugar · Crónicas de la Ciudadela","Entra al juego de Sangre de Luna.",gameUrl,"juego jugar"];
 groupRoot.appendChild(makeMenuLink(gameItem));
 const isWelcome=()=>{const splash=document.getElementById("splash");return !!(splash&&!splash.classList.contains("hide"))};
 const openMenu=()=>{if(isWelcome())return;menu.classList.add("open");const first=menu.querySelector(".sdl-menu-link");setTimeout(()=>first&&first.focus(),20)};
@@ -639,7 +639,7 @@ document.head.appendChild(compactPortalStyle);
  body.sdl-has-shared-header:has(#portal) .sdl-common-header>a:first-child img{display:block!important;width:156px!important;min-width:156px!important;max-width:156px!important;height:124px!important;max-height:124px!important;object-fit:contain!important;visibility:visible!important;opacity:1!important}
  }
  `;document.head.appendChild(finalFix);
- const officialGame='https://sangredeluna.com/api/game';
+ const officialGame='https://sangre-de-luna-la-ruta-del-juramento.hamunaptsoon2015.chatgpt.site';
  header.querySelectorAll('a').forEach(a=>{
   const label=(a.textContent||'').trim().toUpperCase();
   if(label==='JUGAR'||a.hasAttribute('data-sdl-game-link'))a.href=officialGame;
