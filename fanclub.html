@@ -87,11 +87,20 @@ body.sdl-has-shared-header header.sdl-common-header.top .sdl-nav-panel{overflow-
 </style>
 <script id="sdl-fanclub-mail-icon">
 (function(){
-function addMail(){var row=document.querySelector('header.sdl-common-header .head-actions .socials,header.top .head-actions .socials');if(!row)return;if(row.querySelector('[data-fanclub-mail]'))return;var a=document.createElement('a');a.href='https://webmail.sangredeluna.com';a.className='social';a.dataset.fanclubMail='1';a.setAttribute('aria-label','Sangre de Luna Webmail');a.title='Correo de Sangre de Luna';a.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 2v.46l9 6.3 9-6.3V7H3Zm18 2.9-8.43 5.9a1 1 0 0 1-1.14 0L3 9.9V17h18V9.9Z"/></svg>';row.appendChild(a)}
+function addMail(){var row=document.querySelector('header.sdl-common-header .head-actions .socials,header.top .head-actions .socials');if(!row)return;if(row.querySelector('[data-fanclub-mail]'))return;var a=document.createElement('a');a.href='https://mail.sangredeluna.com/webmail';a.className='social';a.dataset.fanclubMail='1';a.setAttribute('aria-label','Sangre de Luna Webmail');a.title='Correo de Sangre de Luna';a.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Zm0 2v.46l9 6.3 9-6.3V7H3Zm18 2.9-8.43 5.9a1 1 0 0 1-1.14 0L3 9.9V17h18V9.9Z"/></svg>';row.appendChild(a)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',addMail);else addMail();
 new MutationObserver(addMail).observe(document.documentElement,{childList:true,subtree:true});
 })();
-</script></head>
+</script><style id="sdl-fanclub-portal-scroll-lock-20261103">
+/* Con la portada abierta, impedir desplazamiento de las dos vistas superpuestas. */
+html:has(body.locked #portal:not(.out):not(.hidden)){overflow:hidden!important;overscroll-behavior:none!important}
+body.locked:has(#portal:not(.out):not(.hidden)){height:100dvh!important;max-height:100dvh!important;overflow:hidden!important;overscroll-behavior:none!important}
+body.locked:has(#portal:not(.out):not(.hidden)) #fanMain,
+body.locked:has(#portal:not(.out):not(.hidden)) >header.sdl-local-header{visibility:hidden!important;pointer-events:none!important}
+body.sdl-has-shared-header #portal:not(.out):not(.hidden){position:fixed!important;top:var(--sdl-header-height,130px)!important;bottom:0!important;left:0!important;right:0!important;max-height:calc(100dvh - var(--sdl-header-height,130px))!important;overflow:auto!important;z-index:100!important}
+body.sdl-has-shared-header header.sdl-common-header.top{position:relative!important;overflow:visible!important;z-index:20000!important}
+@media(min-width:901px){body.sdl-has-shared-header header.sdl-common-header.top>nav.sdl-site-nav{overflow:visible!important;scrollbar-width:none!important}}
+</style></head>
 <body class="locked">
 <div class="portal" id="portal" aria-label="Entrada a La Manada">
  <div class="portal-bg"></div><div class="mist m1"></div><div class="mist m2"></div><div class="mist m3"></div>
@@ -246,5 +255,5 @@ await loadPublic();
 </script>
 </body><script src="/lykos-viewport-fit.js?v=20260930-9" defer></script>
 
-<script src="/experiencia-ux.js?v=20261103-fanclub-mail" defer></script>
+<script src="/experiencia-ux.js?v=20261103-fanclub-portal-lock" defer></script>
 </html>
