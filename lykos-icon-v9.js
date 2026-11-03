@@ -6,7 +6,7 @@
   if(window.__SDL_LYKOS_ICON_V9__)return;
   window.__SDL_LYKOS_ICON_V9__=true;
 
-  const ICON='https://sangre-de-luna-public.vercel.app/assets/lykos-guardian-approved.webp?v=20260828-9';
+  const ICON='https://sangredeluna.com/assets/lykos-guardian-approved.webp?v=20260828-9';
 
   const style=document.createElement('style');
   style.id='sdl-lykos-icon-v9-style';
