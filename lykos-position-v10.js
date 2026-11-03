@@ -191,7 +191,7 @@
   if(window.__SDL_GAME_MENU_LINK__)return;
   window.__SDL_GAME_MENU_LINK__=true;
 
-  const GAME_URL='https://sangre-de-luna-ecos-ciudadela.vercel.app/';
+  const GAME_URL='https://sangredeluna.com/jugar';
 
   function installGameLinks(){
     const nav=document.querySelector('.nav');
