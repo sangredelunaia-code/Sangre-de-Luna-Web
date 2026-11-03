@@ -7,7 +7,7 @@
   const PASSWORD_RECOVERY='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@bcf92b7c3b24cb07e08b8392bc506146d26833fd/fanclub-password-recovery.js';
   const ADMIN_WELCOME='https://cdn.jsdelivr.net/gh/sangredelunaia-code/Sangre-de-Luna-Web@4e4489428bc7988f21065a912dc707ab16f0ca92/fanclub-admin-welcome.js';
   const CFG_URL='https://huvramoqtrorcoywipvm.supabase.co/functions/v1/site-config';
-  const GAME_URL='https://sangre-de-luna-ecos-ciudadela.vercel.app';
+  const GAME_URL='https://sangredeluna.com/jugar';
 
   const resetEntryExperience=()=>{
     try{
