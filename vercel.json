@@ -357,6 +357,14 @@
   ],
   "rewrites": [
     {
+      "source": "/jugar",
+      "destination": "https://sangre-de-luna-ecos-ciudadela.vercel.app/"
+    },
+    {
+      "source": "/juego",
+      "destination": "https://sangre-de-luna-ecos-ciudadela.vercel.app/"
+    },
+    {
       "source": "/tienda-privada/productos/bolsas",
       "destination": "/api/tienda-preview?view=tipo-bolsas"
     },
